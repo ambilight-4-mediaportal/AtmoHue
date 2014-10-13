@@ -21,12 +21,18 @@ namespace AtmoHue
     public partial class Form1 : Form
     {
         delegate void UniversalVoidDelegate();
+
+        //Atmowin
         public Boolean scanAtmowin = false;
+        public string atmowinLocation = "";
+        public string atmowinStaticColor = "";
+        public string atmowinScanInterval = "";
+
+        //HUE
         public Boolean hueRotatingColors = false;
         HueClient client = new HueClient("0.0.0.0");
         public int hueRotateDelay = 1000;
         public string hueBridgeIP = "";
-        public string hueLightsEnable = "";
         public string hueAppName = "";
         public string hueAppKey = "";
         public string hueBrightness = "100";
@@ -41,7 +47,7 @@ namespace AtmoHue
 
             loadSettings();
 
-            if (string.IsNullOrEmpty(tbHueBridgeIP.Text))
+            if (string.IsNullOrEmpty(hueBridgeIP) == true)
             {
                 if (cbRunningWindows8.Checked == false)
                 {
@@ -53,13 +59,13 @@ namespace AtmoHue
                 }
             }
 
-            if (string.IsNullOrEmpty(tbHueBridgeIP.Text) == false)
+            if (string.IsNullOrEmpty(hueBridgeIP) == false)
             {
                 client = new HueClient(hueBridgeIP);
                 client.RegisterAsync(hueAppName, hueAppKey);
                 try
                 {
-                    client.Initialize(tbHueAppKey.Text);
+                    client.Initialize(hueAppKey);
                     outputtoLog("HUE has been intialized on STARTUP");
                 }
                 catch (Exception et)
@@ -107,7 +113,7 @@ namespace AtmoHue
 
         private void loadSettings()
         {
-            hueBridgeIP = tbHueBridgeIP.Text;
+            hueBridgeIP = tbHueBridgeIP.Text.Trim();
             hueAppName = tbHueAppName.Text;
             hueAppKey = tbHueAppKey.Text;
             hueBrightness = cbHueBrightness.Text;
@@ -115,7 +121,9 @@ namespace AtmoHue
             hueTransitiontime = tbHueTransitionTime.Text;
             hueHue = tbHueHue.Text;
             hueOutputDevices = cbOutputHueDevicesRange.Text;
-
+            atmowinLocation = addTrailingSlash(tbAtmowinLocation.Text);
+            atmowinStaticColor = tbAtmowinStaticColor.Text;
+            atmowinScanInterval = tbAtmowinScanInterval.Text;
         }
         private void btnLocateHueBridge_Click(object sender, EventArgs e)
         {
@@ -176,7 +184,7 @@ namespace AtmoHue
 
                 if (client.IsInitialized == false)
                 {
-                    client.Initialize(tbHueAppKey.Text);
+                    client.Initialize(hueAppKey);
                     outputtoLog("HUE has been intialized on COLOR CHANGE");
                 }
 
@@ -190,7 +198,7 @@ namespace AtmoHue
                 command.Saturation = int.Parse(hueSaturation);
                 command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
 
-                if (string.IsNullOrEmpty(tbHueHue.Text) == false)
+                if (string.IsNullOrEmpty(hueHue) == false)
                 {
                     command.Hue = int.Parse(hueHue);
                 }
@@ -208,6 +216,8 @@ namespace AtmoHue
                 }
                 outputtoLog("Completed sending color #" + color + " to Hue Bridge.");
 
+                command.On = false;
+
             }
             catch (Exception et)
             {
@@ -218,7 +228,7 @@ namespace AtmoHue
         private void btnStartAtmowinHue_Click(object sender, EventArgs e)
         {
             loadSettings();
-            if (string.IsNullOrEmpty(tbHueBridgeIP.Text) == true)
+            if (string.IsNullOrEmpty(hueBridgeIP) == true)
             {
                 if (cbRunningWindows8.Checked == false)
                 {
@@ -229,7 +239,6 @@ namespace AtmoHue
                     SSDPBridgeLocator();
                 }
             }
-            hueLightsEnable = cbOutputHueDevicesRange.Text.ToLower().Trim();
             scanAtmowin = true;
             outputtoLog("Start monitoring Atmowin");
             Thread t = new Thread(startMonitoringAtmowin);
@@ -240,9 +249,10 @@ namespace AtmoHue
         {
             scanAtmowin = false;
             outputtoLog("Stop monitoring Atmowin");
-            if (string.IsNullOrEmpty(tbAtmowinStaticColor.Text) == false)
+
+            if (string.IsNullOrEmpty(atmowinStaticColor) == false)
             {
-                hueSetColor(tbAtmowinStaticColor.Text.Replace("#", string.Empty).Trim());
+                hueSetColor(atmowinStaticColor.Replace("#", string.Empty).Trim());
             }
             else
             {
@@ -252,7 +262,6 @@ namespace AtmoHue
 
         private void startMonitoringAtmowin()
         {
-            string atmowinLocation = addTrailingSlash(tbAtmowinLocation.Text);
             string atmowinColorInformation = "";
             string colorRed = "";
             string colorGreen = "";
@@ -281,10 +290,10 @@ namespace AtmoHue
                         outputtoLog("Atmowin information -> R = " + colorRed + " / G = " + colorGreen + " / B = " + colorBlue + " / CHANNELS = " + numberOfChannels);
 
                         //Needs changing as Atmowin might report 0,0,0 normally
-                        if (colorRed == "0" && colorGreen == "0" && colorBlue == "0" && string.IsNullOrEmpty(tbAtmowinStaticColor.Text) == false)
+                        if (colorRed == "0" && colorGreen == "0" && colorBlue == "0" && string.IsNullOrEmpty(atmowinStaticColor) == false)
                         {
                             outputtoLog("Atmowin disconnected, sending preset static color");
-                            hueSetColor(tbAtmowinStaticColor.Text.Replace("#", string.Empty).Trim());
+                            hueSetColor(atmowinStaticColor.Replace("#", string.Empty).Trim());
                         }
                         else
                         {
@@ -300,13 +309,13 @@ namespace AtmoHue
                             outputtoLog("------------------------------");
                         }
 
-                        int sleeptime = int.Parse(tbAtmowinScanInterval.Text);
+                        int sleeptime = int.Parse(atmowinScanInterval);
                         Thread.Sleep(sleeptime);
                     }
                     catch (Exception et)
                     {
                         outputtoLog(et.ToString());
-                        int sleeptime = int.Parse(tbAtmowinScanInterval.Text);
+                        int sleeptime = int.Parse(atmowinScanInterval);
                         Thread.Sleep(sleeptime);
 
                     }
@@ -315,7 +324,7 @@ namespace AtmoHue
             catch(Exception et)
             {
                 outputtoLog(et.ToString());
-                int sleeptime = int.Parse(tbAtmowinScanInterval.Text);
+                int sleeptime = int.Parse(atmowinScanInterval);
                 Thread.Sleep(sleeptime);
             }
         }
@@ -368,7 +377,7 @@ namespace AtmoHue
                     client.RegisterAsync(hueAppName, hueAppKey);
                     try
                     {
-                        client.Initialize(tbHueAppKey.Text);
+                        client.Initialize(hueAppKey);
                         outputtoLog("HUE has been intialized on COLOR CHANGE");
                     }
                     catch (Exception et)
@@ -387,7 +396,7 @@ namespace AtmoHue
                 command.Saturation = int.Parse(hueSaturation);
                 command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
 
-                if (string.IsNullOrEmpty(tbHueHue.Text) == false)
+                if (string.IsNullOrEmpty(hueHue) == false)
                 {
                     command.Hue = int.Parse(hueHue);
                 }
@@ -406,7 +415,7 @@ namespace AtmoHue
                         client.SendCommandAsync(command, new List<string> { hueOutputDevices.ToLower().Trim() });
 
                     }
-                    Thread.Sleep(int.Parse(tbRotateTestDelay.Text));
+                    Thread.Sleep(hueRotateDelay);
 
                     command.TurnOn().SetColor("00FF00");
                     outputtoLog("Completed sending color #" + "00FF00" + " to Hue Bridge.");
@@ -419,7 +428,7 @@ namespace AtmoHue
                         client.SendCommandAsync(command, new List<string> { hueOutputDevices.ToLower().Trim() });
 
                     }
-                    Thread.Sleep(int.Parse(tbRotateTestDelay.Text));
+                    Thread.Sleep(hueRotateDelay);
 
                     command.TurnOn().SetColor("0000FF");
                     outputtoLog("Completed sending color #" + "0000FF" + " to Hue Bridge.");
@@ -431,7 +440,7 @@ namespace AtmoHue
                     {
                         client.SendCommandAsync(command, new List<string> { hueOutputDevices.ToLower().Trim() });
                     }
-                    Thread.Sleep(int.Parse(tbRotateTestDelay.Text));
+                    Thread.Sleep(hueRotateDelay);
                 }
 
             }
@@ -475,7 +484,6 @@ namespace AtmoHue
         {
             loadSettings();
             hueRotatingColors = true;
-            hueRotateDelay = int.Parse(tbRotateTestDelay.Text);
             Thread t = new Thread(rotateColors);
             t.Start();
         }
