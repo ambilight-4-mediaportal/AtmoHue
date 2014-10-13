@@ -188,7 +188,7 @@ namespace AtmoHue
                 //Set custom values
                 command.Brightness = byte.Parse(hueBrightness);
                 command.Saturation = int.Parse(hueSaturation);
-                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueSaturation));
+                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
 
                 if (string.IsNullOrEmpty(tbHueHue.Text) == false)
                 {
@@ -385,7 +385,7 @@ namespace AtmoHue
                 //Set custom values
                 command.Brightness = byte.Parse(hueBrightness);
                 command.Saturation = int.Parse(hueSaturation);
-                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueSaturation));
+                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
 
                 if (string.IsNullOrEmpty(tbHueHue.Text) == false)
                 {

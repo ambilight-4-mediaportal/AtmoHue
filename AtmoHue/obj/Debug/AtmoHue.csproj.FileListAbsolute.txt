@@ -8,7 +8,6 @@
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\bin\Debug\Microsoft.Threading.Tasks.xml
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\bin\Debug\Microsoft.Threading.Tasks.Extensions.xml
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\bin\Debug\Microsoft.Threading.Tasks.Extensions.Desktop.xml
-\\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\bin\Debug\Newtonsoft.Json.xml
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\bin\Debug\Q42.HueApi.pdb
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\bin\Debug\Q42.HueApi.NET.pdb
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\obj\Debug\AtmoHue.csprojResolveAssemblyReference.cache
