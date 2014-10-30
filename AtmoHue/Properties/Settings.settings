@@ -15,7 +15,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="atmowinScanInterval" Type="System.String" Scope="User">
-      <Value Profile="(Default)">250</Value>
+      <Value Profile="(Default)">300</Value>
     </Setting>
     <Setting Name="HueBrightness" Type="System.String" Scope="User">
       <Value Profile="(Default)">100</Value>
@@ -28,6 +28,33 @@
     </Setting>
     <Setting Name="HueHue" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="HueAutoConnectonDetection" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="remoteAPIip" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Any</Value>
+    </Setting>
+    <Setting Name="RemoteApiEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="HueRotateDelay" Type="System.String" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="testCustomColorHex" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="HueAppName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mypersonalappname</Value>
+    </Setting>
+    <Setting Name="HueAppKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mypersonalappkey</Value>
+    </Setting>
+    <Setting Name="RemoteApiSendDelay" Type="System.String" Scope="User">
+      <Value Profile="(Default)">300</Value>
+    </Setting>
+    <Setting Name="RemoteAPIport" Type="System.String" Scope="User">
+      <Value Profile="(Default)">20123</Value>
     </Setting>
   </Settings>
 </SettingsFile>

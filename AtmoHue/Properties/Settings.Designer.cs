@@ -73,7 +73,7 @@ namespace AtmoHue.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("250")]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
         public string atmowinScanInterval {
             get {
                 return ((string)(this["atmowinScanInterval"]));
@@ -128,6 +128,114 @@ namespace AtmoHue.Properties {
             }
             set {
                 this["HueHue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HueAutoConnectonDetection {
+            get {
+                return ((bool)(this["HueAutoConnectonDetection"]));
+            }
+            set {
+                this["HueAutoConnectonDetection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Any")]
+        public string remoteAPIip {
+            get {
+                return ((string)(this["remoteAPIip"]));
+            }
+            set {
+                this["remoteAPIip"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RemoteApiEnabled {
+            get {
+                return ((bool)(this["RemoteApiEnabled"]));
+            }
+            set {
+                this["RemoteApiEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public string HueRotateDelay {
+            get {
+                return ((string)(this["HueRotateDelay"]));
+            }
+            set {
+                this["HueRotateDelay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string testCustomColorHex {
+            get {
+                return ((string)(this["testCustomColorHex"]));
+            }
+            set {
+                this["testCustomColorHex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("mypersonalappname")]
+        public string HueAppName {
+            get {
+                return ((string)(this["HueAppName"]));
+            }
+            set {
+                this["HueAppName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("mypersonalappkey")]
+        public string HueAppKey {
+            get {
+                return ((string)(this["HueAppKey"]));
+            }
+            set {
+                this["HueAppKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public string RemoteApiSendDelay {
+            get {
+                return ((string)(this["RemoteApiSendDelay"]));
+            }
+            set {
+                this["RemoteApiSendDelay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20123")]
+        public string RemoteAPIport {
+            get {
+                return ((string)(this["RemoteAPIport"]));
+            }
+            set {
+                this["RemoteAPIport"] = value;
             }
         }
     }
