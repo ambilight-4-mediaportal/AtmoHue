@@ -59,20 +59,20 @@
       this.llQ42 = new System.Windows.Forms.LinkLabel();
       this.lCopyright = new System.Windows.Forms.Label();
       this.gbBridgeTools = new System.Windows.Forms.GroupBox();
+      this.cbRunningWindows8 = new System.Windows.Forms.CheckBox();
+      this.cbAutoConnectBridge = new System.Windows.Forms.CheckBox();
       this.grpAtmowin = new System.Windows.Forms.GroupBox();
+      this.tbAtmowinScanInterval = new System.Windows.Forms.TextBox();
       this.cbLogRemoteApiCalls = new System.Windows.Forms.CheckBox();
       this.grpRemoteAPI = new System.Windows.Forms.GroupBox();
+      this.tbRemoteAPIsendDelay = new System.Windows.Forms.TextBox();
       this.lblHintRestart = new System.Windows.Forms.Label();
       this.lblApiScanInterval = new System.Windows.Forms.Label();
       this.lblAPIport = new System.Windows.Forms.Label();
       this.lblAPIip = new System.Windows.Forms.Label();
-      this.tbRemoteAPIsendDelay = new System.Windows.Forms.TextBox();
       this.tbRemoteApiPort = new System.Windows.Forms.TextBox();
       this.tbRemoteAPIip = new System.Windows.Forms.TextBox();
       this.cbRemoteAPIEnabled = new System.Windows.Forms.CheckBox();
-      this.tbAtmowinScanInterval = new System.Windows.Forms.TextBox();
-      this.cbRunningWindows8 = new System.Windows.Forms.CheckBox();
-      this.cbAutoConnectBridge = new System.Windows.Forms.CheckBox();
       this.tbRotateTestDelay = new System.Windows.Forms.TextBox();
       this.tbHueCustomColor = new System.Windows.Forms.TextBox();
       this.tbHueHue = new System.Windows.Forms.TextBox();
@@ -84,6 +84,7 @@
       this.cbOutputHueDevicesRange = new System.Windows.Forms.ComboBox();
       this.tbAtmowinLocation = new System.Windows.Forms.TextBox();
       this.tbHueBridgeIP = new System.Windows.Forms.TextBox();
+      this.btnRefreshSettings = new System.Windows.Forms.Button();
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
@@ -113,7 +114,7 @@
       // 
       this.lblAtmoWinFolder.AutoSize = true;
       this.lblAtmoWinFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblAtmoWinFolder.Location = new System.Drawing.Point(13, 49);
+      this.lblAtmoWinFolder.Location = new System.Drawing.Point(20, 16);
       this.lblAtmoWinFolder.Name = "lblAtmoWinFolder";
       this.lblAtmoWinFolder.Size = new System.Drawing.Size(103, 13);
       this.lblAtmoWinFolder.TabIndex = 3;
@@ -123,7 +124,7 @@
       // 
       this.lblOutputHueDevices.AutoSize = true;
       this.lblOutputHueDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblOutputHueDevices.Location = new System.Drawing.Point(13, 83);
+      this.lblOutputHueDevices.Location = new System.Drawing.Point(13, 57);
       this.lblOutputHueDevices.Name = "lblOutputHueDevices";
       this.lblOutputHueDevices.Size = new System.Drawing.Size(92, 13);
       this.lblOutputHueDevices.TabIndex = 8;
@@ -173,7 +174,7 @@
       // 
       this.label3.AutoSize = true;
       this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label3.Location = new System.Drawing.Point(13, 115);
+      this.label3.Location = new System.Drawing.Point(13, 89);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(89, 13);
       this.label3.TabIndex = 13;
@@ -183,7 +184,7 @@
       // 
       this.label4.AutoSize = true;
       this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label4.Location = new System.Drawing.Point(13, 143);
+      this.label4.Location = new System.Drawing.Point(13, 117);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(79, 13);
       this.label4.TabIndex = 14;
@@ -199,7 +200,7 @@
       // 
       // btnStartAtmowinHue
       // 
-      this.btnStartAtmowinHue.Location = new System.Drawing.Point(254, 38);
+      this.btnStartAtmowinHue.Location = new System.Drawing.Point(23, 63);
       this.btnStartAtmowinHue.Name = "btnStartAtmowinHue";
       this.btnStartAtmowinHue.Size = new System.Drawing.Size(135, 33);
       this.btnStartAtmowinHue.TabIndex = 18;
@@ -210,7 +211,7 @@
       // label5
       // 
       this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(346, 92);
+      this.label5.Location = new System.Drawing.Point(346, 137);
       this.label5.Name = "label5";
       this.label5.Size = new System.Drawing.Size(89, 13);
       this.label5.TabIndex = 20;
@@ -220,7 +221,7 @@
       // 
       this.lblBrightness.AutoSize = true;
       this.lblBrightness.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblBrightness.Location = new System.Drawing.Point(12, 176);
+      this.lblBrightness.Location = new System.Drawing.Point(12, 150);
       this.lblBrightness.Name = "lblBrightness";
       this.lblBrightness.Size = new System.Drawing.Size(87, 13);
       this.lblBrightness.TabIndex = 21;
@@ -230,7 +231,7 @@
       // 
       this.lblHueSaturation.AutoSize = true;
       this.lblHueSaturation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueSaturation.Location = new System.Drawing.Point(15, 221);
+      this.lblHueSaturation.Location = new System.Drawing.Point(15, 195);
       this.lblHueSaturation.Name = "lblHueSaturation";
       this.lblHueSaturation.Size = new System.Drawing.Size(65, 13);
       this.lblHueSaturation.TabIndex = 25;
@@ -240,7 +241,7 @@
       // 
       this.lblHueTransTime.AutoSize = true;
       this.lblHueTransTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueTransTime.Location = new System.Drawing.Point(15, 249);
+      this.lblHueTransTime.Location = new System.Drawing.Point(15, 223);
       this.lblHueTransTime.Name = "lblHueTransTime";
       this.lblHueTransTime.Size = new System.Drawing.Size(117, 13);
       this.lblHueTransTime.TabIndex = 26;
@@ -250,7 +251,7 @@
       // 
       this.lblHueHue.AutoSize = true;
       this.lblHueHue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueHue.Location = new System.Drawing.Point(15, 281);
+      this.lblHueHue.Location = new System.Drawing.Point(15, 255);
       this.lblHueHue.Name = "lblHueHue";
       this.lblHueHue.Size = new System.Drawing.Size(30, 13);
       this.lblHueHue.TabIndex = 28;
@@ -330,7 +331,7 @@
       // 
       this.lblAtmoinPresetColor.AutoSize = true;
       this.lblAtmoinPresetColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblAtmoinPresetColor.Location = new System.Drawing.Point(20, 92);
+      this.lblAtmoinPresetColor.Location = new System.Drawing.Point(20, 137);
       this.lblAtmoinPresetColor.Name = "lblAtmoinPresetColor";
       this.lblAtmoinPresetColor.Size = new System.Drawing.Size(199, 13);
       this.lblAtmoinPresetColor.TabIndex = 39;
@@ -338,14 +339,14 @@
       // 
       // tbAtmowinStaticColor
       // 
-      this.tbAtmowinStaticColor.Location = new System.Drawing.Point(248, 89);
+      this.tbAtmowinStaticColor.Location = new System.Drawing.Point(225, 134);
       this.tbAtmowinStaticColor.Name = "tbAtmowinStaticColor";
       this.tbAtmowinStaticColor.Size = new System.Drawing.Size(77, 20);
       this.tbAtmowinStaticColor.TabIndex = 40;
       // 
       // btnStopAtmowinHue
       // 
-      this.btnStopAtmowinHue.Location = new System.Drawing.Point(395, 38);
+      this.btnStopAtmowinHue.Location = new System.Drawing.Point(380, 63);
       this.btnStopAtmowinHue.Name = "btnStopAtmowinHue";
       this.btnStopAtmowinHue.Size = new System.Drawing.Size(135, 33);
       this.btnStopAtmowinHue.TabIndex = 41;
@@ -385,6 +386,32 @@
       this.gbBridgeTools.TabStop = false;
       this.gbBridgeTools.Text = "Hue Bridge";
       // 
+      // cbRunningWindows8
+      // 
+      this.cbRunningWindows8.AutoSize = true;
+      this.cbRunningWindows8.Checked = global::AtmoHue.Properties.Settings.Default.hueBridgeMode;
+      this.cbRunningWindows8.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "hueBridgeMode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.cbRunningWindows8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cbRunningWindows8.Location = new System.Drawing.Point(13, 22);
+      this.cbRunningWindows8.Name = "cbRunningWindows8";
+      this.cbRunningWindows8.Size = new System.Drawing.Size(159, 17);
+      this.cbRunningWindows8.TabIndex = 6;
+      this.cbRunningWindows8.Text = "Running Windows 8.* ?";
+      this.cbRunningWindows8.UseVisualStyleBackColor = true;
+      // 
+      // cbAutoConnectBridge
+      // 
+      this.cbAutoConnectBridge.AutoSize = true;
+      this.cbAutoConnectBridge.Checked = global::AtmoHue.Properties.Settings.Default.HueAutoConnectonDetection;
+      this.cbAutoConnectBridge.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "HueAutoConnectonDetection", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.cbAutoConnectBridge.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cbAutoConnectBridge.Location = new System.Drawing.Point(13, 45);
+      this.cbAutoConnectBridge.Name = "cbAutoConnectBridge";
+      this.cbAutoConnectBridge.Size = new System.Drawing.Size(188, 17);
+      this.cbAutoConnectBridge.TabIndex = 44;
+      this.cbAutoConnectBridge.Text = "Auto connect if bridge found";
+      this.cbAutoConnectBridge.UseVisualStyleBackColor = true;
+      // 
       // grpAtmowin
       // 
       this.grpAtmowin.Controls.Add(this.btnStopAtmowinHue);
@@ -393,12 +420,23 @@
       this.grpAtmowin.Controls.Add(this.label5);
       this.grpAtmowin.Controls.Add(this.lblAtmoinPresetColor);
       this.grpAtmowin.Controls.Add(this.tbAtmowinStaticColor);
-      this.grpAtmowin.Location = new System.Drawing.Point(263, 642);
+      this.grpAtmowin.Controls.Add(this.lblAtmoWinFolder);
+      this.grpAtmowin.Controls.Add(this.tbAtmowinLocation);
+      this.grpAtmowin.Location = new System.Drawing.Point(263, 613);
       this.grpAtmowin.Name = "grpAtmowin";
-      this.grpAtmowin.Size = new System.Drawing.Size(543, 133);
+      this.grpAtmowin.Size = new System.Drawing.Size(543, 193);
       this.grpAtmowin.TabIndex = 46;
       this.grpAtmowin.TabStop = false;
       this.grpAtmowin.Text = "Atmowin (Experimental)";
+      // 
+      // tbAtmowinScanInterval
+      // 
+      this.tbAtmowinScanInterval.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "atmowinScanInterval", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbAtmowinScanInterval.Location = new System.Drawing.Point(447, 134);
+      this.tbAtmowinScanInterval.Name = "tbAtmowinScanInterval";
+      this.tbAtmowinScanInterval.Size = new System.Drawing.Size(68, 20);
+      this.tbAtmowinScanInterval.TabIndex = 19;
+      this.tbAtmowinScanInterval.Text = global::AtmoHue.Properties.Settings.Default.atmowinScanInterval;
       // 
       // cbLogRemoteApiCalls
       // 
@@ -426,6 +464,15 @@
       this.grpRemoteAPI.TabIndex = 48;
       this.grpRemoteAPI.TabStop = false;
       this.grpRemoteAPI.Text = "Remote API";
+      // 
+      // tbRemoteAPIsendDelay
+      // 
+      this.tbRemoteAPIsendDelay.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "RemoteApiSendDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbRemoteAPIsendDelay.Location = new System.Drawing.Point(127, 133);
+      this.tbRemoteAPIsendDelay.Name = "tbRemoteAPIsendDelay";
+      this.tbRemoteAPIsendDelay.Size = new System.Drawing.Size(68, 20);
+      this.tbRemoteAPIsendDelay.TabIndex = 42;
+      this.tbRemoteAPIsendDelay.Text = global::AtmoHue.Properties.Settings.Default.RemoteApiSendDelay;
       // 
       // lblHintRestart
       // 
@@ -467,15 +514,6 @@
       this.lblAPIip.TabIndex = 3;
       this.lblAPIip.Text = "IP *";
       // 
-      // tbRemoteAPIsendDelay
-      // 
-      this.tbRemoteAPIsendDelay.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "RemoteApiSendDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbRemoteAPIsendDelay.Location = new System.Drawing.Point(127, 133);
-      this.tbRemoteAPIsendDelay.Name = "tbRemoteAPIsendDelay";
-      this.tbRemoteAPIsendDelay.Size = new System.Drawing.Size(68, 20);
-      this.tbRemoteAPIsendDelay.TabIndex = 42;
-      this.tbRemoteAPIsendDelay.Text = global::AtmoHue.Properties.Settings.Default.RemoteApiSendDelay;
-      // 
       // tbRemoteApiPort
       // 
       this.tbRemoteApiPort.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "RemoteAPIport", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -506,41 +544,6 @@
       this.cbRemoteAPIEnabled.Text = "Enable remote API *";
       this.cbRemoteAPIEnabled.UseVisualStyleBackColor = true;
       // 
-      // tbAtmowinScanInterval
-      // 
-      this.tbAtmowinScanInterval.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "atmowinScanInterval", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbAtmowinScanInterval.Location = new System.Drawing.Point(458, 89);
-      this.tbAtmowinScanInterval.Name = "tbAtmowinScanInterval";
-      this.tbAtmowinScanInterval.Size = new System.Drawing.Size(68, 20);
-      this.tbAtmowinScanInterval.TabIndex = 19;
-      this.tbAtmowinScanInterval.Text = global::AtmoHue.Properties.Settings.Default.atmowinScanInterval;
-      // 
-      // cbRunningWindows8
-      // 
-      this.cbRunningWindows8.AutoSize = true;
-      this.cbRunningWindows8.Checked = global::AtmoHue.Properties.Settings.Default.hueBridgeMode;
-      this.cbRunningWindows8.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "hueBridgeMode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.cbRunningWindows8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.cbRunningWindows8.Location = new System.Drawing.Point(13, 22);
-      this.cbRunningWindows8.Name = "cbRunningWindows8";
-      this.cbRunningWindows8.Size = new System.Drawing.Size(159, 17);
-      this.cbRunningWindows8.TabIndex = 6;
-      this.cbRunningWindows8.Text = "Running Windows 8.* ?";
-      this.cbRunningWindows8.UseVisualStyleBackColor = true;
-      // 
-      // cbAutoConnectBridge
-      // 
-      this.cbAutoConnectBridge.AutoSize = true;
-      this.cbAutoConnectBridge.Checked = global::AtmoHue.Properties.Settings.Default.HueAutoConnectonDetection;
-      this.cbAutoConnectBridge.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "HueAutoConnectonDetection", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.cbAutoConnectBridge.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.cbAutoConnectBridge.Location = new System.Drawing.Point(13, 45);
-      this.cbAutoConnectBridge.Name = "cbAutoConnectBridge";
-      this.cbAutoConnectBridge.Size = new System.Drawing.Size(188, 17);
-      this.cbAutoConnectBridge.TabIndex = 44;
-      this.cbAutoConnectBridge.Text = "Auto connect if bridge found";
-      this.cbAutoConnectBridge.UseVisualStyleBackColor = true;
-      // 
       // tbRotateTestDelay
       // 
       this.tbRotateTestDelay.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueRotateDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -562,7 +565,7 @@
       // tbHueHue
       // 
       this.tbHueHue.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueHue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueHue.Location = new System.Drawing.Point(140, 278);
+      this.tbHueHue.Location = new System.Drawing.Point(140, 252);
       this.tbHueHue.Name = "tbHueHue";
       this.tbHueHue.Size = new System.Drawing.Size(100, 20);
       this.tbHueHue.TabIndex = 29;
@@ -571,7 +574,7 @@
       // tbHueTransitionTime
       // 
       this.tbHueTransitionTime.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueTransitionTime", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueTransitionTime.Location = new System.Drawing.Point(140, 246);
+      this.tbHueTransitionTime.Location = new System.Drawing.Point(140, 220);
       this.tbHueTransitionTime.Name = "tbHueTransitionTime";
       this.tbHueTransitionTime.Size = new System.Drawing.Size(100, 20);
       this.tbHueTransitionTime.TabIndex = 24;
@@ -580,7 +583,7 @@
       // tbHueSaturation
       // 
       this.tbHueSaturation.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueSaturation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueSaturation.Location = new System.Drawing.Point(140, 218);
+      this.tbHueSaturation.Location = new System.Drawing.Point(140, 192);
       this.tbHueSaturation.Name = "tbHueSaturation";
       this.tbHueSaturation.Size = new System.Drawing.Size(100, 20);
       this.tbHueSaturation.TabIndex = 23;
@@ -590,7 +593,7 @@
       // 
       this.cbHueBrightness.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueBrightness", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.cbHueBrightness.FormattingEnabled = true;
-      this.cbHueBrightness.Location = new System.Drawing.Point(140, 173);
+      this.cbHueBrightness.Location = new System.Drawing.Point(140, 147);
       this.cbHueBrightness.Name = "cbHueBrightness";
       this.cbHueBrightness.Size = new System.Drawing.Size(75, 21);
       this.cbHueBrightness.TabIndex = 22;
@@ -599,7 +602,7 @@
       // tbHueAppKey
       // 
       this.tbHueAppKey.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueAppKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueAppKey.Location = new System.Drawing.Point(140, 140);
+      this.tbHueAppKey.Location = new System.Drawing.Point(140, 114);
       this.tbHueAppKey.Name = "tbHueAppKey";
       this.tbHueAppKey.Size = new System.Drawing.Size(329, 20);
       this.tbHueAppKey.TabIndex = 16;
@@ -608,7 +611,7 @@
       // tbHueAppName
       // 
       this.tbHueAppName.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueAppName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueAppName.Location = new System.Drawing.Point(140, 112);
+      this.tbHueAppName.Location = new System.Drawing.Point(140, 86);
       this.tbHueAppName.Name = "tbHueAppName";
       this.tbHueAppName.Size = new System.Drawing.Size(173, 20);
       this.tbHueAppName.TabIndex = 15;
@@ -635,7 +638,7 @@
             "13",
             "14",
             "15"});
-      this.cbOutputHueDevicesRange.Location = new System.Drawing.Point(140, 80);
+      this.cbOutputHueDevicesRange.Location = new System.Drawing.Point(140, 54);
       this.cbOutputHueDevicesRange.Name = "cbOutputHueDevicesRange";
       this.cbOutputHueDevicesRange.Size = new System.Drawing.Size(121, 21);
       this.cbOutputHueDevicesRange.TabIndex = 7;
@@ -644,7 +647,7 @@
       // tbAtmowinLocation
       // 
       this.tbAtmowinLocation.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "atmowinLocation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbAtmowinLocation.Location = new System.Drawing.Point(140, 46);
+      this.tbAtmowinLocation.Location = new System.Drawing.Point(147, 13);
       this.tbAtmowinLocation.Name = "tbAtmowinLocation";
       this.tbAtmowinLocation.Size = new System.Drawing.Size(368, 20);
       this.tbAtmowinLocation.TabIndex = 5;
@@ -659,12 +662,22 @@
       this.tbHueBridgeIP.TabIndex = 4;
       this.tbHueBridgeIP.Text = global::AtmoHue.Properties.Settings.Default.hueBridgeIP;
       // 
+      // btnRefreshSettings
+      // 
+      this.btnRefreshSettings.Location = new System.Drawing.Point(381, 19);
+      this.btnRefreshSettings.Name = "btnRefreshSettings";
+      this.btnRefreshSettings.Size = new System.Drawing.Size(140, 45);
+      this.btnRefreshSettings.TabIndex = 49;
+      this.btnRefreshSettings.Text = "Refresh settings";
+      this.btnRefreshSettings.UseVisualStyleBackColor = true;
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.ClientSize = new System.Drawing.Size(818, 818);
+      this.Controls.Add(this.btnRefreshSettings);
       this.Controls.Add(this.grpRemoteAPI);
       this.Controls.Add(this.cbLogRemoteApiCalls);
       this.Controls.Add(this.grpAtmowin);
@@ -699,9 +712,7 @@
       this.Controls.Add(this.btnTestRed);
       this.Controls.Add(this.lblOutputHueDevices);
       this.Controls.Add(this.cbOutputHueDevicesRange);
-      this.Controls.Add(this.tbAtmowinLocation);
       this.Controls.Add(this.tbHueBridgeIP);
-      this.Controls.Add(this.lblAtmoWinFolder);
       this.Controls.Add(this.label1);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -777,6 +788,7 @@
         private System.Windows.Forms.Label lblHintRestart;
         private System.Windows.Forms.TextBox tbRemoteAPIsendDelay;
         private System.Windows.Forms.Label lblApiScanInterval;
+        private System.Windows.Forms.Button btnRefreshSettings;
     }
 }
 

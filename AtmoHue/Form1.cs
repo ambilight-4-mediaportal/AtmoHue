@@ -215,6 +215,9 @@ namespace AtmoHue
                 {
                   inputColor = Color.Black;
                 }
+
+                //Validate if colors are correct
+                if (red >= 0 && red <= 255 && green >= 0 && green <= 255 && blue >= 0 && blue <= 255)
                 hueSetColor(inputColor, sources.ATMOLIGHT);
                 swRemoteApi.Restart();
               }
@@ -451,7 +454,7 @@ namespace AtmoHue
         public async Task hueSetColor(Color colorToSet, sources source)
         {
             try
-            {
+            {                
                 if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
                 {
                   outputtoLog(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + colorToSet.ToString() + " to Hue Bridge"));
@@ -484,11 +487,13 @@ namespace AtmoHue
 
                 if (colorisON)
                 {
-                  command.ColorCoordinates = getRGBtoXY(colorToSet, DeviceType.bloom);
+                  double[] colorCoordinates = getRGBtoXY(colorToSet, DeviceType.bloom);
+                  command.ColorCoordinates = colorCoordinates;
                 }
                 else
                 {
-                  command.TurnOn().ColorCoordinates = getRGBtoXY(colorToSet, DeviceType.bloom);
+                  double[] colorCoordinates = getRGBtoXY(colorToSet, DeviceType.bloom);
+                  command.TurnOn().ColorCoordinates = colorCoordinates;
                   colorisON = true;
                 }
 
@@ -505,7 +510,13 @@ namespace AtmoHue
                 }
                 else
                 {
-                    client.SendCommandAsync(command, new List<string> {hueOutputDevices.ToLower().Trim() });
+                  List<string> devices = new List<string>();
+                  string[] devicesSplit = hueOutputDevices.Trim().Split(',');
+                  foreach (string device in devicesSplit)
+                  {
+                    devices.Add(device);
+                  }
+                  client.SendCommandAsync(command, devices);
                 }
 
                 if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
