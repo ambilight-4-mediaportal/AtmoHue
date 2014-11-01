@@ -62,6 +62,8 @@ namespace AtmoHue
         public string hueColorTemperature = "";
         public string hueHue = "";
         public string hueOutputDevices = "";
+        public Boolean HueSetBrightnessStartup = false;
+
         
 
         //Remote API
@@ -71,8 +73,6 @@ namespace AtmoHue
         
         public Boolean colorCommand = false;
         public Boolean colorisON = false;
-        public LightCommand command = new LightCommand();
-
 
         public Form1()
         {
@@ -274,6 +274,7 @@ namespace AtmoHue
             hueColorTemperature = tbHueColorTemperature.Text;
             hueHue = tbHueHue.Text;
             hueOutputDevices = cbOutputHueDevicesRange.Text;
+            HueSetBrightnessStartup = cbHueSetBrightnessStartup.Checked;
             atmowinLocation = addTrailingSlash(tbAtmowinLocation.Text);
             atmowinStaticColor = tbAtmowinStaticColor.Text;
             atmowinScanInterval = tbAtmowinScanInterval.Text;
@@ -489,14 +490,18 @@ namespace AtmoHue
                   client.Initialize(hueAppKey);
                   Logger(string.Format("[ {0} ] {1}", source.ToString(), "HUE has been intialized on COLOR CHANGE"));
                 }
-
+                
                 //Enable initial command
+                LightCommand command = new LightCommand();
                 command.On = true;
 
                 // Set custom values
 
                 //0-254
-                command.Brightness = byte.Parse(hueBrightness);
+                if (HueSetBrightnessStartup == false)
+                {
+                  command.Brightness = byte.Parse(hueBrightness);
+                }
 
                 //0-254
                 command.Saturation = int.Parse(hueSaturation);
@@ -515,15 +520,22 @@ namespace AtmoHue
                 {
                     command.Hue = int.Parse(hueHue);
                 }
+                
+                //Calculate color coordinates from RGB
+                double[] colorCoordinates = getRGBtoXY(colorToSet, DeviceType.bloom);
 
+                
                 if (colorisON)
                 {
-                  double[] colorCoordinates = getRGBtoXY(colorToSet, DeviceType.bloom);
                   command.ColorCoordinates = colorCoordinates;
                 }
                 else
                 {
-                  double[] colorCoordinates = getRGBtoXY(colorToSet, DeviceType.bloom);
+                  if (HueSetBrightnessStartup)
+                  {
+                    command.Brightness = byte.Parse(hueBrightness);
+                  }
+
                   command.TurnOn().ColorCoordinates = colorCoordinates;
                   colorisON = true;
                 }

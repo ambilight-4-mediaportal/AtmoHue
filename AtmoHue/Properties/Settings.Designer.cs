@@ -358,5 +358,17 @@ namespace AtmoHue.Properties {
                 this["ZBlue"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HueSetBrightnessStartup {
+            get {
+                return ((bool)(this["HueSetBrightnessStartup"]));
+            }
+            set {
+                this["HueSetBrightnessStartup"] = value;
+            }
+        }
     }
 }
