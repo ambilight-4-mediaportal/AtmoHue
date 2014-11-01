@@ -81,7 +81,7 @@ namespace AtmoHue
             refreshSettings();
 
 
-            //Find bridge on startup
+            //Find bridge on startup for TESTING
             if (string.IsNullOrEmpty(hueBridgeIP) == true)
             {
                 if (cbRunningWindows8.Checked == false)
@@ -118,13 +118,13 @@ namespace AtmoHue
               try
               {
                 client.Initialize(hueAppKey);
-                outputtoLog("HUE has been intialized on STARTUP");
+                Logger("HUE has been intialized on STARTUP");
               }
               catch (Exception et)
               {
                 if (cbEnableDebuglog.Checked == true)
                 {
-                  outputtoLog(et.ToString());
+                  Logger(et.ToString());
                 }
               }
             }
@@ -156,7 +156,7 @@ namespace AtmoHue
           }
           listenThread = new Thread(new ThreadStart(ListenForClients));
           listenThread.Start();
-          outputtoLog("Started service for remote API calls");
+          Logger("Started service for remote API calls");
         }
         private void ListenForClients()
         {
@@ -218,7 +218,7 @@ namespace AtmoHue
 
                 if (cbLogRemoteApiCalls.Checked)
                 {
-                  outputtoLog(string.Format("[ {0} ] {1}", sources.ATMOLIGHT, "Got color command from Atmolight"));
+                  Logger(string.Format("[ {0} ] {1}", sources.ATMOLIGHT, "Got color command from Atmolight"));
                 }
                 if (red == 0 && green == 0 && blue == 0)
                 {
@@ -233,7 +233,7 @@ namespace AtmoHue
             }
             catch (Exception e)
             {
-              outputtoLog(string.Format("[ {0} ] {1}", sources.ATMOLIGHT, e.Message));
+              Logger(string.Format("[ {0} ] {1}", sources.ATMOLIGHT, e.Message));
             }
           }
 
@@ -307,14 +307,14 @@ namespace AtmoHue
             foreach (string bridgeIP in bridgeIPs)
             {
                tbHueBridgeIP.Text = bridgeIP;
-               outputtoLog("Bridges found using standard discovery method: " + bridgeIP);
+               Logger("Bridges found using standard discovery method: " + bridgeIP);
                bridgesFound++;
             }
 
 
             if (bridgesFound == 0)
             {
-                outputtoLog("Couldn't find any Hue Bridges in network using standard discovery method");
+                Logger("Couldn't find any Hue Bridges in network using standard discovery method");
             }
 
             refreshSettings();
@@ -327,13 +327,13 @@ namespace AtmoHue
                 try
                 {
                     client.Initialize(hueAppKey);
-                    outputtoLog("HUE has been intialized on STARTUP");
+                    Logger("HUE has been intialized on STARTUP");
                 }
                 catch (Exception et)
                 {
                     if (cbEnableDebuglog.Checked == true)
                     {
-                        outputtoLog(et.ToString());
+                        Logger(et.ToString());
                     }
                 }
             }
@@ -348,13 +348,13 @@ namespace AtmoHue
             foreach (string bridgeIP in bridgeIPs)
             {
                 tbHueBridgeIP.Text = bridgeIP;
-                outputtoLog("Bridges found using SSDP discovery method: " + bridgeIP.ToString());
+                Logger("Bridges found using SSDP discovery method: " + bridgeIP.ToString());
                 bridgesFound++;
             }
 
             if (bridgesFound == 0)
             {
-                outputtoLog("Couldn't find any Hue Bridges in network using SSDP discovery method");
+                Logger("Couldn't find any Hue Bridges in network using SSDP discovery method");
             }
 
             refreshSettings();
@@ -367,13 +367,13 @@ namespace AtmoHue
                 try
                 {
                     client.Initialize(hueAppKey);
-                    outputtoLog("HUE has been intialized on STARTUP");
+                    Logger("HUE has been intialized on STARTUP");
                 }
                 catch (Exception et)
                 {
                     if (cbEnableDebuglog.Checked == true)
                     {
-                        outputtoLog(et.ToString());
+                        Logger(et.ToString());
                     }
                 }
             }
@@ -481,12 +481,12 @@ namespace AtmoHue
             {                
                 if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
                 {
-                  outputtoLog(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + colorToSet.ToString() + " to Hue Bridge"));
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + colorToSet.ToString() + " to Hue Bridge"));
                 }
                 if (client.IsInitialized == false)
                 {
                   client.Initialize(hueAppKey);
-                  outputtoLog(string.Format("[ {0} ] {1}", source.ToString(), "HUE has been intialized on COLOR CHANGE"));
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "HUE has been intialized on COLOR CHANGE"));
                 }
 
                 // Set custom values
@@ -546,7 +546,7 @@ namespace AtmoHue
                 if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
                 {
 
-                  outputtoLog(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + colorToSet.ToString() + " to Hue Bridge."));
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + colorToSet.ToString() + " to Hue Bridge."));
                 }
 
                 //command.On = false;
@@ -555,7 +555,7 @@ namespace AtmoHue
             {
                 if (cbEnableDebuglog.Checked == true)
                 {
-                    outputtoLog(et.ToString());
+                    Logger(et.ToString());
                 }
             }
         }
@@ -575,7 +575,7 @@ namespace AtmoHue
                 }
             }
             scanAtmowin = true;
-            outputtoLog("Start monitoring Atmowin");
+            Logger("Start monitoring Atmowin");
             Thread t = new Thread(startMonitoringAtmowin);
             t.Start();
 
@@ -583,7 +583,7 @@ namespace AtmoHue
         private void btnStopAtmowinHue_Click(object sender, EventArgs e)
         {
             scanAtmowin = false;
-            outputtoLog("Stop monitoring Atmowin");
+            Logger("Stop monitoring Atmowin");
 
             if (string.IsNullOrEmpty(atmowinStaticColor) == false)
             {
@@ -621,13 +621,13 @@ namespace AtmoHue
                         colorGreen = atmowinColorSplit[1];
                         colorBlue = atmowinColorSplit[2];
                         numberOfChannels = atmowinColorSplit[3];
-                        outputtoLog("------------------------------");
-                        outputtoLog("Atmowin information -> R = " + colorRed + " / G = " + colorGreen + " / B = " + colorBlue + " / CHANNELS = " + numberOfChannels);
+                        Logger("------------------------------");
+                        Logger("Atmowin information -> R = " + colorRed + " / G = " + colorGreen + " / B = " + colorBlue + " / CHANNELS = " + numberOfChannels);
 
                         //Needs changing as Atmowin might report 0,0,0 normally
                         if (colorRed == "0" && colorGreen == "0" && colorBlue == "0" && string.IsNullOrEmpty(atmowinStaticColor) == false)
                         {
-                            outputtoLog("Atmowin disconnected, sending preset static color");
+                            Logger("Atmowin disconnected, sending preset static color");
                             hueSetColor(Color.Black,sources.LOCAL);
                         }
                         else
@@ -642,8 +642,8 @@ namespace AtmoHue
                             }
                             previousColor = myColor;
 
-                            outputtoLog("Completed sending color #" + myColor.ToString() + " to Hue Bridge.");
-                            outputtoLog("------------------------------");
+                            Logger("Completed sending color #" + myColor.ToString() + " to Hue Bridge.");
+                            Logger("------------------------------");
                         }
 
                         int sleeptime = int.Parse(atmowinScanInterval);
@@ -651,7 +651,7 @@ namespace AtmoHue
                     }
                     catch (Exception et)
                     {
-                        outputtoLog(et.ToString());
+                        Logger(et.ToString());
                         int sleeptime = int.Parse(atmowinScanInterval);
                         Thread.Sleep(sleeptime);
 
@@ -660,7 +660,7 @@ namespace AtmoHue
             }
             catch(Exception et)
             {
-                outputtoLog(et.ToString());
+                Logger(et.ToString());
                 int sleeptime = int.Parse(atmowinScanInterval);
                 Thread.Sleep(sleeptime);
             }
@@ -678,7 +678,7 @@ namespace AtmoHue
             catch { };
             return atmowinFolder;
         }
-        private void outputtoLog(string text)
+        private void Logger(string text)
         {
           string timestamp = DateTime.Now.ToString("HH:mm:ss.ffffff");
           string message = string.Format("[ {0} ] - {1}", timestamp, text);
@@ -717,11 +717,11 @@ namespace AtmoHue
                     try
                     {
                         client.Initialize(hueAppKey);
-                        outputtoLog("HUE has been intialized on COLOR CHANGE");
+                        Logger("HUE has been intialized on COLOR CHANGE");
                     }
                     catch (Exception et)
                     {
-                        outputtoLog(et.ToString());
+                        Logger(et.ToString());
                     }
                 }
                 while (hueRotatingColors)
@@ -738,7 +738,7 @@ namespace AtmoHue
             {
                 if (cbEnableDebuglog.Checked == true)
                 {
-                    outputtoLog(et.ToString());
+                    Logger(et.ToString());
                 }
             }
         }

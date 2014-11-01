@@ -14,4 +14,3 @@
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\obj\Debug\AtmoHue.pdb
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\bin\Debug\Newtonsoft.Json.dll
 \\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\bin\Debug\Newtonsoft.Json.xml
-\\psf\Home\Documents\Visual Studio 2013\Projects\AtmoHue\AtmoHue\obj\Debug\AtmoHue.csprojResolveAssemblyReference.cache

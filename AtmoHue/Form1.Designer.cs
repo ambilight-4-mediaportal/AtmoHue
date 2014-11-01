@@ -104,9 +104,9 @@
       // 
       this.btnLocateHueBridge.Location = new System.Drawing.Point(13, 69);
       this.btnLocateHueBridge.Name = "btnLocateHueBridge";
-      this.btnLocateHueBridge.Size = new System.Drawing.Size(253, 56);
+      this.btnLocateHueBridge.Size = new System.Drawing.Size(281, 67);
       this.btnLocateHueBridge.TabIndex = 1;
-      this.btnLocateHueBridge.Text = "Locate and register to Hue Bridge";
+      this.btnLocateHueBridge.Text = "* Locate and register to Hue Bridge";
       this.btnLocateHueBridge.UseVisualStyleBackColor = true;
       this.btnLocateHueBridge.Click += new System.EventHandler(this.btnLocateHueBridge_Click);
       // 
@@ -389,9 +389,9 @@
       this.gbBridgeTools.Controls.Add(this.cbRunningWindows8);
       this.gbBridgeTools.Controls.Add(this.cbAutoConnectBridge);
       this.gbBridgeTools.Controls.Add(this.btnLocateHueBridge);
-      this.gbBridgeTools.Location = new System.Drawing.Point(494, 14);
+      this.gbBridgeTools.Location = new System.Drawing.Point(458, 14);
       this.gbBridgeTools.Name = "gbBridgeTools";
-      this.gbBridgeTools.Size = new System.Drawing.Size(275, 142);
+      this.gbBridgeTools.Size = new System.Drawing.Size(311, 142);
       this.gbBridgeTools.TabIndex = 45;
       this.gbBridgeTools.TabStop = false;
       this.gbBridgeTools.Text = "Hue Bridge";
@@ -433,9 +433,9 @@
       this.grpRemoteAPI.Controls.Add(this.tbRemoteApiPort);
       this.grpRemoteAPI.Controls.Add(this.tbRemoteAPIip);
       this.grpRemoteAPI.Controls.Add(this.cbRemoteAPIEnabled);
-      this.grpRemoteAPI.Location = new System.Drawing.Point(494, 163);
+      this.grpRemoteAPI.Location = new System.Drawing.Point(458, 163);
       this.grpRemoteAPI.Name = "grpRemoteAPI";
-      this.grpRemoteAPI.Size = new System.Drawing.Size(275, 183);
+      this.grpRemoteAPI.Size = new System.Drawing.Size(311, 183);
       this.grpRemoteAPI.TabIndex = 48;
       this.grpRemoteAPI.TabStop = false;
       this.grpRemoteAPI.Text = "Remote API";
