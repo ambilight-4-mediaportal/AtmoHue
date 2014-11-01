@@ -33,7 +33,9 @@ namespace AtmoHue
         {
           bloom,
           bulb,
-          unspecifed
+          iris,
+          strips,
+          unknown
         }
 
         //Server
@@ -57,6 +59,7 @@ namespace AtmoHue
         public string hueBrightness = "100";
         public string hueSaturation = "100";
         public string hueTransitiontime = "100";
+        public string hueColorTemperature = "";
         public string hueHue = "";
         public string hueOutputDevices = "";
         
@@ -78,7 +81,7 @@ namespace AtmoHue
             refreshSettings();
 
 
-            //Find bridge
+            //Find bridge on startup
             if (string.IsNullOrEmpty(hueBridgeIP) == true)
             {
                 if (cbRunningWindows8.Checked == false)
@@ -90,22 +93,9 @@ namespace AtmoHue
                     SSDPBridgeLocator();
                 }
             }
-
-            //Connect to bridge if found
-            if (string.IsNullOrEmpty(hueBridgeIP) == false)
-            {
-                client = new HueClient(hueBridgeIP);
-                client.RegisterAsync(hueAppName, hueAppKey);
-                try
-                {
-                    client.Initialize(hueAppKey);
-                    outputtoLog("HUE has been intialized on STARTUP");
-                }
-                catch (Exception et)
-                {
-                    outputtoLog(et.ToString());
-                }
-            }
+            
+            //Refresh settings
+            refreshSettings();
 
             //Create some default brightness levels
             cbHueBrightness.Items.Clear();
@@ -118,18 +108,37 @@ namespace AtmoHue
                 counter++;
             }
 
+            //Enable initial command
             command.On = true;
+
+            if (client.IsInitialized == false && string.IsNullOrEmpty(hueBridgeIP) == false)
+            {
+              client = new HueClient(hueBridgeIP);
+              client.RegisterAsync(hueAppName, hueAppKey);
+              try
+              {
+                client.Initialize(hueAppKey);
+                outputtoLog("HUE has been intialized on STARTUP");
+              }
+              catch (Exception et)
+              {
+                if (cbEnableDebuglog.Checked == true)
+                {
+                  outputtoLog(et.ToString());
+                }
+              }
+            }
+
+            //Start remote server if enabled
+            if (cbRemoteAPIEnabled.Checked)
+            {
+              startAPIserver();
+            }
 
             //Set link label for copyright
             LinkLabel.Link link = new LinkLabel.Link();
             link.LinkData = "https://github.com/Q42/Q42.HueApi";
             llQ42.Links.Add(link);
-
-            //Start remote server
-            if (cbRemoteAPIEnabled.Checked)
-            {
-              startAPIserver();
-            }
         }
 
 
@@ -230,7 +239,7 @@ namespace AtmoHue
 
           tcpClient.Close();
         }
-        public static void changeColorAPI(int red, int green, int blue, sources source)
+        public static void APIChangeColor(int red, int green, int blue, sources source)
         {
           Form1 hue = new Form1();
           Color inputColor = Color.FromArgb(red, green, blue);
@@ -265,6 +274,7 @@ namespace AtmoHue
             hueBrightness = cbHueBrightness.Text;
             hueSaturation = tbHueSaturation.Text;
             hueTransitiontime = tbHueTransitionTime.Text;
+            hueColorTemperature = tbHueColorTemperature.Text;
             hueHue = tbHueHue.Text;
             hueOutputDevices = cbOutputHueDevicesRange.Text;
             atmowinLocation = addTrailingSlash(tbAtmowinLocation.Text);
@@ -370,10 +380,7 @@ namespace AtmoHue
         }
         public static double[] getRGBtoXY(Color c, DeviceType device)
         {
-          // For the hue bulb the corners of the triangle are:
-          // -Red: 0.675, 0.322
-          // -Green: 0.4091, 0.518
-          // -Blue: 0.167, 0.04
+
           double[] normalizedToOne = new double[3];
           float cred, cgreen, cblue;
           cred = c.R;
@@ -417,16 +424,26 @@ namespace AtmoHue
             blue = (float)(normalizedToOne[2] / 12.92);
           }
 
-          /*
-          Red: 0.703, 0.296
-          Green: 0.214, 0.709
-          Blue: 0.139, 0.081
-           * */
           float X =(float)0;
           float Y = (float)0;
           float Z =(float)0;
 
-          //Needs specific settings, not setup yet
+
+          // For the hue bulb the corners of the triangle are:
+          // -Red: 0.675, 0.322
+          // -Green: 0.4091, 0.518
+          // -Blue: 0.167, 0.04
+
+          // For the hue bloom the corners of the triangle are:
+          //Red: 0.703, 0.296
+          //Green: 0.214, 0.709
+          //Blue: 0.139, 0.081
+
+          //If all else fails we use these
+          //Red: 1.0, 0
+          //Green: 0.0, 1.0
+          //Blue: 0.0, 0.0
+
           if(device == DeviceType.bloom)
           {
             X = (float)(red * 0.649926 + green * 0.103455 + blue * 0.197109);
@@ -434,12 +451,19 @@ namespace AtmoHue
             Z = (float)(red * 0.0000000 + green * 0.053077 + blue * 1.035763);
 
           }
+
           if(device == DeviceType.bulb)
           {
             X = (float)(red * 0.649926 + green * 0.103455 + blue * 0.197109);
             Y = (float)(red * 0.234327 + green * 0.743075 + blue * 0.022598);
             Z = (float)(red * 0.0000000 + green * 0.053077 + blue * 1.035763);
 
+          }
+          if(device == DeviceType.unknown)
+          {
+            X = (float)(red * 0.649926 + green * 0.103455 + blue * 0.197109);
+            Y = (float)(red * 0.234327 + green * 0.743075 + blue * 0.022598);
+            Z = (float)(red * 0.0000000 + green * 0.053077 + blue * 1.035763);
           }
 
           float x = X / (X + Y + Z);
@@ -477,7 +501,7 @@ namespace AtmoHue
                 command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
 
                 //154-500
-                //command.ColorTemperature = 1000;
+                command.ColorTemperature = int.Parse(hueColorTemperature);
 
                 //0-254
                 if (string.IsNullOrEmpty(hueHue) == false)
@@ -769,6 +793,11 @@ namespace AtmoHue
         private void llQ42_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(e.Link.LinkData as string);
+        }
+
+        private void tabPageTesting_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

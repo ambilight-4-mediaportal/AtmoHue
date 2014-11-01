@@ -109,7 +109,7 @@ namespace AtmoHue.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("250")]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
         public string HueTransitionTime {
             get {
                 return ((string)(this["HueTransitionTime"]));
@@ -236,6 +236,18 @@ namespace AtmoHue.Properties {
             }
             set {
                 this["RemoteAPIport"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HueColorTemperature {
+            get {
+                return ((string)(this["HueColorTemperature"]));
+            }
+            set {
+                this["HueColorTemperature"] = value;
             }
         }
     }

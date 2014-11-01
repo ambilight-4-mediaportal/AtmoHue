@@ -24,7 +24,7 @@
       <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="HueTransitionTime" Type="System.String" Scope="User">
-      <Value Profile="(Default)">250</Value>
+      <Value Profile="(Default)">500</Value>
     </Setting>
     <Setting Name="HueHue" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -55,6 +55,9 @@
     </Setting>
     <Setting Name="RemoteAPIport" Type="System.String" Scope="User">
       <Value Profile="(Default)">20123</Value>
+    </Setting>
+    <Setting Name="HueColorTemperature" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>
