@@ -250,5 +250,113 @@ namespace AtmoHue.Properties {
                 this["HueColorTemperature"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.649926")]
+        public string XRed {
+            get {
+                return ((string)(this["XRed"]));
+            }
+            set {
+                this["XRed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.234327")]
+        public string YRed {
+            get {
+                return ((string)(this["YRed"]));
+            }
+            set {
+                this["YRed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.0000000")]
+        public string ZRed {
+            get {
+                return ((string)(this["ZRed"]));
+            }
+            set {
+                this["ZRed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.103455")]
+        public string XGreen {
+            get {
+                return ((string)(this["XGreen"]));
+            }
+            set {
+                this["XGreen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.743075")]
+        public string YGreen {
+            get {
+                return ((string)(this["YGreen"]));
+            }
+            set {
+                this["YGreen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.053077")]
+        public string ZGreen {
+            get {
+                return ((string)(this["ZGreen"]));
+            }
+            set {
+                this["ZGreen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.197109")]
+        public string XBlue {
+            get {
+                return ((string)(this["XBlue"]));
+            }
+            set {
+                this["XBlue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.022598")]
+        public string YBlue {
+            get {
+                return ((string)(this["YBlue"]));
+            }
+            set {
+                this["YBlue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2.035763")]
+        public string ZBlue {
+            get {
+                return ((string)(this["ZBlue"]));
+            }
+            set {
+                this["ZBlue"] = value;
+            }
+        }
     }
 }

@@ -108,9 +108,6 @@ namespace AtmoHue
                 counter++;
             }
 
-            //Enable initial command
-            command.On = true;
-
             if (client.IsInitialized == false && string.IsNullOrEmpty(hueBridgeIP) == false)
             {
               client = new HueClient(hueBridgeIP);
@@ -378,7 +375,7 @@ namespace AtmoHue
                 }
             }
         }
-        public static double[] getRGBtoXY(Color c, DeviceType device)
+        public double[] getRGBtoXY(Color c, DeviceType device)
         {
 
           double[] normalizedToOne = new double[3];
@@ -446,10 +443,9 @@ namespace AtmoHue
 
           if(device == DeviceType.bloom)
           {
-            X = (float)(red * 0.649926 + green * 0.103455 + blue * 0.197109);
-            Y = (float)(red * 0.234327 + green * 0.743075 + blue * 0.022598);
-            Z = (float)(red * 0.0000000 + green * 0.053077 + blue * 1.035763);
-
+            X = (float)(red * double.Parse(tbXRed.Text) + green * double.Parse(tbXGreen.Text) + blue * double.Parse(tbXBlue.Text));
+            Y = (float)(red * double.Parse(tbYRed.Text) + green * double.Parse(tbYGreen.Text) + blue * double.Parse(tbYBlue.Text));
+            Z = (float)(red * double.Parse(tbZRed.Text) + green * double.Parse(tbZGreen.Text) + blue * double.Parse(tbZBlue.Text));
           }
 
           if(device == DeviceType.bulb)
@@ -483,11 +479,19 @@ namespace AtmoHue
                 {
                   Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + colorToSet.ToString() + " to Hue Bridge"));
                 }
+                if (source == sources.LOCAL)
+                {
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + colorToSet.ToString() + " to Hue Bridge"));
+                }
+
                 if (client.IsInitialized == false)
                 {
                   client.Initialize(hueAppKey);
                   Logger(string.Format("[ {0} ] {1}", source.ToString(), "HUE has been intialized on COLOR CHANGE"));
                 }
+
+                //Enable initial command
+                command.On = true;
 
                 // Set custom values
 
@@ -501,7 +505,10 @@ namespace AtmoHue
                 command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
 
                 //154-500
-                command.ColorTemperature = int.Parse(hueColorTemperature);
+                if (string.IsNullOrEmpty(hueColorTemperature) == false)
+                {
+                  command.ColorTemperature = int.Parse(hueColorTemperature);
+                }
 
                 //0-254
                 if (string.IsNullOrEmpty(hueHue) == false)
@@ -549,7 +556,15 @@ namespace AtmoHue
                   Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + colorToSet.ToString() + " to Hue Bridge."));
                 }
 
-                //command.On = false;
+                if (source == sources.LOCAL)
+                {
+
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + colorToSet.ToString() + " to Hue Bridge."));
+                }
+
+
+
+                command.On = false;
             }
             catch (Exception et)
             {
@@ -795,7 +810,7 @@ namespace AtmoHue
             Process.Start(e.Link.LinkData as string);
         }
 
-        private void tabPageTesting_Click(object sender, EventArgs e)
+        private void btnTestBlue_Click_1(object sender, EventArgs e)
         {
 
         }

@@ -59,5 +59,32 @@
     <Setting Name="HueColorTemperature" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="XRed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.649926</Value>
+    </Setting>
+    <Setting Name="YRed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.234327</Value>
+    </Setting>
+    <Setting Name="ZRed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.0000000</Value>
+    </Setting>
+    <Setting Name="XGreen" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.103455</Value>
+    </Setting>
+    <Setting Name="YGreen" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.743075</Value>
+    </Setting>
+    <Setting Name="ZGreen" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.053077</Value>
+    </Setting>
+    <Setting Name="XBlue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.197109</Value>
+    </Setting>
+    <Setting Name="YBlue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.022598</Value>
+    </Setting>
+    <Setting Name="ZBlue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2.035763</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

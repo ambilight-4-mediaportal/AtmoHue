@@ -33,10 +33,6 @@
       this.label1 = new System.Windows.Forms.Label();
       this.lblAtmoWinFolder = new System.Windows.Forms.Label();
       this.lblOutputHueDevices = new System.Windows.Forms.Label();
-      this.btnTestRed = new System.Windows.Forms.Button();
-      this.btnTestGreen = new System.Windows.Forms.Button();
-      this.btnTestBlue = new System.Windows.Forms.Button();
-      this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
       this.lbOutputlog = new System.Windows.Forms.ListBox();
@@ -46,7 +42,6 @@
       this.lblHueSaturation = new System.Windows.Forms.Label();
       this.lblHueTransTime = new System.Windows.Forms.Label();
       this.lblHueHue = new System.Windows.Forms.Label();
-      this.btnHueColorClear = new System.Windows.Forms.Button();
       this.lblHueCustomColorTest = new System.Windows.Forms.Label();
       this.btnHueSendCustomColor = new System.Windows.Forms.Button();
       this.btnHueColorRotateTestStart = new System.Windows.Forms.Button();
@@ -68,10 +63,34 @@
       this.lblAPIip = new System.Windows.Forms.Label();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPageGeneral = new System.Windows.Forms.TabPage();
-      this.tabPageTesting = new System.Windows.Forms.TabPage();
-      this.tabPageExperimental = new System.Windows.Forms.TabPage();
-      this.btnRefreshSettings = new System.Windows.Forms.Button();
       this.lblHueColorTemperature = new System.Windows.Forms.Label();
+      this.tabPageTesting = new System.Windows.Forms.TabPage();
+      this.label2 = new System.Windows.Forms.Label();
+      this.btnTestRed = new System.Windows.Forms.Button();
+      this.btnTestGreen = new System.Windows.Forms.Button();
+      this.btnTestBlue = new System.Windows.Forms.Button();
+      this.btnHueColorClear = new System.Windows.Forms.Button();
+      this.btnRefreshSettings = new System.Windows.Forms.Button();
+      this.tabPageExperimental = new System.Windows.Forms.TabPage();
+      this.gbColorCalibration = new System.Windows.Forms.GroupBox();
+      this.label10 = new System.Windows.Forms.Label();
+      this.label9 = new System.Windows.Forms.Label();
+      this.label8 = new System.Windows.Forms.Label();
+      this.label7 = new System.Windows.Forms.Label();
+      this.label11 = new System.Windows.Forms.Label();
+      this.button1 = new System.Windows.Forms.Button();
+      this.button2 = new System.Windows.Forms.Button();
+      this.button3 = new System.Windows.Forms.Button();
+      this.button4 = new System.Windows.Forms.Button();
+      this.label12 = new System.Windows.Forms.Label();
+      this.label13 = new System.Windows.Forms.Label();
+      this.label14 = new System.Windows.Forms.Label();
+      this.label15 = new System.Windows.Forms.Label();
+      this.label16 = new System.Windows.Forms.Label();
+      this.label17 = new System.Windows.Forms.Label();
+      this.label18 = new System.Windows.Forms.Label();
+      this.label19 = new System.Windows.Forms.Label();
+      this.label20 = new System.Windows.Forms.Label();
       this.tbHueColorTemperature = new System.Windows.Forms.TextBox();
       this.cbRunningWindows8 = new System.Windows.Forms.CheckBox();
       this.cbAutoConnectBridge = new System.Windows.Forms.CheckBox();
@@ -89,6 +108,15 @@
       this.tbHueHue = new System.Windows.Forms.TextBox();
       this.tbHueCustomColor = new System.Windows.Forms.TextBox();
       this.tbRotateTestDelay = new System.Windows.Forms.TextBox();
+      this.tbZBlue = new System.Windows.Forms.TextBox();
+      this.tbZGreen = new System.Windows.Forms.TextBox();
+      this.tbZRed = new System.Windows.Forms.TextBox();
+      this.tbYBlue = new System.Windows.Forms.TextBox();
+      this.tbYGreen = new System.Windows.Forms.TextBox();
+      this.tbYRed = new System.Windows.Forms.TextBox();
+      this.tbXBlue = new System.Windows.Forms.TextBox();
+      this.tbXGreen = new System.Windows.Forms.TextBox();
+      this.tbXRed = new System.Windows.Forms.TextBox();
       this.tbAtmowinScanInterval = new System.Windows.Forms.TextBox();
       this.tbAtmowinLocation = new System.Windows.Forms.TextBox();
       this.gbBridgeTools.SuspendLayout();
@@ -98,6 +126,7 @@
       this.tabPageGeneral.SuspendLayout();
       this.tabPageTesting.SuspendLayout();
       this.tabPageExperimental.SuspendLayout();
+      this.gbColorCalibration.SuspendLayout();
       this.SuspendLayout();
       // 
       // btnLocateHueBridge
@@ -106,7 +135,7 @@
       this.btnLocateHueBridge.Name = "btnLocateHueBridge";
       this.btnLocateHueBridge.Size = new System.Drawing.Size(281, 67);
       this.btnLocateHueBridge.TabIndex = 1;
-      this.btnLocateHueBridge.Text = "* Locate and register to Hue Bridge";
+      this.btnLocateHueBridge.Text = "Locate and register to Hue Bridge";
       this.btnLocateHueBridge.UseVisualStyleBackColor = true;
       this.btnLocateHueBridge.Click += new System.EventHandler(this.btnLocateHueBridge_Click);
       // 
@@ -139,46 +168,6 @@
       this.lblOutputHueDevices.Size = new System.Drawing.Size(92, 13);
       this.lblOutputHueDevices.TabIndex = 8;
       this.lblOutputHueDevices.Text = "Hue Lights use";
-      // 
-      // btnTestRed
-      // 
-      this.btnTestRed.Location = new System.Drawing.Point(77, 62);
-      this.btnTestRed.Name = "btnTestRed";
-      this.btnTestRed.Size = new System.Drawing.Size(75, 23);
-      this.btnTestRed.TabIndex = 9;
-      this.btnTestRed.Text = "RED";
-      this.btnTestRed.UseVisualStyleBackColor = true;
-      this.btnTestRed.Click += new System.EventHandler(this.btnTestRed_Click);
-      // 
-      // btnTestGreen
-      // 
-      this.btnTestGreen.Location = new System.Drawing.Point(158, 62);
-      this.btnTestGreen.Name = "btnTestGreen";
-      this.btnTestGreen.Size = new System.Drawing.Size(75, 23);
-      this.btnTestGreen.TabIndex = 10;
-      this.btnTestGreen.Text = "GREEN";
-      this.btnTestGreen.UseVisualStyleBackColor = true;
-      this.btnTestGreen.Click += new System.EventHandler(this.btnTestGreen_Click);
-      // 
-      // btnTestBlue
-      // 
-      this.btnTestBlue.Location = new System.Drawing.Point(239, 62);
-      this.btnTestBlue.Name = "btnTestBlue";
-      this.btnTestBlue.Size = new System.Drawing.Size(75, 23);
-      this.btnTestBlue.TabIndex = 11;
-      this.btnTestBlue.Text = "BLUE";
-      this.btnTestBlue.UseVisualStyleBackColor = true;
-      this.btnTestBlue.Click += new System.EventHandler(this.btnTestBlue_Click);
-      // 
-      // label2
-      // 
-      this.label2.AutoSize = true;
-      this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label2.Location = new System.Drawing.Point(6, 67);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(65, 13);
-      this.label2.TabIndex = 12;
-      this.label2.Text = "Color test:";
       // 
       // label3
       // 
@@ -266,16 +255,6 @@
       this.lblHueHue.Size = new System.Drawing.Size(30, 13);
       this.lblHueHue.TabIndex = 28;
       this.lblHueHue.Text = "Hue";
-      // 
-      // btnHueColorClear
-      // 
-      this.btnHueColorClear.Location = new System.Drawing.Point(341, 62);
-      this.btnHueColorClear.Name = "btnHueColorClear";
-      this.btnHueColorClear.Size = new System.Drawing.Size(92, 23);
-      this.btnHueColorClear.TabIndex = 30;
-      this.btnHueColorClear.Text = "CLEAR/RESET";
-      this.btnHueColorClear.UseVisualStyleBackColor = true;
-      this.btnHueColorClear.Click += new System.EventHandler(this.btnHueColorClear_Click);
       // 
       // lblHueCustomColorTest
       // 
@@ -524,15 +503,25 @@
       this.tabPageGeneral.TabIndex = 0;
       this.tabPageGeneral.Text = "General";
       // 
+      // lblHueColorTemperature
+      // 
+      this.lblHueColorTemperature.AutoSize = true;
+      this.lblHueColorTemperature.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblHueColorTemperature.Location = new System.Drawing.Point(20, 264);
+      this.lblHueColorTemperature.Name = "lblHueColorTemperature";
+      this.lblHueColorTemperature.Size = new System.Drawing.Size(107, 13);
+      this.lblHueColorTemperature.TabIndex = 50;
+      this.lblHueColorTemperature.Text = "Color temperature";
+      // 
       // tabPageTesting
       // 
       this.tabPageTesting.BackColor = System.Drawing.SystemColors.Control;
-      this.tabPageTesting.Controls.Add(this.btnRefreshSettings);
       this.tabPageTesting.Controls.Add(this.label2);
       this.tabPageTesting.Controls.Add(this.btnTestRed);
       this.tabPageTesting.Controls.Add(this.btnTestGreen);
       this.tabPageTesting.Controls.Add(this.btnTestBlue);
       this.tabPageTesting.Controls.Add(this.btnHueColorClear);
+      this.tabPageTesting.Controls.Add(this.btnRefreshSettings);
       this.tabPageTesting.Controls.Add(this.lblHueCustomColorTest);
       this.tabPageTesting.Controls.Add(this.btnHueSendCustomColor);
       this.tabPageTesting.Controls.Add(this.btnHueColorRotateTestStop);
@@ -546,11 +535,70 @@
       this.tabPageTesting.Size = new System.Drawing.Size(790, 627);
       this.tabPageTesting.TabIndex = 1;
       this.tabPageTesting.Text = "Testing";
-      this.tabPageTesting.Click += new System.EventHandler(this.tabPageTesting_Click);
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label2.Location = new System.Drawing.Point(19, 34);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(65, 13);
+      this.label2.TabIndex = 68;
+      this.label2.Text = "Color test:";
+      // 
+      // btnTestRed
+      // 
+      this.btnTestRed.Location = new System.Drawing.Point(90, 29);
+      this.btnTestRed.Name = "btnTestRed";
+      this.btnTestRed.Size = new System.Drawing.Size(75, 23);
+      this.btnTestRed.TabIndex = 65;
+      this.btnTestRed.Text = "RED";
+      this.btnTestRed.UseVisualStyleBackColor = true;
+      this.btnTestRed.Click += new System.EventHandler(this.btnTestRed_Click);
+      // 
+      // btnTestGreen
+      // 
+      this.btnTestGreen.Location = new System.Drawing.Point(171, 29);
+      this.btnTestGreen.Name = "btnTestGreen";
+      this.btnTestGreen.Size = new System.Drawing.Size(75, 23);
+      this.btnTestGreen.TabIndex = 66;
+      this.btnTestGreen.Text = "GREEN";
+      this.btnTestGreen.UseVisualStyleBackColor = true;
+      this.btnTestGreen.Click += new System.EventHandler(this.btnTestGreen_Click);
+      // 
+      // btnTestBlue
+      // 
+      this.btnTestBlue.Location = new System.Drawing.Point(252, 29);
+      this.btnTestBlue.Name = "btnTestBlue";
+      this.btnTestBlue.Size = new System.Drawing.Size(75, 23);
+      this.btnTestBlue.TabIndex = 67;
+      this.btnTestBlue.Text = "BLUE";
+      this.btnTestBlue.UseVisualStyleBackColor = true;
+      this.btnTestBlue.Click += new System.EventHandler(this.btnTestBlue_Click);
+      // 
+      // btnHueColorClear
+      // 
+      this.btnHueColorClear.Location = new System.Drawing.Point(348, 29);
+      this.btnHueColorClear.Name = "btnHueColorClear";
+      this.btnHueColorClear.Size = new System.Drawing.Size(92, 23);
+      this.btnHueColorClear.TabIndex = 69;
+      this.btnHueColorClear.Text = "CLEAR/RESET";
+      this.btnHueColorClear.UseVisualStyleBackColor = true;
+      this.btnHueColorClear.Click += new System.EventHandler(this.btnHueColorClear_Click);
+      // 
+      // btnRefreshSettings
+      // 
+      this.btnRefreshSettings.Location = new System.Drawing.Point(15, 242);
+      this.btnRefreshSettings.Name = "btnRefreshSettings";
+      this.btnRefreshSettings.Size = new System.Drawing.Size(112, 45);
+      this.btnRefreshSettings.TabIndex = 50;
+      this.btnRefreshSettings.Text = "Refresh settings";
+      this.btnRefreshSettings.UseVisualStyleBackColor = true;
       // 
       // tabPageExperimental
       // 
       this.tabPageExperimental.BackColor = System.Drawing.SystemColors.Control;
+      this.tabPageExperimental.Controls.Add(this.gbColorCalibration);
       this.tabPageExperimental.Controls.Add(this.grpAtmowin);
       this.tabPageExperimental.Location = new System.Drawing.Point(4, 22);
       this.tabPageExperimental.Name = "tabPageExperimental";
@@ -558,24 +606,219 @@
       this.tabPageExperimental.TabIndex = 2;
       this.tabPageExperimental.Text = "Experimental";
       // 
-      // btnRefreshSettings
+      // gbColorCalibration
       // 
-      this.btnRefreshSettings.Location = new System.Drawing.Point(17, 251);
-      this.btnRefreshSettings.Name = "btnRefreshSettings";
-      this.btnRefreshSettings.Size = new System.Drawing.Size(112, 45);
-      this.btnRefreshSettings.TabIndex = 50;
-      this.btnRefreshSettings.Text = "Refresh settings";
-      this.btnRefreshSettings.UseVisualStyleBackColor = true;
+      this.gbColorCalibration.Controls.Add(this.label20);
+      this.gbColorCalibration.Controls.Add(this.label19);
+      this.gbColorCalibration.Controls.Add(this.label18);
+      this.gbColorCalibration.Controls.Add(this.label17);
+      this.gbColorCalibration.Controls.Add(this.label16);
+      this.gbColorCalibration.Controls.Add(this.label15);
+      this.gbColorCalibration.Controls.Add(this.label14);
+      this.gbColorCalibration.Controls.Add(this.label13);
+      this.gbColorCalibration.Controls.Add(this.label12);
+      this.gbColorCalibration.Controls.Add(this.label11);
+      this.gbColorCalibration.Controls.Add(this.button1);
+      this.gbColorCalibration.Controls.Add(this.button2);
+      this.gbColorCalibration.Controls.Add(this.button3);
+      this.gbColorCalibration.Controls.Add(this.button4);
+      this.gbColorCalibration.Controls.Add(this.tbZBlue);
+      this.gbColorCalibration.Controls.Add(this.tbZGreen);
+      this.gbColorCalibration.Controls.Add(this.tbZRed);
+      this.gbColorCalibration.Controls.Add(this.tbYBlue);
+      this.gbColorCalibration.Controls.Add(this.tbYGreen);
+      this.gbColorCalibration.Controls.Add(this.tbYRed);
+      this.gbColorCalibration.Controls.Add(this.tbXBlue);
+      this.gbColorCalibration.Controls.Add(this.tbXGreen);
+      this.gbColorCalibration.Controls.Add(this.tbXRed);
+      this.gbColorCalibration.Controls.Add(this.label10);
+      this.gbColorCalibration.Controls.Add(this.label9);
+      this.gbColorCalibration.Controls.Add(this.label8);
+      this.gbColorCalibration.Controls.Add(this.label7);
+      this.gbColorCalibration.Location = new System.Drawing.Point(4, 248);
+      this.gbColorCalibration.Name = "gbColorCalibration";
+      this.gbColorCalibration.Size = new System.Drawing.Size(756, 342);
+      this.gbColorCalibration.TabIndex = 48;
+      this.gbColorCalibration.TabStop = false;
+      this.gbColorCalibration.Text = "Color Calibrations";
       // 
-      // lblHueColorTemperature
+      // label10
       // 
-      this.lblHueColorTemperature.AutoSize = true;
-      this.lblHueColorTemperature.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueColorTemperature.Location = new System.Drawing.Point(20, 264);
-      this.lblHueColorTemperature.Name = "lblHueColorTemperature";
-      this.lblHueColorTemperature.Size = new System.Drawing.Size(117, 13);
-      this.lblHueColorTemperature.TabIndex = 50;
-      this.lblHueColorTemperature.Text = "Transition time (ms)";
+      this.label10.AutoSize = true;
+      this.label10.Location = new System.Drawing.Point(10, 197);
+      this.label10.Name = "label10";
+      this.label10.Size = new System.Drawing.Size(89, 13);
+      this.label10.TabIndex = 50;
+      this.label10.Text = "Z (BLUE TOTAL)";
+      // 
+      // label9
+      // 
+      this.label9.AutoSize = true;
+      this.label9.Location = new System.Drawing.Point(10, 158);
+      this.label9.Name = "label9";
+      this.label9.Size = new System.Drawing.Size(99, 13);
+      this.label9.TabIndex = 49;
+      this.label9.Text = "Y (GREEN TOTAL)";
+      // 
+      // label8
+      // 
+      this.label8.AutoSize = true;
+      this.label8.Location = new System.Drawing.Point(10, 117);
+      this.label8.Name = "label8";
+      this.label8.Size = new System.Drawing.Size(84, 13);
+      this.label8.TabIndex = 48;
+      this.label8.Text = "X (RED TOTAL)";
+      // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(476, 16);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(274, 65);
+      this.label7.TabIndex = 47;
+      this.label7.Text = "Defaults:\r\n\r\nX = Red 0.649926 / Green  0.103455 / Blue  0.197109\r\nY = Red 0.23432" +
+    "7 / Green  0.743075 / Blue  0.022598\r\nZ = Red 0.0000000 / Green  0.053077 / Blue" +
+    "  1.035763\r\n";
+      // 
+      // label11
+      // 
+      this.label11.AutoSize = true;
+      this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label11.Location = new System.Drawing.Point(14, 267);
+      this.label11.Name = "label11";
+      this.label11.Size = new System.Drawing.Size(65, 13);
+      this.label11.TabIndex = 68;
+      this.label11.Text = "Color test:";
+      // 
+      // button1
+      // 
+      this.button1.Location = new System.Drawing.Point(102, 253);
+      this.button1.Name = "button1";
+      this.button1.Size = new System.Drawing.Size(75, 40);
+      this.button1.TabIndex = 65;
+      this.button1.Text = "RED";
+      this.button1.UseVisualStyleBackColor = true;
+      this.button1.Click += new System.EventHandler(this.btnTestRed_Click);
+      // 
+      // button2
+      // 
+      this.button2.Location = new System.Drawing.Point(189, 253);
+      this.button2.Name = "button2";
+      this.button2.Size = new System.Drawing.Size(75, 40);
+      this.button2.TabIndex = 66;
+      this.button2.Text = "GREEN";
+      this.button2.UseVisualStyleBackColor = true;
+      this.button2.Click += new System.EventHandler(this.btnTestGreen_Click);
+      // 
+      // button3
+      // 
+      this.button3.Location = new System.Drawing.Point(273, 253);
+      this.button3.Name = "button3";
+      this.button3.Size = new System.Drawing.Size(75, 40);
+      this.button3.TabIndex = 67;
+      this.button3.Text = "BLUE";
+      this.button3.UseVisualStyleBackColor = true;
+      this.button3.Click += new System.EventHandler(this.btnTestBlue_Click);
+      // 
+      // button4
+      // 
+      this.button4.Location = new System.Drawing.Point(387, 262);
+      this.button4.Name = "button4";
+      this.button4.Size = new System.Drawing.Size(92, 23);
+      this.button4.TabIndex = 69;
+      this.button4.Text = "CLEAR/RESET";
+      this.button4.UseVisualStyleBackColor = true;
+      this.button4.Click += new System.EventHandler(this.btnHueColorClear_Click);
+      // 
+      // label12
+      // 
+      this.label12.AutoSize = true;
+      this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label12.Location = new System.Drawing.Point(129, 117);
+      this.label12.Name = "label12";
+      this.label12.Size = new System.Drawing.Size(16, 13);
+      this.label12.TabIndex = 70;
+      this.label12.Text = "R";
+      // 
+      // label13
+      // 
+      this.label13.AutoSize = true;
+      this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label13.Location = new System.Drawing.Point(129, 158);
+      this.label13.Name = "label13";
+      this.label13.Size = new System.Drawing.Size(16, 13);
+      this.label13.TabIndex = 71;
+      this.label13.Text = "R";
+      // 
+      // label14
+      // 
+      this.label14.AutoSize = true;
+      this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label14.Location = new System.Drawing.Point(129, 197);
+      this.label14.Name = "label14";
+      this.label14.Size = new System.Drawing.Size(16, 13);
+      this.label14.TabIndex = 72;
+      this.label14.Text = "R";
+      // 
+      // label15
+      // 
+      this.label15.AutoSize = true;
+      this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label15.Location = new System.Drawing.Point(226, 117);
+      this.label15.Name = "label15";
+      this.label15.Size = new System.Drawing.Size(16, 13);
+      this.label15.TabIndex = 73;
+      this.label15.Text = "G";
+      // 
+      // label16
+      // 
+      this.label16.AutoSize = true;
+      this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label16.Location = new System.Drawing.Point(226, 158);
+      this.label16.Name = "label16";
+      this.label16.Size = new System.Drawing.Size(16, 13);
+      this.label16.TabIndex = 74;
+      this.label16.Text = "G";
+      // 
+      // label17
+      // 
+      this.label17.AutoSize = true;
+      this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label17.Location = new System.Drawing.Point(226, 197);
+      this.label17.Name = "label17";
+      this.label17.Size = new System.Drawing.Size(16, 13);
+      this.label17.TabIndex = 75;
+      this.label17.Text = "G";
+      // 
+      // label18
+      // 
+      this.label18.AutoSize = true;
+      this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label18.Location = new System.Drawing.Point(328, 117);
+      this.label18.Name = "label18";
+      this.label18.Size = new System.Drawing.Size(15, 13);
+      this.label18.TabIndex = 76;
+      this.label18.Text = "B";
+      // 
+      // label19
+      // 
+      this.label19.AutoSize = true;
+      this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label19.Location = new System.Drawing.Point(328, 158);
+      this.label19.Name = "label19";
+      this.label19.Size = new System.Drawing.Size(15, 13);
+      this.label19.TabIndex = 77;
+      this.label19.Text = "B";
+      // 
+      // label20
+      // 
+      this.label20.AutoSize = true;
+      this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label20.Location = new System.Drawing.Point(328, 197);
+      this.label20.Name = "label20";
+      this.label20.Size = new System.Drawing.Size(15, 13);
+      this.label20.TabIndex = 78;
+      this.label20.Text = "B";
       // 
       // tbHueColorTemperature
       // 
@@ -760,6 +1003,87 @@
       this.tbRotateTestDelay.TabIndex = 36;
       this.tbRotateTestDelay.Text = global::AtmoHue.Properties.Settings.Default.HueRotateDelay;
       // 
+      // tbZBlue
+      // 
+      this.tbZBlue.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "ZBlue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbZBlue.Location = new System.Drawing.Point(346, 194);
+      this.tbZBlue.Name = "tbZBlue";
+      this.tbZBlue.Size = new System.Drawing.Size(74, 20);
+      this.tbZBlue.TabIndex = 59;
+      this.tbZBlue.Text = global::AtmoHue.Properties.Settings.Default.ZBlue;
+      // 
+      // tbZGreen
+      // 
+      this.tbZGreen.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "ZGreen", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbZGreen.Location = new System.Drawing.Point(243, 194);
+      this.tbZGreen.Name = "tbZGreen";
+      this.tbZGreen.Size = new System.Drawing.Size(74, 20);
+      this.tbZGreen.TabIndex = 58;
+      this.tbZGreen.Text = global::AtmoHue.Properties.Settings.Default.ZGreen;
+      // 
+      // tbZRed
+      // 
+      this.tbZRed.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "ZRed", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbZRed.Location = new System.Drawing.Point(148, 194);
+      this.tbZRed.Name = "tbZRed";
+      this.tbZRed.Size = new System.Drawing.Size(74, 20);
+      this.tbZRed.TabIndex = 57;
+      this.tbZRed.Text = global::AtmoHue.Properties.Settings.Default.ZRed;
+      // 
+      // tbYBlue
+      // 
+      this.tbYBlue.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "YBlue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbYBlue.Location = new System.Drawing.Point(346, 155);
+      this.tbYBlue.Name = "tbYBlue";
+      this.tbYBlue.Size = new System.Drawing.Size(74, 20);
+      this.tbYBlue.TabIndex = 56;
+      this.tbYBlue.Text = global::AtmoHue.Properties.Settings.Default.YBlue;
+      // 
+      // tbYGreen
+      // 
+      this.tbYGreen.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "YGreen", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbYGreen.Location = new System.Drawing.Point(243, 155);
+      this.tbYGreen.Name = "tbYGreen";
+      this.tbYGreen.Size = new System.Drawing.Size(74, 20);
+      this.tbYGreen.TabIndex = 55;
+      this.tbYGreen.Text = global::AtmoHue.Properties.Settings.Default.YGreen;
+      // 
+      // tbYRed
+      // 
+      this.tbYRed.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "YRed", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbYRed.Location = new System.Drawing.Point(148, 155);
+      this.tbYRed.Name = "tbYRed";
+      this.tbYRed.Size = new System.Drawing.Size(74, 20);
+      this.tbYRed.TabIndex = 54;
+      this.tbYRed.Text = global::AtmoHue.Properties.Settings.Default.YRed;
+      // 
+      // tbXBlue
+      // 
+      this.tbXBlue.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "XBlue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbXBlue.Location = new System.Drawing.Point(346, 114);
+      this.tbXBlue.Name = "tbXBlue";
+      this.tbXBlue.Size = new System.Drawing.Size(74, 20);
+      this.tbXBlue.TabIndex = 53;
+      this.tbXBlue.Text = global::AtmoHue.Properties.Settings.Default.XBlue;
+      // 
+      // tbXGreen
+      // 
+      this.tbXGreen.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "XGreen", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbXGreen.Location = new System.Drawing.Point(243, 114);
+      this.tbXGreen.Name = "tbXGreen";
+      this.tbXGreen.Size = new System.Drawing.Size(74, 20);
+      this.tbXGreen.TabIndex = 52;
+      this.tbXGreen.Text = global::AtmoHue.Properties.Settings.Default.XGreen;
+      // 
+      // tbXRed
+      // 
+      this.tbXRed.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "XRed", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbXRed.Location = new System.Drawing.Point(148, 114);
+      this.tbXRed.Name = "tbXRed";
+      this.tbXRed.Size = new System.Drawing.Size(74, 20);
+      this.tbXRed.TabIndex = 51;
+      this.tbXRed.Text = global::AtmoHue.Properties.Settings.Default.XRed;
+      // 
       // tbAtmowinScanInterval
       // 
       this.tbAtmowinScanInterval.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "atmowinScanInterval", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -805,6 +1129,8 @@
       this.tabPageTesting.ResumeLayout(false);
       this.tabPageTesting.PerformLayout();
       this.tabPageExperimental.ResumeLayout(false);
+      this.gbColorCalibration.ResumeLayout(false);
+      this.gbColorCalibration.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -820,10 +1146,6 @@
         private System.Windows.Forms.CheckBox cbRunningWindows8;
         private System.Windows.Forms.ComboBox cbOutputHueDevicesRange;
         private System.Windows.Forms.Label lblOutputHueDevices;
-        private System.Windows.Forms.Button btnTestRed;
-        private System.Windows.Forms.Button btnTestGreen;
-        private System.Windows.Forms.Button btnTestBlue;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tbHueAppName;
@@ -840,7 +1162,6 @@
         private System.Windows.Forms.Label lblHueTransTime;
         private System.Windows.Forms.Label lblHueHue;
         private System.Windows.Forms.TextBox tbHueHue;
-        private System.Windows.Forms.Button btnHueColorClear;
         private System.Windows.Forms.Label lblHueCustomColorTest;
         private System.Windows.Forms.TextBox tbHueCustomColor;
         private System.Windows.Forms.Button btnHueSendCustomColor;
@@ -874,6 +1195,39 @@
         private System.Windows.Forms.Button btnRefreshSettings;
         private System.Windows.Forms.TextBox tbHueColorTemperature;
         private System.Windows.Forms.Label lblHueColorTemperature;
+        private System.Windows.Forms.GroupBox gbColorCalibration;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox tbZBlue;
+        private System.Windows.Forms.TextBox tbZGreen;
+        private System.Windows.Forms.TextBox tbZRed;
+        private System.Windows.Forms.TextBox tbYBlue;
+        private System.Windows.Forms.TextBox tbYGreen;
+        private System.Windows.Forms.TextBox tbYRed;
+        private System.Windows.Forms.TextBox tbXBlue;
+        private System.Windows.Forms.TextBox tbXGreen;
+        private System.Windows.Forms.TextBox tbXRed;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnTestRed;
+        private System.Windows.Forms.Button btnTestGreen;
+        private System.Windows.Forms.Button btnTestBlue;
+        private System.Windows.Forms.Button btnHueColorClear;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label12;
     }
 }
 
