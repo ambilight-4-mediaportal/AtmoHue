@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,10 +53,12 @@ namespace AtmoHue
         //HUE
         public Boolean hueRotatingColors = false;
         HueClient client = new HueClient("127.0.0.1");
+        public List<string> devices = new List<string>();
+        public List<string> commandCache = new List<string>();
         public int hueRotateDelay = 1000;
         public string hueBridgeIP = "127.0.0.1";
-        public string hueAppName = "mypersonalappname";
-        public string hueAppKey = "mypersonalappkey";
+        public string hueAppName = "AtmoHue";
+        public string hueAppKey = "AmtoHueAppKey";
         public string hueBrightness = "100";
         public string hueSaturation = "100";
         public string hueTransitiontime = "100";
@@ -63,8 +66,15 @@ namespace AtmoHue
         public string hueHue = "";
         public string hueOutputDevices = "";
         public Boolean HueSetBrightnessStartup = false;
-
-        
+        public string calibrateXred = "";
+        public string calibrateYred = "";
+        public string calibrateZred = "";
+        public string calibrateXgreen = "";
+        public string calibrateYgreen = "";
+        public string calibrateZgreen = "";
+        public string calibrateXblue = "";
+        public string calibrateYblue = "";
+        public string calibrateZblue = "";
 
         //Remote API
         public string remoteAPIip = "";
@@ -132,13 +142,184 @@ namespace AtmoHue
               startAPIserver();
             }
 
+
+            //Set window title
+            this.Text = formatTitle();
+
             //Set link label for copyright
             LinkLabel.Link link = new LinkLabel.Link();
             link.LinkData = "https://github.com/Q42/Q42.HueApi";
             llQ42.Links.Add(link);
         }
 
+        public static string formatTitle()
+        {
+          string title = AssemblyInfo.Title;
+          string version = AssemblyInfo.VersionFull.ToString();
+          string copyright = AssemblyInfo.Copyright;
 
+          string formattedTitle = string.Format("{0} - {1} - {2}", title,version,copyright);
+          return formattedTitle;
+        }
+
+        static public class AssemblyInfo
+        {
+          public static string Company { get { return GetExecutingAssemblyAttribute<AssemblyCompanyAttribute>(a => a.Company); } }
+          public static string Configuration { get { return GetExecutingAssemblyAttribute<AssemblyDescriptionAttribute>(a => a.Description); } }
+
+          public static string Copyright { get { return GetExecutingAssemblyAttribute<AssemblyCopyrightAttribute>(a => a.Copyright); } }
+
+          public static string Description { get { return GetExecutingAssemblyAttribute<AssemblyDescriptionAttribute>(a => a.Description); } }
+
+          public static string FileVersion { get { return GetExecutingAssemblyAttribute<AssemblyFileVersionAttribute>(a => a.Version); } }
+
+          public static string Product { get { return GetExecutingAssemblyAttribute<AssemblyProductAttribute>(a => a.Product); } }
+          public static string Title { get { return GetExecutingAssemblyAttribute<AssemblyTitleAttribute>(a => a.Title); } }
+
+          public static string Trademark { get { return GetExecutingAssemblyAttribute<AssemblyTrademarkAttribute>(a => a.Trademark); } }
+          public static Version Version { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
+          public static string VersionBuild { get { return Version.Build.ToString(); } }
+
+          public static string VersionFull { get { return Version.ToString(); } }
+          public static string VersionMajor { get { return Version.Major.ToString(); } }
+          public static string VersionMinor { get { return Version.Minor.ToString(); } }
+          public static string VersionRevision { get { return Version.Revision.ToString(); } }
+
+          private static string GetExecutingAssemblyAttribute<T>(Func<T, string> value) where T : Attribute
+          {
+            T attribute = (T)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(T));
+            return value.Invoke(attribute);
+          }
+        }
+
+
+        /// <summary>
+        /// Gets the values from the AssemblyInfo.cs file for the previous assembly
+        /// </summary>
+        /// <example>
+        /// AssemblyInfoCalling assembly = new AssemblyInfoCalling();
+        /// string company1 = assembly.Company;
+        /// string product1 = assembly.Product;
+        /// string copyright1 = assembly.Copyright;
+        /// string trademark1 = assembly.Trademark;
+        /// string title1 = assembly.Title;
+        /// string description1 = assembly.Description;
+        /// string configuration1 = assembly.Configuration;
+        /// string fileversion1 = assembly.FileVersion;
+        /// Version version1 = assembly.Version;
+        /// string versionFull1 = assembly.VersionFull;
+        /// string versionMajor1 = assembly.VersionMajor;
+        /// string versionMinor1 = assembly.VersionMinor;
+        /// string versionBuild1 = assembly.VersionBuild;
+        /// string versionRevision1 = assembly.VersionRevision;
+        /// </example>
+        public class AssemblyInfoCalling
+        {
+          /// <summary>
+          /// Initializes a new instance of the <see cref="AssemblyInfoCalling"/> class.
+          /// </summary>
+          /// <param name="traceLevel">The trace level needed to get correct assembly 
+          /// - will need to adjust based on where you put these classes in your project(s).</param>
+          public AssemblyInfoCalling(int traceLevel = 4)
+          {
+            //----------------------------------------------------------------------
+            // Default to "3" as the number of levels back in the stack trace to get the 
+            //  correct assembly for "calling" assembly
+            //----------------------------------------------------------------------
+            StackTraceLevel = traceLevel;
+          }
+
+          //----------------------------------------------------------------------
+          // Set how deep in the stack trace we're looking - allows for customized changes
+          //----------------------------------------------------------------------
+          public static int StackTraceLevel { get; set; }
+
+          //----------------------------------------------------------------------
+          // Version attributes
+          //----------------------------------------------------------------------
+          public static Version Version
+          {
+            get
+            {
+              //----------------------------------------------------------------------
+              // Get the assembly, return empty if null
+              //----------------------------------------------------------------------
+              Assembly assembly = GetAssembly(StackTraceLevel);
+              return assembly == null ? new Version() : assembly.GetName().Version;
+            }
+          }
+
+          //----------------------------------------------------------------------
+          // Standard assembly attributes
+          //----------------------------------------------------------------------
+          public string Company { get { return GetCallingAssemblyAttribute<AssemblyCompanyAttribute>(a => a.Company); } }
+          public string Configuration { get { return GetCallingAssemblyAttribute<AssemblyDescriptionAttribute>(a => a.Description); } }
+
+          public string Copyright { get { return GetCallingAssemblyAttribute<AssemblyCopyrightAttribute>(a => a.Copyright); } }
+
+          public string Description { get { return GetCallingAssemblyAttribute<AssemblyDescriptionAttribute>(a => a.Description); } }
+
+          public string FileVersion { get { return GetCallingAssemblyAttribute<AssemblyFileVersionAttribute>(a => a.Version); } }
+
+          public string Product { get { return GetCallingAssemblyAttribute<AssemblyProductAttribute>(a => a.Product); } }
+          public string Title { get { return GetCallingAssemblyAttribute<AssemblyTitleAttribute>(a => a.Title); } }
+
+          public string Trademark { get { return GetCallingAssemblyAttribute<AssemblyTrademarkAttribute>(a => a.Trademark); } }
+          public string VersionBuild { get { return Version.Build.ToString(); } }
+
+          public string VersionFull { get { return Version.ToString(); } }
+          public string VersionMajor { get { return Version.Major.ToString(); } }
+          public string VersionMinor { get { return Version.Minor.ToString(); } }
+          public string VersionRevision { get { return Version.Revision.ToString(); } }
+          /// <summary>
+          /// Go through the stack and gets the assembly
+          /// </summary>
+          /// <param name="stackTraceLevel">The stack trace level.</param>
+          /// <returns></returns>
+          private static Assembly GetAssembly(int stackTraceLevel)
+          {
+            //----------------------------------------------------------------------
+            // Get the stack frame, returning null if none
+            //----------------------------------------------------------------------
+            StackTrace stackTrace = new StackTrace();
+            StackFrame[] stackFrames = stackTrace.GetFrames();
+            if (stackFrames == null) return null;
+
+            //----------------------------------------------------------------------
+            // Get the declaring type from the associated stack frame, returning null if nonw
+            //----------------------------------------------------------------------
+            var declaringType = stackFrames[stackTraceLevel].GetMethod().DeclaringType;
+            if (declaringType == null) return null;
+
+            //----------------------------------------------------------------------
+            // Return the assembly
+            //----------------------------------------------------------------------
+            var assembly = declaringType.Assembly;
+            return assembly;
+          }
+
+          /// <summary>
+          /// Gets the calling assembly attribute.
+          /// </summary>
+          /// <typeparam name="T"></typeparam>
+          /// <param name="value">The value.</param>
+          /// <example>return GetCallingAssemblyAttribute&lt;AssemblyCompanyAttribute&gt;(a => a.Company);</example>
+          /// <returns></returns>
+          private string GetCallingAssemblyAttribute<T>(Func<T, string> value) where T : Attribute
+          {
+            //----------------------------------------------------------------------
+            // Get the assembly, return empty if null
+            //----------------------------------------------------------------------
+            Assembly assembly = GetAssembly(StackTraceLevel);
+            if (assembly == null) return string.Empty;
+
+            //----------------------------------------------------------------------
+            // Get the attribute value
+            //----------------------------------------------------------------------
+            T attribute = (T)Attribute.GetCustomAttribute(assembly, typeof(T));
+            return value.Invoke(attribute);
+          }
+        }
         private void startAPIserver()
         {
           swRemoteApi.Start();
@@ -205,26 +386,43 @@ namespace AtmoHue
             string ColorMessage = encoder.GetString(message, 0, bytesRead);
             try
             {
-              if (swRemoteApi.ElapsedMilliseconds >= int.Parse(remoteSendDelay))
-              {
-                string[] colorMessageSplit = ColorMessage.Split(',');
-                int red = int.Parse(colorMessageSplit[0]);
-                int green = int.Parse(colorMessageSplit[1]);
-                int blue = int.Parse(colorMessageSplit[2]);
-                Color inputColor = Color.FromArgb(red, green, blue);
+              string[] colorMessageSplit = ColorMessage.Split(',');
+              int red = int.Parse(colorMessageSplit[0]);
+              int green = int.Parse(colorMessageSplit[1]);
+              int blue = int.Parse(colorMessageSplit[2]);
+              int priority = int.Parse(colorMessageSplit[3]);
 
+              Color inputColor = Color.FromArgb(red, green, blue);
+
+              //Only send if delay has expired or if we get a high priority color
+              if (swRemoteApi.ElapsedMilliseconds >= int.Parse(remoteSendDelay) || priority < 50)
+              {
                 if (cbLogRemoteApiCalls.Checked)
                 {
-                  Logger(string.Format("[ {0} ] {1}", sources.ATMOLIGHT, "Got color command from Atmolight"));
+                  Logger(string.Format("[ {0} ][PRIO {1} ] - {2}", sources.ATMOLIGHT, priority.ToString(), "Got color command from Atmolight"));
                 }
                 if (red == 0 && green == 0 && blue == 0)
                 {
                   inputColor = Color.Black;
                 }
 
+                //If we receive a high priority messsage drop subsequent messages for x amount of time
+                if (priority < 50)
+                {
+                  swRemoteApi.Reset();
+                  swRemoteApi.Stop();
+                  Thread.Sleep(1000);
+                  hueSetColor(inputColor, sources.ATMOLIGHT, 0);
+                  Thread.Sleep(2000);
+                  swRemoteApi.Restart();
+                }
+
                 //Validate if colors are correct
                 if (red >= 0 && red <= 255 && green >= 0 && green <= 255 && blue >= 0 && blue <= 255)
-                hueSetColor(inputColor, sources.ATMOLIGHT);
+                {
+                  hueSetColor(inputColor, sources.ATMOLIGHT, 0);
+                }
+
                 swRemoteApi.Restart();
               }
             }
@@ -240,7 +438,7 @@ namespace AtmoHue
         {
           Form1 hue = new Form1();
           Color inputColor = Color.FromArgb(red, green, blue);
-          hue.hueSetColor(inputColor, source);
+          hue.hueSetColor(inputColor, source,0);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -275,6 +473,17 @@ namespace AtmoHue
             hueHue = tbHueHue.Text;
             hueOutputDevices = cbOutputHueDevicesRange.Text;
             HueSetBrightnessStartup = cbHueSetBrightnessStartup.Checked;
+
+            calibrateXred = tbXRed.Text;
+            calibrateYred = tbYRed.Text;
+            calibrateZred = tbZRed.Text;
+            calibrateXgreen = tbXGreen.Text;
+            calibrateYgreen = tbYGreen.Text;
+            calibrateZgreen = tbZGreen.Text;
+            calibrateXblue = tbXBlue.Text;
+            calibrateYblue = tbYBlue.Text;
+            calibrateZblue = tbZBlue.Text;
+
             atmowinLocation = addTrailingSlash(tbAtmowinLocation.Text);
             atmowinStaticColor = tbAtmowinStaticColor.Text;
             atmowinScanInterval = tbAtmowinScanInterval.Text;
@@ -300,7 +509,7 @@ namespace AtmoHue
 
             //For Windows 8 and .NET45 projects you can use the SSDPBridgeLocator which actually scans your network. 
             //See the included BridgeDiscoveryTests and the specific .NET and .WinRT projects
-
+            
             IEnumerable<string> bridgeIPs = await locator.LocateBridgesAsync(TimeSpan.FromSeconds(5));
             foreach (string bridgeIP in bridgeIPs)
             {
@@ -444,9 +653,9 @@ namespace AtmoHue
 
           if(device == DeviceType.bloom)
           {
-            X = (float)(red * double.Parse(tbXRed.Text) + green * double.Parse(tbXGreen.Text) + blue * double.Parse(tbXBlue.Text));
-            Y = (float)(red * double.Parse(tbYRed.Text) + green * double.Parse(tbYGreen.Text) + blue * double.Parse(tbYBlue.Text));
-            Z = (float)(red * double.Parse(tbZRed.Text) + green * double.Parse(tbZGreen.Text) + blue * double.Parse(tbZBlue.Text));
+            X = (float)(red * double.Parse(calibrateXred) + green * double.Parse(calibrateXgreen) + blue * double.Parse(calibrateXblue));
+            Y = (float)(red * double.Parse(calibrateYred) + green * double.Parse(calibrateYgreen) + blue * double.Parse(calibrateYblue));
+            Z = (float)(red * double.Parse(calibrateZred) + green * double.Parse(calibrateZgreen) + blue * double.Parse(calibrateZblue));
           }
 
           if(device == DeviceType.bulb)
@@ -472,17 +681,17 @@ namespace AtmoHue
           List<double> xyAsList = new List<double>(xy);
           return xy;
         }
-        public async Task hueSetColor(Color colorToSet, sources source)
+        public async Task hueSetColor(Color ColorInput, sources source, int delay)
         {
             try
             {                
                 if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
                 {
-                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + colorToSet.ToString() + " to Hue Bridge"));
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + ColorInput.ToString() + " to Hue Bridge"));
                 }
                 if (source == sources.LOCAL)
                 {
-                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + colorToSet.ToString() + " to Hue Bridge"));
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + ColorInput.ToString() + " to Hue Bridge"));
                 }
 
                 if (client.IsInitialized == false)
@@ -522,7 +731,7 @@ namespace AtmoHue
                 }
                 
                 //Calculate color coordinates from RGB
-                double[] colorCoordinates = getRGBtoXY(colorToSet, DeviceType.bloom);
+                double[] colorCoordinates = getRGBtoXY(ColorInput, DeviceType.bloom);
 
                 
                 if (colorisON)
@@ -541,45 +750,39 @@ namespace AtmoHue
                 }
 
                 //Turn leds off if we receive black
-                if (colorToSet == Color.Black)
+                if (ColorInput == Color.Black)
                 {
                   command.TurnOff();
                   colorisON = false;
                 }
 
-                if (hueOutputDevices.ToLower().Trim() == "all")
+                //Split up if we have multiple led devices
+                devices.Clear();
+                string[] devicesSplit = hueOutputDevices.Trim().Split(',');
+                foreach (string device in devicesSplit)
                 {
-                    client.SendCommandAsync(command);
+                  devices.Add(device);
                 }
-                else
-                {
-                  List<string> devices = new List<string>();
-                  string[] devicesSplit = hueOutputDevices.Trim().Split(',');
-                  foreach (string device in devicesSplit)
-                  {
-                    devices.Add(device);
-                  }
-                  client.SendCommandAsync(command, devices);
-                }
+                
+                client.SendCommandAsync(command, devices);
+                //client.SendGroupCommandAsync(command, "0");
 
                 if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
                 {
 
-                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + colorToSet.ToString() + " to Hue Bridge."));
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + ColorInput.ToString() + " to Hue Bridge."));
                 }
 
                 if (source == sources.LOCAL)
                 {
-
-                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + colorToSet.ToString() + " to Hue Bridge."));
+                  Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + ColorInput.ToString() + " to Hue Bridge."));
                 }
 
-
-
-                command.On = false;
+                //command.On = false;
             }
             catch (Exception et)
             {
+              MessageBox.Show(et.ToString());
                 if (cbEnableDebuglog.Checked == true)
                 {
                     Logger(et.ToString());
@@ -614,11 +817,11 @@ namespace AtmoHue
 
             if (string.IsNullOrEmpty(atmowinStaticColor) == false)
             {
-                hueSetColor(Color.Black, sources.LOCAL);
+                hueSetColor(Color.Black, sources.LOCAL,0);
             }
             else
             {
-                hueSetColor(Color.Black,sources.LOCAL);
+                hueSetColor(Color.Black,sources.LOCAL,0);
             }
         }
 
@@ -655,7 +858,7 @@ namespace AtmoHue
                         if (colorRed == "0" && colorGreen == "0" && colorBlue == "0" && string.IsNullOrEmpty(atmowinStaticColor) == false)
                         {
                             Logger("Atmowin disconnected, sending preset static color");
-                            hueSetColor(Color.Black,sources.LOCAL);
+                            hueSetColor(Color.Black,sources.LOCAL,0);
                         }
                         else
                         {
@@ -665,7 +868,7 @@ namespace AtmoHue
                             //Send color
                             if (myColor != previousColor)
                             {
-                              hueSetColor(myColor, sources.LOCAL);
+                              hueSetColor(myColor, sources.LOCAL,0);
                             }
                             previousColor = myColor;
 
@@ -753,11 +956,11 @@ namespace AtmoHue
                 }
                 while (hueRotatingColors)
                 {
-                  hueSetColor(Color.Red, sources.LOCAL);
+                  hueSetColor(Color.Red, sources.LOCAL,0);
                   Thread.Sleep(hueRotateDelay);
-                  hueSetColor(Color.Green, sources.LOCAL);
+                  hueSetColor(Color.Green, sources.LOCAL,0);
                   Thread.Sleep(hueRotateDelay);
-                  hueSetColor(Color.Blue, sources.LOCAL);
+                  hueSetColor(Color.Blue, sources.LOCAL,0);
                   Thread.Sleep(hueRotateDelay);
                 }
             }
@@ -772,26 +975,27 @@ namespace AtmoHue
 
         private void btnTestRed_Click(object sender, EventArgs e)
         {
+
             refreshSettings();
-            hueSetColor(Color.Red, sources.LOCAL);
+            hueSetColor(Color.Red, sources.LOCAL,0);
         }
 
         private void btnTestGreen_Click(object sender, EventArgs e)
         {
             refreshSettings();
-            hueSetColor(Color.Green, sources.LOCAL);
+            hueSetColor(Color.Green, sources.LOCAL,0);
         }
 
         private void btnTestBlue_Click(object sender, EventArgs e)
         {
             refreshSettings();
-            hueSetColor(Color.Blue, sources.LOCAL);
+            hueSetColor(Color.Blue, sources.LOCAL,0);
         }
 
         private void btnHueColorClear_Click(object sender, EventArgs e)
         {
             refreshSettings();
-            hueSetColor(Color.Black, sources.LOCAL);
+            hueSetColor(Color.Black, sources.LOCAL,0);
         }
 
         private void btnHueSendCustomColor_Click(object sender, EventArgs e)
@@ -800,7 +1004,7 @@ namespace AtmoHue
             string hexColor = tbHueCustomColor.Text.Replace("#", string.Empty).Trim();
             hexColor = "#" + hexColor;
             System.Drawing.Color customColor = System.Drawing.ColorTranslator.FromHtml(hexColor);
-            hueSetColor(customColor, sources.LOCAL);
+            hueSetColor(customColor, sources.LOCAL,0);
         }
 
         private void btnHueColorRotateTestStart_Click(object sender, EventArgs e)
@@ -813,7 +1017,7 @@ namespace AtmoHue
         private void btnHueColorRotateTestStop_Click(object sender, EventArgs e)
         {
             hueRotatingColors = false;
-            hueSetColor(Color.Black, sources.LOCAL);
+            hueSetColor(Color.Black, sources.LOCAL,0);
             colorisON = false;
         }
 

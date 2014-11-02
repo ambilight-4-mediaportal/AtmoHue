@@ -349,7 +349,7 @@ namespace AtmoHue.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2.035763")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.835763")]
         public string ZBlue {
             get {
                 return ((string)(this["ZBlue"]));

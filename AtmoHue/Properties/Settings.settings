@@ -84,7 +84,7 @@
       <Value Profile="(Default)">0.022598</Value>
     </Setting>
     <Setting Name="ZBlue" Type="System.String" Scope="User">
-      <Value Profile="(Default)">2.035763</Value>
+      <Value Profile="(Default)">1.835763</Value>
     </Setting>
     <Setting Name="HueSetBrightnessStartup" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

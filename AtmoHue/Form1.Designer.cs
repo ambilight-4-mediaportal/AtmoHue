@@ -71,6 +71,7 @@
       this.cbRemoteAPIEnabled = new System.Windows.Forms.CheckBox();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPageGeneral = new System.Windows.Forms.TabPage();
+      this.cbHueSetBrightnessStartup = new System.Windows.Forms.CheckBox();
       this.tbHueColorTemperature = new System.Windows.Forms.TextBox();
       this.lblHueColorTemperature = new System.Windows.Forms.Label();
       this.tbHueBridgeIP = new System.Windows.Forms.TextBox();
@@ -119,7 +120,6 @@
       this.label9 = new System.Windows.Forms.Label();
       this.label8 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
-      this.cbHueSetBrightnessStartup = new System.Windows.Forms.CheckBox();
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
@@ -588,6 +588,18 @@
       this.tabPageGeneral.TabIndex = 0;
       this.tabPageGeneral.Text = "General";
       // 
+      // cbHueSetBrightnessStartup
+      // 
+      this.cbHueSetBrightnessStartup.AutoSize = true;
+      this.cbHueSetBrightnessStartup.Checked = global::AtmoHue.Properties.Settings.Default.HueSetBrightnessStartup;
+      this.cbHueSetBrightnessStartup.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "HueSetBrightnessStartup", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.cbHueSetBrightnessStartup.Location = new System.Drawing.Point(23, 329);
+      this.cbHueSetBrightnessStartup.Name = "cbHueSetBrightnessStartup";
+      this.cbHueSetBrightnessStartup.Size = new System.Drawing.Size(289, 17);
+      this.cbHueSetBrightnessStartup.TabIndex = 71;
+      this.cbHueSetBrightnessStartup.Text = "Only set brightness on first color info send to Hue Bridge";
+      this.cbHueSetBrightnessStartup.UseVisualStyleBackColor = true;
+      // 
       // tbHueColorTemperature
       // 
       this.tbHueColorTemperature.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueColorTemperature", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -621,7 +633,6 @@
       this.cbOutputHueDevicesRange.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "hueLightsActive", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.cbOutputHueDevicesRange.FormattingEnabled = true;
       this.cbOutputHueDevicesRange.Items.AddRange(new object[] {
-            "ALL",
             "1",
             "2",
             "3",
@@ -717,7 +728,7 @@
       this.tabPageTesting.Location = new System.Drawing.Point(4, 22);
       this.tabPageTesting.Name = "tabPageTesting";
       this.tabPageTesting.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageTesting.Size = new System.Drawing.Size(790, 627);
+      this.tabPageTesting.Size = new System.Drawing.Size(790, 676);
       this.tabPageTesting.TabIndex = 1;
       this.tabPageTesting.Text = "Testing";
       // 
@@ -805,7 +816,7 @@
       this.tabPageExperimental.Controls.Add(this.grpAtmowin);
       this.tabPageExperimental.Location = new System.Drawing.Point(4, 22);
       this.tabPageExperimental.Name = "tabPageExperimental";
-      this.tabPageExperimental.Size = new System.Drawing.Size(790, 627);
+      this.tabPageExperimental.Size = new System.Drawing.Size(790, 676);
       this.tabPageExperimental.TabIndex = 2;
       this.tabPageExperimental.Text = "Experimental";
       // 
@@ -1103,18 +1114,6 @@
       this.label7.Text = "Defaults:\r\n\r\nX = Red 0.649926 / Green  0.103455 / Blue  0.197109\r\nY = Red 0.23432" +
     "7 / Green  0.743075 / Blue  0.022598\r\nZ = Red 0.0000000 / Green  0.053077 / Blue" +
     "  1.035763\r\n";
-      // 
-      // cbHueSetBrightnessStartup
-      // 
-      this.cbHueSetBrightnessStartup.AutoSize = true;
-      this.cbHueSetBrightnessStartup.Checked = global::AtmoHue.Properties.Settings.Default.HueSetBrightnessStartup;
-      this.cbHueSetBrightnessStartup.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "HueSetBrightnessStartup", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.cbHueSetBrightnessStartup.Location = new System.Drawing.Point(23, 329);
-      this.cbHueSetBrightnessStartup.Name = "cbHueSetBrightnessStartup";
-      this.cbHueSetBrightnessStartup.Size = new System.Drawing.Size(289, 17);
-      this.cbHueSetBrightnessStartup.TabIndex = 71;
-      this.cbHueSetBrightnessStartup.Text = "Only set brightness on first color info send to Hue Bridge";
-      this.cbHueSetBrightnessStartup.UseVisualStyleBackColor = true;
       // 
       // Form1
       // 
