@@ -32,7 +32,6 @@
       this.btnLocateHueBridge = new System.Windows.Forms.Button();
       this.label1 = new System.Windows.Forms.Label();
       this.lblAtmoWinFolder = new System.Windows.Forms.Label();
-      this.lblOutputHueDevices = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
       this.lbOutputlog = new System.Windows.Forms.ListBox();
@@ -71,17 +70,45 @@
       this.cbRemoteAPIEnabled = new System.Windows.Forms.CheckBox();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPageGeneral = new System.Windows.Forms.TabPage();
+      this.cbHueHue = new System.Windows.Forms.ComboBox();
+      this.cbHueColorTemperature = new System.Windows.Forms.ComboBox();
+      this.cbHueTransitionTime = new System.Windows.Forms.ComboBox();
+      this.cbHueSaturation = new System.Windows.Forms.ComboBox();
       this.cbHueSetBrightnessStartup = new System.Windows.Forms.CheckBox();
-      this.tbHueColorTemperature = new System.Windows.Forms.TextBox();
       this.lblHueColorTemperature = new System.Windows.Forms.Label();
       this.tbHueBridgeIP = new System.Windows.Forms.TextBox();
-      this.cbOutputHueDevicesRange = new System.Windows.Forms.ComboBox();
       this.tbHueAppName = new System.Windows.Forms.TextBox();
       this.tbHueAppKey = new System.Windows.Forms.TextBox();
       this.cbHueBrightness = new System.Windows.Forms.ComboBox();
-      this.tbHueSaturation = new System.Windows.Forms.TextBox();
-      this.tbHueTransitionTime = new System.Windows.Forms.TextBox();
-      this.tbHueHue = new System.Windows.Forms.TextBox();
+      this.tabPageLeds = new System.Windows.Forms.TabPage();
+      this.btnLedItemDown = new System.Windows.Forms.Button();
+      this.btnLedItemUp = new System.Windows.Forms.Button();
+      this.gbManageLeds = new System.Windows.Forms.GroupBox();
+      this.btnRemoveLeds = new System.Windows.Forms.Button();
+      this.cbLedType = new System.Windows.Forms.ComboBox();
+      this.gbLedOptional = new System.Windows.Forms.GroupBox();
+      this.lblLedSendDelay = new System.Windows.Forms.Label();
+      this.lblLedHue = new System.Windows.Forms.Label();
+      this.tbLedSendDelay = new System.Windows.Forms.TextBox();
+      this.tbLedHue = new System.Windows.Forms.TextBox();
+      this.tbLedBrightness = new System.Windows.Forms.TextBox();
+      this.lblLedColorTemperature = new System.Windows.Forms.Label();
+      this.lblLedBrightness = new System.Windows.Forms.Label();
+      this.tbLedColorTemperature = new System.Windows.Forms.TextBox();
+      this.tbLedSaturation = new System.Windows.Forms.TextBox();
+      this.lnlLedSaturation = new System.Windows.Forms.Label();
+      this.btnAddLed = new System.Windows.Forms.Button();
+      this.lblLedType = new System.Windows.Forms.Label();
+      this.lblLedID = new System.Windows.Forms.Label();
+      this.tbLedID = new System.Windows.Forms.TextBox();
+      this.lvLedDevices = new System.Windows.Forms.ListView();
+      this.chID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chLedDelay = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chLedBrightness = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chLedSaturation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chLedColorTemperature = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chLedHue = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.tabPageTesting = new System.Windows.Forms.TabPage();
       this.label2 = new System.Windows.Forms.Label();
       this.btnTestRed = new System.Windows.Forms.Button();
@@ -92,6 +119,13 @@
       this.tbHueCustomColor = new System.Windows.Forms.TextBox();
       this.tbRotateTestDelay = new System.Windows.Forms.TextBox();
       this.tabPageExperimental = new System.Windows.Forms.TabPage();
+      this.gbHueSceneTester = new System.Windows.Forms.GroupBox();
+      this.label21 = new System.Windows.Forms.Label();
+      this.lblHueSceneID = new System.Windows.Forms.Label();
+      this.btnHueSetScene = new System.Windows.Forms.Button();
+      this.tbHueSceneName = new System.Windows.Forms.TextBox();
+      this.tbHueSceneID = new System.Windows.Forms.TextBox();
+      this.btnHueLocateScenes = new System.Windows.Forms.Button();
       this.gbColorCalibration = new System.Windows.Forms.GroupBox();
       this.label20 = new System.Windows.Forms.Label();
       this.label19 = new System.Windows.Forms.Label();
@@ -120,13 +154,20 @@
       this.label9 = new System.Windows.Forms.Label();
       this.label8 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
+      this.lblLedLocation = new System.Windows.Forms.Label();
+      this.tbLedLocation = new System.Windows.Forms.TextBox();
+      this.chLedLocation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPageGeneral.SuspendLayout();
+      this.tabPageLeds.SuspendLayout();
+      this.gbManageLeds.SuspendLayout();
+      this.gbLedOptional.SuspendLayout();
       this.tabPageTesting.SuspendLayout();
       this.tabPageExperimental.SuspendLayout();
+      this.gbHueSceneTester.SuspendLayout();
       this.gbColorCalibration.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -135,7 +176,7 @@
       this.btnLocateHueBridge.Location = new System.Drawing.Point(13, 69);
       this.btnLocateHueBridge.Name = "btnLocateHueBridge";
       this.btnLocateHueBridge.Size = new System.Drawing.Size(281, 67);
-      this.btnLocateHueBridge.TabIndex = 1;
+      this.btnLocateHueBridge.TabIndex = 12;
       this.btnLocateHueBridge.Text = "Locate and register to Hue Bridge";
       this.btnLocateHueBridge.UseVisualStyleBackColor = true;
       this.btnLocateHueBridge.Click += new System.EventHandler(this.btnLocateHueBridge_Click);
@@ -160,21 +201,11 @@
       this.lblAtmoWinFolder.TabIndex = 3;
       this.lblAtmoWinFolder.Text = "Atmowin location";
       // 
-      // lblOutputHueDevices
-      // 
-      this.lblOutputHueDevices.AutoSize = true;
-      this.lblOutputHueDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblOutputHueDevices.Location = new System.Drawing.Point(20, 63);
-      this.lblOutputHueDevices.Name = "lblOutputHueDevices";
-      this.lblOutputHueDevices.Size = new System.Drawing.Size(92, 13);
-      this.lblOutputHueDevices.TabIndex = 8;
-      this.lblOutputHueDevices.Text = "Hue Lights use";
-      // 
       // label3
       // 
       this.label3.AutoSize = true;
       this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label3.Location = new System.Drawing.Point(20, 95);
+      this.label3.Location = new System.Drawing.Point(20, 59);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(89, 13);
       this.label3.TabIndex = 13;
@@ -184,7 +215,7 @@
       // 
       this.label4.AutoSize = true;
       this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label4.Location = new System.Drawing.Point(20, 123);
+      this.label4.Location = new System.Drawing.Point(20, 87);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(79, 13);
       this.label4.TabIndex = 14;
@@ -195,7 +226,7 @@
       this.lbOutputlog.FormattingEnabled = true;
       this.lbOutputlog.Location = new System.Drawing.Point(6, 408);
       this.lbOutputlog.Name = "lbOutputlog";
-      this.lbOutputlog.Size = new System.Drawing.Size(778, 264);
+      this.lbOutputlog.Size = new System.Drawing.Size(1059, 264);
       this.lbOutputlog.TabIndex = 17;
       // 
       // btnStartAtmowinHue
@@ -221,7 +252,7 @@
       // 
       this.lblBrightness.AutoSize = true;
       this.lblBrightness.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblBrightness.Location = new System.Drawing.Point(20, 163);
+      this.lblBrightness.Location = new System.Drawing.Point(20, 127);
       this.lblBrightness.Name = "lblBrightness";
       this.lblBrightness.Size = new System.Drawing.Size(87, 13);
       this.lblBrightness.TabIndex = 21;
@@ -231,7 +262,7 @@
       // 
       this.lblHueSaturation.AutoSize = true;
       this.lblHueSaturation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueSaturation.Location = new System.Drawing.Point(20, 200);
+      this.lblHueSaturation.Location = new System.Drawing.Point(20, 164);
       this.lblHueSaturation.Name = "lblHueSaturation";
       this.lblHueSaturation.Size = new System.Drawing.Size(65, 13);
       this.lblHueSaturation.TabIndex = 25;
@@ -241,7 +272,7 @@
       // 
       this.lblHueTransTime.AutoSize = true;
       this.lblHueTransTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueTransTime.Location = new System.Drawing.Point(20, 228);
+      this.lblHueTransTime.Location = new System.Drawing.Point(20, 267);
       this.lblHueTransTime.Name = "lblHueTransTime";
       this.lblHueTransTime.Size = new System.Drawing.Size(117, 13);
       this.lblHueTransTime.TabIndex = 26;
@@ -251,7 +282,7 @@
       // 
       this.lblHueHue.AutoSize = true;
       this.lblHueHue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueHue.Location = new System.Drawing.Point(20, 295);
+      this.lblHueHue.Location = new System.Drawing.Point(20, 238);
       this.lblHueHue.Name = "lblHueHue";
       this.lblHueHue.Size = new System.Drawing.Size(30, 13);
       this.lblHueHue.TabIndex = 28;
@@ -369,7 +400,7 @@
       this.gbBridgeTools.Controls.Add(this.cbRunningWindows8);
       this.gbBridgeTools.Controls.Add(this.cbAutoConnectBridge);
       this.gbBridgeTools.Controls.Add(this.btnLocateHueBridge);
-      this.gbBridgeTools.Location = new System.Drawing.Point(458, 14);
+      this.gbBridgeTools.Location = new System.Drawing.Point(754, 16);
       this.gbBridgeTools.Name = "gbBridgeTools";
       this.gbBridgeTools.Size = new System.Drawing.Size(311, 142);
       this.gbBridgeTools.TabIndex = 45;
@@ -379,26 +410,22 @@
       // cbRunningWindows8
       // 
       this.cbRunningWindows8.AutoSize = true;
-      this.cbRunningWindows8.Checked = global::AtmoHue.Properties.Settings.Default.hueBridgeMode;
-      this.cbRunningWindows8.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "hueBridgeMode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.cbRunningWindows8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.cbRunningWindows8.Location = new System.Drawing.Point(13, 22);
       this.cbRunningWindows8.Name = "cbRunningWindows8";
       this.cbRunningWindows8.Size = new System.Drawing.Size(159, 17);
-      this.cbRunningWindows8.TabIndex = 6;
+      this.cbRunningWindows8.TabIndex = 10;
       this.cbRunningWindows8.Text = "Running Windows 8.* ?";
       this.cbRunningWindows8.UseVisualStyleBackColor = true;
       // 
       // cbAutoConnectBridge
       // 
       this.cbAutoConnectBridge.AutoSize = true;
-      this.cbAutoConnectBridge.Checked = global::AtmoHue.Properties.Settings.Default.HueAutoConnectonDetection;
-      this.cbAutoConnectBridge.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "HueAutoConnectonDetection", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.cbAutoConnectBridge.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.cbAutoConnectBridge.Location = new System.Drawing.Point(13, 45);
       this.cbAutoConnectBridge.Name = "cbAutoConnectBridge";
       this.cbAutoConnectBridge.Size = new System.Drawing.Size(188, 17);
-      this.cbAutoConnectBridge.TabIndex = 44;
+      this.cbAutoConnectBridge.TabIndex = 11;
       this.cbAutoConnectBridge.Text = "Auto connect if bridge found";
       this.cbAutoConnectBridge.UseVisualStyleBackColor = true;
       // 
@@ -414,28 +441,27 @@
       this.grpAtmowin.Controls.Add(this.tbAtmowinLocation);
       this.grpAtmowin.Location = new System.Drawing.Point(3, 18);
       this.grpAtmowin.Name = "grpAtmowin";
-      this.grpAtmowin.Size = new System.Drawing.Size(774, 193);
+      this.grpAtmowin.Size = new System.Drawing.Size(789, 193);
       this.grpAtmowin.TabIndex = 46;
       this.grpAtmowin.TabStop = false;
       this.grpAtmowin.Text = "Atmowin monitoring";
       // 
       // tbAtmowinScanInterval
       // 
-      this.tbAtmowinScanInterval.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "atmowinScanInterval", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbAtmowinScanInterval.Location = new System.Drawing.Point(225, 50);
       this.tbAtmowinScanInterval.Name = "tbAtmowinScanInterval";
       this.tbAtmowinScanInterval.Size = new System.Drawing.Size(68, 20);
       this.tbAtmowinScanInterval.TabIndex = 19;
-      this.tbAtmowinScanInterval.Text = global::AtmoHue.Properties.Settings.Default.atmowinScanInterval;
+      this.tbAtmowinScanInterval.Text = "300";
       // 
       // tbAtmowinLocation
       // 
-      this.tbAtmowinLocation.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "atmowinLocation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.tbAtmowinLocation.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+      this.tbAtmowinLocation.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystem;
       this.tbAtmowinLocation.Location = new System.Drawing.Point(147, 13);
       this.tbAtmowinLocation.Name = "tbAtmowinLocation";
       this.tbAtmowinLocation.Size = new System.Drawing.Size(442, 20);
       this.tbAtmowinLocation.TabIndex = 5;
-      this.tbAtmowinLocation.Text = global::AtmoHue.Properties.Settings.Default.atmowinLocation;
       // 
       // cbLogRemoteApiCalls
       // 
@@ -457,7 +483,7 @@
       this.grpRemoteAPI.Controls.Add(this.tbRemoteApiPort);
       this.grpRemoteAPI.Controls.Add(this.tbRemoteAPIip);
       this.grpRemoteAPI.Controls.Add(this.cbRemoteAPIEnabled);
-      this.grpRemoteAPI.Location = new System.Drawing.Point(458, 163);
+      this.grpRemoteAPI.Location = new System.Drawing.Point(754, 219);
       this.grpRemoteAPI.Name = "grpRemoteAPI";
       this.grpRemoteAPI.Size = new System.Drawing.Size(311, 183);
       this.grpRemoteAPI.TabIndex = 48;
@@ -466,12 +492,11 @@
       // 
       // tbRemoteAPIsendDelay
       // 
-      this.tbRemoteAPIsendDelay.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "RemoteApiSendDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbRemoteAPIsendDelay.Location = new System.Drawing.Point(127, 133);
       this.tbRemoteAPIsendDelay.Name = "tbRemoteAPIsendDelay";
       this.tbRemoteAPIsendDelay.Size = new System.Drawing.Size(68, 20);
-      this.tbRemoteAPIsendDelay.TabIndex = 42;
-      this.tbRemoteAPIsendDelay.Text = global::AtmoHue.Properties.Settings.Default.RemoteApiSendDelay;
+      this.tbRemoteAPIsendDelay.TabIndex = 16;
+      this.tbRemoteAPIsendDelay.Text = "300";
       // 
       // lblHintRestart
       // 
@@ -515,59 +540,57 @@
       // 
       // tbRemoteApiPort
       // 
-      this.tbRemoteApiPort.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "RemoteAPIport", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbRemoteApiPort.Location = new System.Drawing.Point(127, 101);
       this.tbRemoteApiPort.Name = "tbRemoteApiPort";
       this.tbRemoteApiPort.Size = new System.Drawing.Size(100, 20);
-      this.tbRemoteApiPort.TabIndex = 2;
-      this.tbRemoteApiPort.Text = global::AtmoHue.Properties.Settings.Default.RemoteAPIport;
+      this.tbRemoteApiPort.TabIndex = 15;
+      this.tbRemoteApiPort.Text = "20123";
       // 
       // tbRemoteAPIip
       // 
-      this.tbRemoteAPIip.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "remoteAPIip", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbRemoteAPIip.Location = new System.Drawing.Point(127, 75);
       this.tbRemoteAPIip.Name = "tbRemoteAPIip";
       this.tbRemoteAPIip.Size = new System.Drawing.Size(100, 20);
-      this.tbRemoteAPIip.TabIndex = 1;
-      this.tbRemoteAPIip.Text = global::AtmoHue.Properties.Settings.Default.remoteAPIip;
+      this.tbRemoteAPIip.TabIndex = 14;
+      this.tbRemoteAPIip.Text = "Any";
       // 
       // cbRemoteAPIEnabled
       // 
       this.cbRemoteAPIEnabled.AutoSize = true;
-      this.cbRemoteAPIEnabled.Checked = global::AtmoHue.Properties.Settings.Default.RemoteApiEnabled;
-      this.cbRemoteAPIEnabled.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "RemoteApiEnabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.cbRemoteAPIEnabled.Location = new System.Drawing.Point(6, 19);
       this.cbRemoteAPIEnabled.Name = "cbRemoteAPIEnabled";
       this.cbRemoteAPIEnabled.Size = new System.Drawing.Size(121, 17);
-      this.cbRemoteAPIEnabled.TabIndex = 0;
+      this.cbRemoteAPIEnabled.TabIndex = 13;
       this.cbRemoteAPIEnabled.Text = "Enable remote API *";
       this.cbRemoteAPIEnabled.UseVisualStyleBackColor = true;
       // 
       // tabControl1
       // 
       this.tabControl1.Controls.Add(this.tabPageGeneral);
+      this.tabControl1.Controls.Add(this.tabPageLeds);
       this.tabControl1.Controls.Add(this.tabPageTesting);
       this.tabControl1.Controls.Add(this.tabPageExperimental);
       this.tabControl1.Location = new System.Drawing.Point(12, 12);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(798, 702);
+      this.tabControl1.Size = new System.Drawing.Size(1094, 702);
       this.tabControl1.TabIndex = 50;
       // 
       // tabPageGeneral
       // 
       this.tabPageGeneral.BackColor = System.Drawing.SystemColors.Control;
+      this.tabPageGeneral.Controls.Add(this.cbHueHue);
+      this.tabPageGeneral.Controls.Add(this.cbHueColorTemperature);
+      this.tabPageGeneral.Controls.Add(this.cbHueTransitionTime);
+      this.tabPageGeneral.Controls.Add(this.cbHueSaturation);
       this.tabPageGeneral.Controls.Add(this.cbHueSetBrightnessStartup);
-      this.tabPageGeneral.Controls.Add(this.tbHueColorTemperature);
       this.tabPageGeneral.Controls.Add(this.lblHueColorTemperature);
       this.tabPageGeneral.Controls.Add(this.gbBridgeTools);
       this.tabPageGeneral.Controls.Add(this.label1);
       this.tabPageGeneral.Controls.Add(this.cbLogRemoteApiCalls);
       this.tabPageGeneral.Controls.Add(this.grpRemoteAPI);
       this.tabPageGeneral.Controls.Add(this.tbHueBridgeIP);
-      this.tabPageGeneral.Controls.Add(this.cbOutputHueDevicesRange);
       this.tabPageGeneral.Controls.Add(this.cbEnableDebuglog);
-      this.tabPageGeneral.Controls.Add(this.lblOutputHueDevices);
       this.tabPageGeneral.Controls.Add(this.label3);
       this.tabPageGeneral.Controls.Add(this.label4);
       this.tabPageGeneral.Controls.Add(this.tbHueAppName);
@@ -575,45 +598,66 @@
       this.tabPageGeneral.Controls.Add(this.lbOutputlog);
       this.tabPageGeneral.Controls.Add(this.lblBrightness);
       this.tabPageGeneral.Controls.Add(this.cbHueBrightness);
-      this.tabPageGeneral.Controls.Add(this.tbHueSaturation);
-      this.tabPageGeneral.Controls.Add(this.tbHueTransitionTime);
       this.tabPageGeneral.Controls.Add(this.lblHueSaturation);
       this.tabPageGeneral.Controls.Add(this.lblHueTransTime);
-      this.tabPageGeneral.Controls.Add(this.tbHueHue);
       this.tabPageGeneral.Controls.Add(this.lblHueHue);
       this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
       this.tabPageGeneral.Name = "tabPageGeneral";
       this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageGeneral.Size = new System.Drawing.Size(790, 676);
+      this.tabPageGeneral.Size = new System.Drawing.Size(1086, 676);
       this.tabPageGeneral.TabIndex = 0;
       this.tabPageGeneral.Text = "General";
+      // 
+      // cbHueHue
+      // 
+      this.cbHueHue.FormattingEnabled = true;
+      this.cbHueHue.Location = new System.Drawing.Point(153, 229);
+      this.cbHueHue.Name = "cbHueHue";
+      this.cbHueHue.Size = new System.Drawing.Size(98, 21);
+      this.cbHueHue.TabIndex = 7;
+      // 
+      // cbHueColorTemperature
+      // 
+      this.cbHueColorTemperature.FormattingEnabled = true;
+      this.cbHueColorTemperature.Location = new System.Drawing.Point(153, 199);
+      this.cbHueColorTemperature.Name = "cbHueColorTemperature";
+      this.cbHueColorTemperature.Size = new System.Drawing.Size(98, 21);
+      this.cbHueColorTemperature.TabIndex = 6;
+      this.cbHueColorTemperature.Text = "500";
+      // 
+      // cbHueTransitionTime
+      // 
+      this.cbHueTransitionTime.FormattingEnabled = true;
+      this.cbHueTransitionTime.Location = new System.Drawing.Point(153, 264);
+      this.cbHueTransitionTime.Name = "cbHueTransitionTime";
+      this.cbHueTransitionTime.Size = new System.Drawing.Size(98, 21);
+      this.cbHueTransitionTime.TabIndex = 8;
+      this.cbHueTransitionTime.Text = "300";
+      // 
+      // cbHueSaturation
+      // 
+      this.cbHueSaturation.FormattingEnabled = true;
+      this.cbHueSaturation.Location = new System.Drawing.Point(153, 161);
+      this.cbHueSaturation.Name = "cbHueSaturation";
+      this.cbHueSaturation.Size = new System.Drawing.Size(98, 21);
+      this.cbHueSaturation.TabIndex = 5;
+      this.cbHueSaturation.Text = "100";
       // 
       // cbHueSetBrightnessStartup
       // 
       this.cbHueSetBrightnessStartup.AutoSize = true;
-      this.cbHueSetBrightnessStartup.Checked = global::AtmoHue.Properties.Settings.Default.HueSetBrightnessStartup;
-      this.cbHueSetBrightnessStartup.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "HueSetBrightnessStartup", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.cbHueSetBrightnessStartup.Location = new System.Drawing.Point(23, 329);
+      this.cbHueSetBrightnessStartup.Location = new System.Drawing.Point(23, 309);
       this.cbHueSetBrightnessStartup.Name = "cbHueSetBrightnessStartup";
       this.cbHueSetBrightnessStartup.Size = new System.Drawing.Size(289, 17);
-      this.cbHueSetBrightnessStartup.TabIndex = 71;
+      this.cbHueSetBrightnessStartup.TabIndex = 9;
       this.cbHueSetBrightnessStartup.Text = "Only set brightness on first color info send to Hue Bridge";
       this.cbHueSetBrightnessStartup.UseVisualStyleBackColor = true;
-      // 
-      // tbHueColorTemperature
-      // 
-      this.tbHueColorTemperature.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueColorTemperature", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueColorTemperature.Location = new System.Drawing.Point(153, 261);
-      this.tbHueColorTemperature.Name = "tbHueColorTemperature";
-      this.tbHueColorTemperature.Size = new System.Drawing.Size(100, 20);
-      this.tbHueColorTemperature.TabIndex = 49;
-      this.tbHueColorTemperature.Text = global::AtmoHue.Properties.Settings.Default.HueColorTemperature;
       // 
       // lblHueColorTemperature
       // 
       this.lblHueColorTemperature.AutoSize = true;
       this.lblHueColorTemperature.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueColorTemperature.Location = new System.Drawing.Point(20, 264);
+      this.lblHueColorTemperature.Location = new System.Drawing.Point(20, 202);
       this.lblHueColorTemperature.Name = "lblHueColorTemperature";
       this.lblHueColorTemperature.Size = new System.Drawing.Size(107, 13);
       this.lblHueColorTemperature.TabIndex = 50;
@@ -621,93 +665,309 @@
       // 
       // tbHueBridgeIP
       // 
-      this.tbHueBridgeIP.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "hueBridgeIP", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbHueBridgeIP.Location = new System.Drawing.Point(153, 16);
       this.tbHueBridgeIP.Name = "tbHueBridgeIP";
       this.tbHueBridgeIP.Size = new System.Drawing.Size(100, 20);
-      this.tbHueBridgeIP.TabIndex = 4;
-      this.tbHueBridgeIP.Text = global::AtmoHue.Properties.Settings.Default.hueBridgeIP;
-      // 
-      // cbOutputHueDevicesRange
-      // 
-      this.cbOutputHueDevicesRange.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "hueLightsActive", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.cbOutputHueDevicesRange.FormattingEnabled = true;
-      this.cbOutputHueDevicesRange.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15"});
-      this.cbOutputHueDevicesRange.Location = new System.Drawing.Point(153, 60);
-      this.cbOutputHueDevicesRange.Name = "cbOutputHueDevicesRange";
-      this.cbOutputHueDevicesRange.Size = new System.Drawing.Size(121, 21);
-      this.cbOutputHueDevicesRange.TabIndex = 7;
-      this.cbOutputHueDevicesRange.Text = global::AtmoHue.Properties.Settings.Default.hueLightsActive;
+      this.tbHueBridgeIP.TabIndex = 1;
       // 
       // tbHueAppName
       // 
-      this.tbHueAppName.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueAppName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueAppName.Location = new System.Drawing.Point(153, 92);
+      this.tbHueAppName.Location = new System.Drawing.Point(153, 56);
       this.tbHueAppName.Name = "tbHueAppName";
       this.tbHueAppName.Size = new System.Drawing.Size(173, 20);
-      this.tbHueAppName.TabIndex = 15;
-      this.tbHueAppName.Text = global::AtmoHue.Properties.Settings.Default.HueAppName;
+      this.tbHueAppName.TabIndex = 2;
+      this.tbHueAppName.Text = "AtmoHue";
       // 
       // tbHueAppKey
       // 
-      this.tbHueAppKey.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueAppKey", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueAppKey.Location = new System.Drawing.Point(153, 120);
+      this.tbHueAppKey.Location = new System.Drawing.Point(153, 84);
       this.tbHueAppKey.Name = "tbHueAppKey";
       this.tbHueAppKey.Size = new System.Drawing.Size(223, 20);
-      this.tbHueAppKey.TabIndex = 16;
-      this.tbHueAppKey.Text = global::AtmoHue.Properties.Settings.Default.HueAppKey;
+      this.tbHueAppKey.TabIndex = 3;
+      this.tbHueAppKey.Text = "AtmoHueAppKey";
       // 
       // cbHueBrightness
       // 
-      this.cbHueBrightness.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueBrightness", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.cbHueBrightness.FormattingEnabled = true;
-      this.cbHueBrightness.Location = new System.Drawing.Point(153, 160);
+      this.cbHueBrightness.Location = new System.Drawing.Point(153, 124);
       this.cbHueBrightness.Name = "cbHueBrightness";
       this.cbHueBrightness.Size = new System.Drawing.Size(75, 21);
-      this.cbHueBrightness.TabIndex = 22;
-      this.cbHueBrightness.Text = global::AtmoHue.Properties.Settings.Default.HueBrightness;
+      this.cbHueBrightness.TabIndex = 4;
+      this.cbHueBrightness.Text = "100";
       // 
-      // tbHueSaturation
+      // tabPageLeds
       // 
-      this.tbHueSaturation.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueSaturation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueSaturation.Location = new System.Drawing.Point(153, 197);
-      this.tbHueSaturation.Name = "tbHueSaturation";
-      this.tbHueSaturation.Size = new System.Drawing.Size(100, 20);
-      this.tbHueSaturation.TabIndex = 23;
-      this.tbHueSaturation.Text = global::AtmoHue.Properties.Settings.Default.HueSaturation;
+      this.tabPageLeds.BackColor = System.Drawing.SystemColors.Control;
+      this.tabPageLeds.Controls.Add(this.btnLedItemDown);
+      this.tabPageLeds.Controls.Add(this.btnLedItemUp);
+      this.tabPageLeds.Controls.Add(this.gbManageLeds);
+      this.tabPageLeds.Controls.Add(this.lvLedDevices);
+      this.tabPageLeds.Location = new System.Drawing.Point(4, 22);
+      this.tabPageLeds.Name = "tabPageLeds";
+      this.tabPageLeds.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPageLeds.Size = new System.Drawing.Size(1086, 676);
+      this.tabPageLeds.TabIndex = 3;
+      this.tabPageLeds.Text = "Hue Leds";
       // 
-      // tbHueTransitionTime
+      // btnLedItemDown
       // 
-      this.tbHueTransitionTime.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueTransitionTime", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueTransitionTime.Location = new System.Drawing.Point(153, 225);
-      this.tbHueTransitionTime.Name = "tbHueTransitionTime";
-      this.tbHueTransitionTime.Size = new System.Drawing.Size(100, 20);
-      this.tbHueTransitionTime.TabIndex = 24;
-      this.tbHueTransitionTime.Text = global::AtmoHue.Properties.Settings.Default.HueTransitionTime;
+      this.btnLedItemDown.Location = new System.Drawing.Point(992, 561);
+      this.btnLedItemDown.Name = "btnLedItemDown";
+      this.btnLedItemDown.Size = new System.Drawing.Size(75, 23);
+      this.btnLedItemDown.TabIndex = 15;
+      this.btnLedItemDown.Text = "DOWN";
+      this.btnLedItemDown.UseVisualStyleBackColor = true;
+      this.btnLedItemDown.Visible = false;
+      this.btnLedItemDown.Click += new System.EventHandler(this.btnLedItemDown_Click);
       // 
-      // tbHueHue
+      // btnLedItemUp
       // 
-      this.tbHueHue.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueHue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueHue.Location = new System.Drawing.Point(153, 292);
-      this.tbHueHue.Name = "tbHueHue";
-      this.tbHueHue.Size = new System.Drawing.Size(100, 20);
-      this.tbHueHue.TabIndex = 29;
-      this.tbHueHue.Text = global::AtmoHue.Properties.Settings.Default.HueHue;
+      this.btnLedItemUp.Location = new System.Drawing.Point(382, 561);
+      this.btnLedItemUp.Name = "btnLedItemUp";
+      this.btnLedItemUp.Size = new System.Drawing.Size(75, 23);
+      this.btnLedItemUp.TabIndex = 14;
+      this.btnLedItemUp.Text = "UP";
+      this.btnLedItemUp.UseVisualStyleBackColor = true;
+      this.btnLedItemUp.Visible = false;
+      this.btnLedItemUp.Click += new System.EventHandler(this.btnLedItemUp_Click);
+      // 
+      // gbManageLeds
+      // 
+      this.gbManageLeds.Controls.Add(this.tbLedLocation);
+      this.gbManageLeds.Controls.Add(this.lblLedLocation);
+      this.gbManageLeds.Controls.Add(this.btnRemoveLeds);
+      this.gbManageLeds.Controls.Add(this.cbLedType);
+      this.gbManageLeds.Controls.Add(this.gbLedOptional);
+      this.gbManageLeds.Controls.Add(this.btnAddLed);
+      this.gbManageLeds.Controls.Add(this.lblLedType);
+      this.gbManageLeds.Controls.Add(this.lblLedID);
+      this.gbManageLeds.Controls.Add(this.tbLedID);
+      this.gbManageLeds.Location = new System.Drawing.Point(19, 18);
+      this.gbManageLeds.Name = "gbManageLeds";
+      this.gbManageLeds.Size = new System.Drawing.Size(322, 652);
+      this.gbManageLeds.TabIndex = 13;
+      this.gbManageLeds.TabStop = false;
+      this.gbManageLeds.Text = "Manage leds";
+      // 
+      // btnRemoveLeds
+      // 
+      this.btnRemoveLeds.Location = new System.Drawing.Point(105, 529);
+      this.btnRemoveLeds.Name = "btnRemoveLeds";
+      this.btnRemoveLeds.Size = new System.Drawing.Size(112, 51);
+      this.btnRemoveLeds.TabIndex = 104;
+      this.btnRemoveLeds.Text = "Remove Led";
+      this.btnRemoveLeds.UseVisualStyleBackColor = true;
+      this.btnRemoveLeds.Click += new System.EventHandler(this.btnRemoveLeds_Click);
+      // 
+      // cbLedType
+      // 
+      this.cbLedType.FormattingEnabled = true;
+      this.cbLedType.Items.AddRange(new object[] {
+            "Bloom",
+            "Bulb",
+            "Iris",
+            "Strips"});
+      this.cbLedType.Location = new System.Drawing.Point(135, 61);
+      this.cbLedType.Name = "cbLedType";
+      this.cbLedType.Size = new System.Drawing.Size(121, 21);
+      this.cbLedType.TabIndex = 101;
+      // 
+      // gbLedOptional
+      // 
+      this.gbLedOptional.Controls.Add(this.lblLedSendDelay);
+      this.gbLedOptional.Controls.Add(this.lblLedHue);
+      this.gbLedOptional.Controls.Add(this.tbLedSendDelay);
+      this.gbLedOptional.Controls.Add(this.tbLedHue);
+      this.gbLedOptional.Controls.Add(this.tbLedBrightness);
+      this.gbLedOptional.Controls.Add(this.lblLedColorTemperature);
+      this.gbLedOptional.Controls.Add(this.lblLedBrightness);
+      this.gbLedOptional.Controls.Add(this.tbLedColorTemperature);
+      this.gbLedOptional.Controls.Add(this.tbLedSaturation);
+      this.gbLedOptional.Controls.Add(this.lnlLedSaturation);
+      this.gbLedOptional.Location = new System.Drawing.Point(9, 131);
+      this.gbLedOptional.Name = "gbLedOptional";
+      this.gbLedOptional.Size = new System.Drawing.Size(307, 284);
+      this.gbLedOptional.TabIndex = 27;
+      this.gbLedOptional.TabStop = false;
+      this.gbLedOptional.Text = "Optional (overrides default settings)";
+      this.gbLedOptional.Visible = false;
+      // 
+      // lblLedSendDelay
+      // 
+      this.lblLedSendDelay.AutoSize = true;
+      this.lblLedSendDelay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedSendDelay.Location = new System.Drawing.Point(6, 28);
+      this.lblLedSendDelay.Name = "lblLedSendDelay";
+      this.lblLedSendDelay.Size = new System.Drawing.Size(70, 13);
+      this.lblLedSendDelay.TabIndex = 18;
+      this.lblLedSendDelay.Text = "Send delay";
+      // 
+      // lblLedHue
+      // 
+      this.lblLedHue.AutoSize = true;
+      this.lblLedHue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedHue.Location = new System.Drawing.Point(6, 218);
+      this.lblLedHue.Name = "lblLedHue";
+      this.lblLedHue.Size = new System.Drawing.Size(34, 13);
+      this.lblLedHue.TabIndex = 25;
+      this.lblLedHue.Text = "Hue:";
+      // 
+      // tbLedSendDelay
+      // 
+      this.tbLedSendDelay.Location = new System.Drawing.Point(134, 25);
+      this.tbLedSendDelay.Name = "tbLedSendDelay";
+      this.tbLedSendDelay.Size = new System.Drawing.Size(100, 20);
+      this.tbLedSendDelay.TabIndex = 14;
+      // 
+      // tbLedHue
+      // 
+      this.tbLedHue.Location = new System.Drawing.Point(134, 215);
+      this.tbLedHue.Name = "tbLedHue";
+      this.tbLedHue.Size = new System.Drawing.Size(100, 20);
+      this.tbLedHue.TabIndex = 24;
+      // 
+      // tbLedBrightness
+      // 
+      this.tbLedBrightness.Location = new System.Drawing.Point(134, 70);
+      this.tbLedBrightness.Name = "tbLedBrightness";
+      this.tbLedBrightness.Size = new System.Drawing.Size(100, 20);
+      this.tbLedBrightness.TabIndex = 15;
+      // 
+      // lblLedColorTemperature
+      // 
+      this.lblLedColorTemperature.AutoSize = true;
+      this.lblLedColorTemperature.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedColorTemperature.Location = new System.Drawing.Point(6, 165);
+      this.lblLedColorTemperature.Name = "lblLedColorTemperature";
+      this.lblLedColorTemperature.Size = new System.Drawing.Size(115, 13);
+      this.lblLedColorTemperature.TabIndex = 23;
+      this.lblLedColorTemperature.Text = "Color Temperature:";
+      // 
+      // lblLedBrightness
+      // 
+      this.lblLedBrightness.AutoSize = true;
+      this.lblLedBrightness.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedBrightness.Location = new System.Drawing.Point(6, 73);
+      this.lblLedBrightness.Name = "lblLedBrightness";
+      this.lblLedBrightness.Size = new System.Drawing.Size(70, 13);
+      this.lblLedBrightness.TabIndex = 19;
+      this.lblLedBrightness.Text = "Brightness:";
+      // 
+      // tbLedColorTemperature
+      // 
+      this.tbLedColorTemperature.Location = new System.Drawing.Point(134, 162);
+      this.tbLedColorTemperature.Name = "tbLedColorTemperature";
+      this.tbLedColorTemperature.Size = new System.Drawing.Size(100, 20);
+      this.tbLedColorTemperature.TabIndex = 22;
+      // 
+      // tbLedSaturation
+      // 
+      this.tbLedSaturation.Location = new System.Drawing.Point(134, 114);
+      this.tbLedSaturation.Name = "tbLedSaturation";
+      this.tbLedSaturation.Size = new System.Drawing.Size(100, 20);
+      this.tbLedSaturation.TabIndex = 20;
+      // 
+      // lnlLedSaturation
+      // 
+      this.lnlLedSaturation.AutoSize = true;
+      this.lnlLedSaturation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lnlLedSaturation.Location = new System.Drawing.Point(6, 117);
+      this.lnlLedSaturation.Name = "lnlLedSaturation";
+      this.lnlLedSaturation.Size = new System.Drawing.Size(69, 13);
+      this.lnlLedSaturation.TabIndex = 21;
+      this.lnlLedSaturation.Text = "Saturation:";
+      // 
+      // btnAddLed
+      // 
+      this.btnAddLed.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.btnAddLed.Location = new System.Drawing.Point(52, 441);
+      this.btnAddLed.Name = "btnAddLed";
+      this.btnAddLed.Size = new System.Drawing.Size(225, 59);
+      this.btnAddLed.TabIndex = 103;
+      this.btnAddLed.Text = "Add Led";
+      this.btnAddLed.UseVisualStyleBackColor = true;
+      this.btnAddLed.Click += new System.EventHandler(this.btnAddLed_Click);
+      // 
+      // lblLedType
+      // 
+      this.lblLedType.AutoSize = true;
+      this.lblLedType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedType.Location = new System.Drawing.Point(6, 61);
+      this.lblLedType.Name = "lblLedType";
+      this.lblLedType.Size = new System.Drawing.Size(39, 13);
+      this.lblLedType.TabIndex = 17;
+      this.lblLedType.Text = "Type:";
+      // 
+      // lblLedID
+      // 
+      this.lblLedID.AutoSize = true;
+      this.lblLedID.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedID.Location = new System.Drawing.Point(7, 25);
+      this.lblLedID.Name = "lblLedID";
+      this.lblLedID.Size = new System.Drawing.Size(24, 13);
+      this.lblLedID.TabIndex = 16;
+      this.lblLedID.Text = "ID:";
+      // 
+      // tbLedID
+      // 
+      this.tbLedID.Location = new System.Drawing.Point(135, 25);
+      this.tbLedID.Name = "tbLedID";
+      this.tbLedID.Size = new System.Drawing.Size(100, 20);
+      this.tbLedID.TabIndex = 100;
+      // 
+      // lvLedDevices
+      // 
+      this.lvLedDevices.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chID,
+            this.chType,
+            this.chLedLocation,
+            this.chLedDelay,
+            this.chLedBrightness,
+            this.chLedSaturation,
+            this.chLedColorTemperature,
+            this.chLedHue});
+      this.lvLedDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lvLedDevices.Location = new System.Drawing.Point(347, 19);
+      this.lvLedDevices.Name = "lvLedDevices";
+      this.lvLedDevices.Size = new System.Drawing.Size(720, 536);
+      this.lvLedDevices.TabIndex = 11;
+      this.lvLedDevices.UseCompatibleStateImageBehavior = false;
+      this.lvLedDevices.View = System.Windows.Forms.View.Details;
+      // 
+      // chID
+      // 
+      this.chID.Text = "ID";
+      this.chID.Width = 83;
+      // 
+      // chType
+      // 
+      this.chType.Text = "Type";
+      this.chType.Width = 99;
+      // 
+      // chLedDelay
+      // 
+      this.chLedDelay.Text = "Send delay";
+      this.chLedDelay.Width = 87;
+      // 
+      // chLedBrightness
+      // 
+      this.chLedBrightness.Text = "Brightness";
+      this.chLedBrightness.Width = 75;
+      // 
+      // chLedSaturation
+      // 
+      this.chLedSaturation.Text = "Saturation";
+      this.chLedSaturation.Width = 80;
+      // 
+      // chLedColorTemperature
+      // 
+      this.chLedColorTemperature.Text = "Color Temperature";
+      this.chLedColorTemperature.Width = 137;
+      // 
+      // chLedHue
+      // 
+      this.chLedHue.Text = "Hue";
+      this.chLedHue.Width = 56;
       // 
       // tabPageTesting
       // 
@@ -728,7 +988,7 @@
       this.tabPageTesting.Location = new System.Drawing.Point(4, 22);
       this.tabPageTesting.Name = "tabPageTesting";
       this.tabPageTesting.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageTesting.Size = new System.Drawing.Size(790, 676);
+      this.tabPageTesting.Size = new System.Drawing.Size(1086, 676);
       this.tabPageTesting.TabIndex = 1;
       this.tabPageTesting.Text = "Testing";
       // 
@@ -747,7 +1007,7 @@
       this.btnTestRed.Location = new System.Drawing.Point(90, 29);
       this.btnTestRed.Name = "btnTestRed";
       this.btnTestRed.Size = new System.Drawing.Size(75, 23);
-      this.btnTestRed.TabIndex = 65;
+      this.btnTestRed.TabIndex = 500;
       this.btnTestRed.Text = "RED";
       this.btnTestRed.UseVisualStyleBackColor = true;
       this.btnTestRed.Click += new System.EventHandler(this.btnTestRed_Click);
@@ -757,7 +1017,7 @@
       this.btnTestGreen.Location = new System.Drawing.Point(171, 29);
       this.btnTestGreen.Name = "btnTestGreen";
       this.btnTestGreen.Size = new System.Drawing.Size(75, 23);
-      this.btnTestGreen.TabIndex = 66;
+      this.btnTestGreen.TabIndex = 501;
       this.btnTestGreen.Text = "GREEN";
       this.btnTestGreen.UseVisualStyleBackColor = true;
       this.btnTestGreen.Click += new System.EventHandler(this.btnTestGreen_Click);
@@ -767,7 +1027,7 @@
       this.btnTestBlue.Location = new System.Drawing.Point(252, 29);
       this.btnTestBlue.Name = "btnTestBlue";
       this.btnTestBlue.Size = new System.Drawing.Size(75, 23);
-      this.btnTestBlue.TabIndex = 67;
+      this.btnTestBlue.TabIndex = 502;
       this.btnTestBlue.Text = "BLUE";
       this.btnTestBlue.UseVisualStyleBackColor = true;
       this.btnTestBlue.Click += new System.EventHandler(this.btnTestBlue_Click);
@@ -777,7 +1037,7 @@
       this.btnHueColorClear.Location = new System.Drawing.Point(348, 29);
       this.btnHueColorClear.Name = "btnHueColorClear";
       this.btnHueColorClear.Size = new System.Drawing.Size(92, 23);
-      this.btnHueColorClear.TabIndex = 69;
+      this.btnHueColorClear.TabIndex = 503;
       this.btnHueColorClear.Text = "CLEAR/RESET";
       this.btnHueColorClear.UseVisualStyleBackColor = true;
       this.btnHueColorClear.Click += new System.EventHandler(this.btnHueColorClear_Click);
@@ -812,13 +1072,81 @@
       // tabPageExperimental
       // 
       this.tabPageExperimental.BackColor = System.Drawing.SystemColors.Control;
+      this.tabPageExperimental.Controls.Add(this.gbHueSceneTester);
       this.tabPageExperimental.Controls.Add(this.gbColorCalibration);
       this.tabPageExperimental.Controls.Add(this.grpAtmowin);
       this.tabPageExperimental.Location = new System.Drawing.Point(4, 22);
       this.tabPageExperimental.Name = "tabPageExperimental";
-      this.tabPageExperimental.Size = new System.Drawing.Size(790, 676);
+      this.tabPageExperimental.Size = new System.Drawing.Size(1086, 676);
       this.tabPageExperimental.TabIndex = 2;
       this.tabPageExperimental.Text = "Experimental";
+      // 
+      // gbHueSceneTester
+      // 
+      this.gbHueSceneTester.Controls.Add(this.label21);
+      this.gbHueSceneTester.Controls.Add(this.lblHueSceneID);
+      this.gbHueSceneTester.Controls.Add(this.btnHueSetScene);
+      this.gbHueSceneTester.Controls.Add(this.tbHueSceneName);
+      this.gbHueSceneTester.Controls.Add(this.tbHueSceneID);
+      this.gbHueSceneTester.Controls.Add(this.btnHueLocateScenes);
+      this.gbHueSceneTester.Location = new System.Drawing.Point(808, 23);
+      this.gbHueSceneTester.Name = "gbHueSceneTester";
+      this.gbHueSceneTester.Size = new System.Drawing.Size(261, 188);
+      this.gbHueSceneTester.TabIndex = 49;
+      this.gbHueSceneTester.TabStop = false;
+      this.gbHueSceneTester.Text = "Scene debug";
+      // 
+      // label21
+      // 
+      this.label21.AutoSize = true;
+      this.label21.Location = new System.Drawing.Point(7, 136);
+      this.label21.Name = "label21";
+      this.label21.Size = new System.Drawing.Size(67, 13);
+      this.label21.TabIndex = 5;
+      this.label21.Text = "Scene name";
+      // 
+      // lblHueSceneID
+      // 
+      this.lblHueSceneID.AutoSize = true;
+      this.lblHueSceneID.Location = new System.Drawing.Point(7, 99);
+      this.lblHueSceneID.Name = "lblHueSceneID";
+      this.lblHueSceneID.Size = new System.Drawing.Size(52, 13);
+      this.lblHueSceneID.TabIndex = 4;
+      this.lblHueSceneID.Text = "Scene ID";
+      // 
+      // btnHueSetScene
+      // 
+      this.btnHueSetScene.Location = new System.Drawing.Point(176, 96);
+      this.btnHueSetScene.Name = "btnHueSetScene";
+      this.btnHueSetScene.Size = new System.Drawing.Size(79, 57);
+      this.btnHueSetScene.TabIndex = 3;
+      this.btnHueSetScene.Text = "Set Scene";
+      this.btnHueSetScene.UseVisualStyleBackColor = true;
+      this.btnHueSetScene.Click += new System.EventHandler(this.btnHueSetScene_Click);
+      // 
+      // tbHueSceneName
+      // 
+      this.tbHueSceneName.Location = new System.Drawing.Point(76, 133);
+      this.tbHueSceneName.Name = "tbHueSceneName";
+      this.tbHueSceneName.Size = new System.Drawing.Size(74, 20);
+      this.tbHueSceneName.TabIndex = 2;
+      // 
+      // tbHueSceneID
+      // 
+      this.tbHueSceneID.Location = new System.Drawing.Point(76, 96);
+      this.tbHueSceneID.Name = "tbHueSceneID";
+      this.tbHueSceneID.Size = new System.Drawing.Size(74, 20);
+      this.tbHueSceneID.TabIndex = 1;
+      // 
+      // btnHueLocateScenes
+      // 
+      this.btnHueLocateScenes.Location = new System.Drawing.Point(7, 32);
+      this.btnHueLocateScenes.Name = "btnHueLocateScenes";
+      this.btnHueLocateScenes.Size = new System.Drawing.Size(235, 33);
+      this.btnHueLocateScenes.TabIndex = 0;
+      this.btnHueLocateScenes.Text = "Retrieve scenes from bridge and log";
+      this.btnHueLocateScenes.UseVisualStyleBackColor = true;
+      this.btnHueLocateScenes.Click += new System.EventHandler(this.btnHueLocateScenes_Click);
       // 
       // gbColorCalibration
       // 
@@ -849,9 +1177,9 @@
       this.gbColorCalibration.Controls.Add(this.label9);
       this.gbColorCalibration.Controls.Add(this.label8);
       this.gbColorCalibration.Controls.Add(this.label7);
-      this.gbColorCalibration.Location = new System.Drawing.Point(4, 248);
+      this.gbColorCalibration.Location = new System.Drawing.Point(4, 228);
       this.gbColorCalibration.Name = "gbColorCalibration";
-      this.gbColorCalibration.Size = new System.Drawing.Size(756, 342);
+      this.gbColorCalibration.Size = new System.Drawing.Size(788, 317);
       this.gbColorCalibration.TabIndex = 48;
       this.gbColorCalibration.TabStop = false;
       this.gbColorCalibration.Text = "Color Calibrations";
@@ -998,84 +1326,75 @@
       // 
       // tbZBlue
       // 
-      this.tbZBlue.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "ZBlue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbZBlue.Location = new System.Drawing.Point(346, 194);
       this.tbZBlue.Name = "tbZBlue";
       this.tbZBlue.Size = new System.Drawing.Size(74, 20);
       this.tbZBlue.TabIndex = 59;
-      this.tbZBlue.Text = global::AtmoHue.Properties.Settings.Default.ZBlue;
+      this.tbZBlue.Text = "1.835763";
       // 
       // tbZGreen
       // 
-      this.tbZGreen.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "ZGreen", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbZGreen.Location = new System.Drawing.Point(243, 194);
       this.tbZGreen.Name = "tbZGreen";
       this.tbZGreen.Size = new System.Drawing.Size(74, 20);
       this.tbZGreen.TabIndex = 58;
-      this.tbZGreen.Text = global::AtmoHue.Properties.Settings.Default.ZGreen;
+      this.tbZGreen.Text = "0.053077";
       // 
       // tbZRed
       // 
-      this.tbZRed.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "ZRed", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbZRed.Location = new System.Drawing.Point(148, 194);
       this.tbZRed.Name = "tbZRed";
       this.tbZRed.Size = new System.Drawing.Size(74, 20);
       this.tbZRed.TabIndex = 57;
-      this.tbZRed.Text = global::AtmoHue.Properties.Settings.Default.ZRed;
+      this.tbZRed.Text = "0.0000000";
       // 
       // tbYBlue
       // 
-      this.tbYBlue.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "YBlue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbYBlue.Location = new System.Drawing.Point(346, 155);
       this.tbYBlue.Name = "tbYBlue";
       this.tbYBlue.Size = new System.Drawing.Size(74, 20);
       this.tbYBlue.TabIndex = 56;
-      this.tbYBlue.Text = global::AtmoHue.Properties.Settings.Default.YBlue;
+      this.tbYBlue.Text = "0.022598";
       // 
       // tbYGreen
       // 
-      this.tbYGreen.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "YGreen", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbYGreen.Location = new System.Drawing.Point(243, 155);
       this.tbYGreen.Name = "tbYGreen";
       this.tbYGreen.Size = new System.Drawing.Size(74, 20);
       this.tbYGreen.TabIndex = 55;
-      this.tbYGreen.Text = global::AtmoHue.Properties.Settings.Default.YGreen;
+      this.tbYGreen.Text = "0.743075";
       // 
       // tbYRed
       // 
-      this.tbYRed.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "YRed", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbYRed.Location = new System.Drawing.Point(148, 155);
       this.tbYRed.Name = "tbYRed";
       this.tbYRed.Size = new System.Drawing.Size(74, 20);
       this.tbYRed.TabIndex = 54;
-      this.tbYRed.Text = global::AtmoHue.Properties.Settings.Default.YRed;
+      this.tbYRed.Text = "0.234327";
       // 
       // tbXBlue
       // 
-      this.tbXBlue.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "XBlue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbXBlue.Location = new System.Drawing.Point(346, 114);
       this.tbXBlue.Name = "tbXBlue";
       this.tbXBlue.Size = new System.Drawing.Size(74, 20);
       this.tbXBlue.TabIndex = 53;
-      this.tbXBlue.Text = global::AtmoHue.Properties.Settings.Default.XBlue;
+      this.tbXBlue.Text = "0.197109";
       // 
       // tbXGreen
       // 
-      this.tbXGreen.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "XGreen", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbXGreen.Location = new System.Drawing.Point(243, 114);
       this.tbXGreen.Name = "tbXGreen";
       this.tbXGreen.Size = new System.Drawing.Size(74, 20);
       this.tbXGreen.TabIndex = 52;
-      this.tbXGreen.Text = global::AtmoHue.Properties.Settings.Default.XGreen;
+      this.tbXGreen.Text = "0.103455";
       // 
       // tbXRed
       // 
-      this.tbXRed.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "XRed", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.tbXRed.Location = new System.Drawing.Point(148, 114);
       this.tbXRed.Name = "tbXRed";
       this.tbXRed.Size = new System.Drawing.Size(74, 20);
       this.tbXRed.TabIndex = 51;
-      this.tbXRed.Text = global::AtmoHue.Properties.Settings.Default.XRed;
+      this.tbXRed.Text = "0.649926";
       // 
       // label10
       // 
@@ -1115,12 +1434,34 @@
     "7 / Green  0.743075 / Blue  0.022598\r\nZ = Red 0.0000000 / Green  0.053077 / Blue" +
     "  1.035763\r\n";
       // 
+      // lblLedLocation
+      // 
+      this.lblLedLocation.AutoSize = true;
+      this.lblLedLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedLocation.Location = new System.Drawing.Point(6, 97);
+      this.lblLedLocation.Name = "lblLedLocation";
+      this.lblLedLocation.Size = new System.Drawing.Size(60, 13);
+      this.lblLedLocation.TabIndex = 30;
+      this.lblLedLocation.Text = "Location:";
+      // 
+      // tbLedLocation
+      // 
+      this.tbLedLocation.Location = new System.Drawing.Point(135, 97);
+      this.tbLedLocation.Name = "tbLedLocation";
+      this.tbLedLocation.Size = new System.Drawing.Size(121, 20);
+      this.tbLedLocation.TabIndex = 102;
+      // 
+      // chLedLocation
+      // 
+      this.chLedLocation.Text = "Location";
+      this.chLedLocation.Width = 99;
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
-      this.ClientSize = new System.Drawing.Size(816, 740);
+      this.ClientSize = new System.Drawing.Size(1108, 740);
       this.Controls.Add(this.tabControl1);
       this.Controls.Add(this.lCopyright);
       this.Controls.Add(this.llQ42);
@@ -1139,9 +1480,16 @@
       this.tabControl1.ResumeLayout(false);
       this.tabPageGeneral.ResumeLayout(false);
       this.tabPageGeneral.PerformLayout();
+      this.tabPageLeds.ResumeLayout(false);
+      this.gbManageLeds.ResumeLayout(false);
+      this.gbManageLeds.PerformLayout();
+      this.gbLedOptional.ResumeLayout(false);
+      this.gbLedOptional.PerformLayout();
       this.tabPageTesting.ResumeLayout(false);
       this.tabPageTesting.PerformLayout();
       this.tabPageExperimental.ResumeLayout(false);
+      this.gbHueSceneTester.ResumeLayout(false);
+      this.gbHueSceneTester.PerformLayout();
       this.gbColorCalibration.ResumeLayout(false);
       this.gbColorCalibration.PerformLayout();
       this.ResumeLayout(false);
@@ -1157,8 +1505,6 @@
         private System.Windows.Forms.TextBox tbHueBridgeIP;
         private System.Windows.Forms.TextBox tbAtmowinLocation;
         private System.Windows.Forms.CheckBox cbRunningWindows8;
-        private System.Windows.Forms.ComboBox cbOutputHueDevicesRange;
-        private System.Windows.Forms.Label lblOutputHueDevices;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tbHueAppName;
@@ -1169,12 +1515,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lblBrightness;
         private System.Windows.Forms.ComboBox cbHueBrightness;
-        private System.Windows.Forms.TextBox tbHueSaturation;
-        private System.Windows.Forms.TextBox tbHueTransitionTime;
         private System.Windows.Forms.Label lblHueSaturation;
         private System.Windows.Forms.Label lblHueTransTime;
         private System.Windows.Forms.Label lblHueHue;
-        private System.Windows.Forms.TextBox tbHueHue;
         private System.Windows.Forms.Label lblHueCustomColorTest;
         private System.Windows.Forms.TextBox tbHueCustomColor;
         private System.Windows.Forms.Button btnHueSendCustomColor;
@@ -1206,7 +1549,6 @@
         private System.Windows.Forms.TabPage tabPageTesting;
         private System.Windows.Forms.TabPage tabPageExperimental;
         private System.Windows.Forms.Button btnRefreshSettings;
-        private System.Windows.Forms.TextBox tbHueColorTemperature;
         private System.Windows.Forms.Label lblHueColorTemperature;
         private System.Windows.Forms.GroupBox gbColorCalibration;
         private System.Windows.Forms.Label label7;
@@ -1242,6 +1584,49 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.CheckBox cbHueSetBrightnessStartup;
+        private System.Windows.Forms.TabPage tabPageLeds;
+        private System.Windows.Forms.ListView lvLedDevices;
+        private System.Windows.Forms.ColumnHeader chID;
+        private System.Windows.Forms.ColumnHeader chType;
+        private System.Windows.Forms.ColumnHeader chLedDelay;
+        private System.Windows.Forms.ColumnHeader chLedBrightness;
+        private System.Windows.Forms.GroupBox gbManageLeds;
+        private System.Windows.Forms.TextBox tbLedBrightness;
+        private System.Windows.Forms.TextBox tbLedSendDelay;
+        private System.Windows.Forms.TextBox tbLedID;
+        private System.Windows.Forms.Label lblLedBrightness;
+        private System.Windows.Forms.Label lblLedSendDelay;
+        private System.Windows.Forms.Label lblLedType;
+        private System.Windows.Forms.Label lblLedID;
+        private System.Windows.Forms.Label lblLedHue;
+        private System.Windows.Forms.TextBox tbLedHue;
+        private System.Windows.Forms.Label lblLedColorTemperature;
+        private System.Windows.Forms.TextBox tbLedColorTemperature;
+        private System.Windows.Forms.Label lnlLedSaturation;
+        private System.Windows.Forms.TextBox tbLedSaturation;
+        private System.Windows.Forms.Button btnAddLed;
+        private System.Windows.Forms.GroupBox gbLedOptional;
+        private System.Windows.Forms.ColumnHeader chLedSaturation;
+        private System.Windows.Forms.ColumnHeader chLedColorTemperature;
+        private System.Windows.Forms.ColumnHeader chLedHue;
+        private System.Windows.Forms.ComboBox cbLedType;
+        private System.Windows.Forms.Button btnLedItemDown;
+        private System.Windows.Forms.Button btnLedItemUp;
+        private System.Windows.Forms.Button btnRemoveLeds;
+        private System.Windows.Forms.ComboBox cbHueHue;
+        private System.Windows.Forms.ComboBox cbHueColorTemperature;
+        private System.Windows.Forms.ComboBox cbHueTransitionTime;
+        private System.Windows.Forms.ComboBox cbHueSaturation;
+        private System.Windows.Forms.GroupBox gbHueSceneTester;
+        private System.Windows.Forms.TextBox tbHueSceneID;
+        private System.Windows.Forms.Button btnHueLocateScenes;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label lblHueSceneID;
+        private System.Windows.Forms.Button btnHueSetScene;
+        private System.Windows.Forms.TextBox tbHueSceneName;
+        private System.Windows.Forms.TextBox tbLedLocation;
+        private System.Windows.Forms.Label lblLedLocation;
+        private System.Windows.Forms.ColumnHeader chLedLocation;
     }
 }
 

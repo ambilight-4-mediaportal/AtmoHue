@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using Q42.HueApi;
 using Q42.HueApi.NET;
 using Q42.HueApi.Interfaces;
@@ -53,7 +54,7 @@ namespace AtmoHue
         //HUE
         public Boolean hueRotatingColors = false;
         HueClient client = new HueClient("127.0.0.1");
-        public List<string> devices = new List<string>();
+        public List<string> ledDevices = new List<string>();
         public List<string> commandCache = new List<string>();
         public int hueRotateDelay = 1000;
         public string hueBridgeIP = "127.0.0.1";
@@ -65,6 +66,9 @@ namespace AtmoHue
         public string hueColorTemperature = "";
         public string hueHue = "";
         public string hueOutputDevices = "";
+        public Boolean hueRunningWindows8 = false;
+        public Boolean hueAutoconnectBridge = false;
+        public Boolean HueRemoteAPIenabled = false;
         public Boolean HueSetBrightnessStartup = false;
         public string calibrateXred = "";
         public string calibrateYred = "";
@@ -77,9 +81,9 @@ namespace AtmoHue
         public string calibrateZblue = "";
 
         //Remote API
-        public string remoteAPIip = "";
-        public string remoteAPIport = "";
-        public string remoteSendDelay = "";
+        public string remoteAPIip = "127.0.0.1";
+        public string remoteAPIport = "20123";
+        public string remoteSendDelay = "300";
         
         public Boolean colorCommand = false;
         public Boolean colorisON = false;
@@ -87,9 +91,6 @@ namespace AtmoHue
         public Form1()
         {
             InitializeComponent();
-
-            refreshSettings();
-
 
             //Find bridge on startup for TESTING
             if (string.IsNullOrEmpty(hueBridgeIP) == true)
@@ -104,10 +105,10 @@ namespace AtmoHue
                 }
             }
             
-            //Refresh settings
-            refreshSettings();
+            //Load settings
+            LoadSettings(true);
 
-            //Create some default brightness levels
+            //Create some default combobox values
             cbHueBrightness.Items.Clear();
             int maxBrightness = 500;
             int counter = 0;
@@ -117,6 +118,12 @@ namespace AtmoHue
                 cbHueBrightness.Items.Add(counter);
                 counter++;
             }
+            //Create some default combobox values
+            setDefaultCombBoxValues(cbHueBrightness, 0, 254);
+            setDefaultCombBoxValues(cbHueSaturation, 0, 254);
+            setDefaultCombBoxValues(cbHueColorTemperature, 154, 500);
+            setDefaultCombBoxValues(cbHueTransitionTime, 100, 5000);
+            setDefaultCombBoxValues(cbHueHue, 0, 254);
 
             if (client.IsInitialized == false && string.IsNullOrEmpty(hueBridgeIP) == false)
             {
@@ -150,6 +157,345 @@ namespace AtmoHue
             LinkLabel.Link link = new LinkLabel.Link();
             link.LinkData = "https://github.com/Q42/Q42.HueApi";
             llQ42.Links.Add(link);
+        }
+        private void setDefaultCombBoxValues(ComboBox cb, int min, int max)
+        {
+          cb.Items.Clear();
+
+          while (min <= max)
+          {
+            cb.Items.Add(min);
+            min++;
+          }
+
+        }
+        private void LoadSettings(Boolean init)
+        {
+          ArrayList ledDevices = new ArrayList();
+
+          if (File.Exists("settings.xml"))
+          {
+            using (XmlReader reader = XmlReader.Create("settings.xml"))
+            {
+              while (reader.Read())
+              {
+                // HUE
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueBridgeIP"))
+                {
+                  hueBridgeIP = reader.ReadString();
+                  if (init)
+                  {
+                    tbHueBridgeIP.Text = hueBridgeIP;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueAppname"))
+                {
+                  hueAppName = reader.ReadString();
+                  if (init)
+                  {
+                    tbHueAppName.Text = hueAppName;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueAppKey"))
+                {
+                  hueAppKey = reader.ReadString();
+                  if (init)
+                  {
+                    tbHueAppKey.Text = hueAppKey;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueBrightness"))
+                {
+                  hueBrightness = reader.ReadString();
+                  if (init)
+                  {
+                    cbHueBrightness.Text = hueBrightness;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueSaturation"))
+                {
+                  hueSaturation = reader.ReadString();
+                  if (init)
+                  {
+                    cbHueSaturation.Text = hueSaturation;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueTransitionTime"))
+                {
+                  hueTransitiontime = reader.ReadString();
+                  if (init)
+                  {
+                    cbHueTransitionTime.Text = hueTransitiontime;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueColorTemperature"))
+                {
+                  hueColorTemperature = reader.ReadString();
+                  if (init)
+                  {
+                    cbHueColorTemperature.Text = hueColorTemperature;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueHue"))
+                {
+                  hueHue = reader.ReadString();
+                  if (init)
+                  {
+                    cbHueHue.Text = hueHue;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueSetBrightnessStartup"))
+                {
+                  HueSetBrightnessStartup = Boolean.Parse(reader.ReadString());
+                  if (init)
+                  {
+                    cbHueSetBrightnessStartup.Checked = HueSetBrightnessStartup;
+                  }
+                }
+
+                
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueRunningWindows8"))
+                {
+                  hueRunningWindows8 = Boolean.Parse(reader.ReadString());
+                  if (init)
+                  {
+                    cbRunningWindows8.Checked = hueRunningWindows8;
+                  }
+                }
+
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueAutoConnectBridge"))
+                {
+                  hueAutoconnectBridge = Boolean.Parse(reader.ReadString());
+                  if (init)
+                  {
+                    cbAutoConnectBridge.Checked = hueAutoconnectBridge;
+                  }
+                }
+
+
+                // Remote API
+
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPIenabled"))
+                {
+                  HueRemoteAPIenabled = Boolean.Parse(reader.ReadString());
+                  if (init)
+                  {
+                    cbRemoteAPIEnabled.Checked = HueRemoteAPIenabled;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPIIP"))
+                {
+                  remoteAPIip = reader.ReadString();
+                  if (init)
+                  {
+                    tbRemoteAPIip.Text = remoteAPIip;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPIPort"))
+                {
+                  remoteAPIport = reader.ReadString();
+                  if (init)
+                  {
+                    tbRemoteApiPort.Text = remoteAPIport;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPISenDelay"))
+                {
+                  remoteSendDelay = reader.ReadString();
+                  if (init)
+                  {
+                    tbRemoteAPIsendDelay.Text = remoteSendDelay;
+                  }
+                }
+
+                // LED devices
+                string id = "";
+                string type = "";
+                string location = "";
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "LED"))
+                {
+                  reader.ReadToDescendant("ID");
+                  id = reader.ReadString();
+                  reader.ReadToFollowing("Type");
+                  type = reader.ReadString();
+                  reader.ReadToFollowing("Location");
+                  location = reader.ReadString();
+
+
+                  //Add LED ID to devices list
+                  ledDevices.Add(id);
+                  string[] subItems = { type,location };
+                  lvLedDevices.Items.Add(id).SubItems.AddRange(subItems);
+                }
+
+                // Atmowin
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "AtmowinLocation"))
+                {
+                  atmowinLocation = reader.ReadString();
+                  if (init)
+                  {
+                    tbAtmowinLocation.Text = atmowinLocation;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "AtmoWinScanInterval"))
+                {
+                  atmowinScanInterval = reader.ReadString();
+                  if (init)
+                  {
+                    tbAtmowinScanInterval.Text = atmowinScanInterval;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XRed"))
+                {
+                  calibrateXred = reader.ReadString();
+                  if (init)
+                  {
+                    tbXRed.Text = calibrateXred;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YRed"))
+                {
+                  calibrateYred = reader.ReadString();
+                  if (init)
+                  {
+                    tbYRed.Text = calibrateYred;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZRed"))
+                {
+                  calibrateZred = reader.ReadString();
+                  if (init)
+                  {
+                    tbZRed.Text = calibrateZred;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XGreen"))
+                {
+                  calibrateXgreen = reader.ReadString();
+                  if (init)
+                  {
+                    tbXGreen.Text = calibrateXgreen;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YGreen"))
+                {
+                  calibrateYgreen = reader.ReadString();
+                  if (init)
+                  {
+                    tbYGreen.Text = calibrateYgreen;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZGreen"))
+                {
+                  calibrateZgreen = reader.ReadString();
+                  if (init)
+                  {
+                    tbZGreen.Text = calibrateZgreen;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XBlue"))
+                {
+                  calibrateXblue = reader.ReadString();
+                  if (init)
+                  {
+                    tbXBlue.Text = calibrateXblue;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YBlue"))
+                {
+                  calibrateYblue = reader.ReadString();
+                  if (init)
+                  {
+                    tbYBlue.Text = calibrateYblue;
+                  }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZBlue"))
+                {
+                  calibrateZblue = reader.ReadString();
+                  if (init)
+                  {
+                    tbZBlue.Text = calibrateZblue;
+                  }
+                }
+              }
+            }
+          }
+
+
+
+        }
+        private void SaveSettings()
+        {
+          XmlWriterSettings settings = new XmlWriterSettings();
+          settings.Indent = true;
+          settings.IndentChars = "  ";
+          settings.NewLineOnAttributes = true;
+
+          using (XmlWriter writer = XmlWriter.Create("settings.xml", settings))
+          {
+            writer.WriteStartDocument();
+            writer.WriteStartElement("Settings");
+            writer.WriteStartElement("General");
+            writer.WriteElementString("HueBridgeIP", tbHueBridgeIP.Text);
+            writer.WriteElementString("HueAppname", tbHueAppName.Text);
+            writer.WriteElementString("HueAppKey", tbHueAppKey.Text);
+            writer.WriteElementString("HueBrightness", cbHueBrightness.Text);
+            writer.WriteElementString("HueSaturation", cbHueSaturation.Text);
+            writer.WriteElementString("HueTransitionTime", cbHueTransitionTime.Text);
+            writer.WriteElementString("HueColorTemperature", cbHueColorTemperature.Text);
+            writer.WriteElementString("HueHue", cbHueHue.Text);
+            writer.WriteElementString("HueSetBrightnessStartup", cbHueSetBrightnessStartup.Checked.ToString());
+            writer.WriteElementString("HueRunningWindows8", cbRunningWindows8.Checked.ToString());
+            writer.WriteElementString("HueAutoConnectBridge", cbAutoConnectBridge.Checked.ToString());
+            writer.WriteElementString("RemoteAPIenabled", cbRemoteAPIEnabled.Checked.ToString());
+            writer.WriteElementString("RemoteAPIIP", tbRemoteAPIip.Text);
+            writer.WriteElementString("RemoteAPIPort", tbRemoteApiPort.Text);
+            writer.WriteElementString("RemoteAPISenDelay", tbRemoteAPIsendDelay.Text);
+
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("LedDevices");
+
+            foreach (ListViewItem device in lvLedDevices.Items)
+            {
+              writer.WriteStartElement("LED");
+              writer.WriteElementString("ID", device.Text);
+              writer.WriteElementString("Type", device.SubItems[1].Text);
+              writer.WriteElementString("Location", device.SubItems[2].Text);
+
+              /*
+              writer.WriteElementString("Send delay", device.SubItems[1].Text);
+              writer.WriteElementString("Brightness", device.SubItems[2].Text);
+              writer.WriteElementString("Saturation", device.SubItems[3].Text);
+              writer.WriteElementString("Color Temperature", device.SubItems[4].Text);
+              writer.WriteElementString("Hue", device.SubItems[5].Text);
+               */
+              writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+
+
+            writer.WriteStartElement("Atmowin");
+            writer.WriteElementString("AtmowinLocation", tbAtmowinLocation.Text);
+            writer.WriteElementString("AtmoWinScanInterval", tbAtmowinScanInterval.Text);
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("ColorCalibrations");
+            writer.WriteElementString("XRed", tbXRed.Text);
+            writer.WriteElementString("YRed", tbYRed.Text);
+            writer.WriteElementString("ZRed", tbZRed.Text);
+            writer.WriteElementString("XGreen", tbXGreen.Text);
+            writer.WriteElementString("YGreen", tbYGreen.Text);
+            writer.WriteElementString("ZGreen", tbZGreen.Text);
+            writer.WriteElementString("XBlue", tbXBlue.Text);
+            writer.WriteElementString("YBlue", tbYBlue.Text);
+            writer.WriteElementString("ZBlue", tbZBlue.Text);
+
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+          }
         }
 
         public static string formatTitle()
@@ -443,7 +789,7 @@ namespace AtmoHue
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Properties.Settings.Default.Save();
+            SaveSettings();
             scanAtmowin = false;
             Application.ExitThread();
             Environment.Exit(0);
@@ -461,38 +807,9 @@ namespace AtmoHue
             function();
         }
 
-        private void refreshSettings()
-        {
-            hueBridgeIP = tbHueBridgeIP.Text.Replace(":80", string.Empty).Trim();
-            hueAppName = tbHueAppName.Text;
-            hueAppKey = tbHueAppKey.Text;
-            hueBrightness = cbHueBrightness.Text;
-            hueSaturation = tbHueSaturation.Text;
-            hueTransitiontime = tbHueTransitionTime.Text;
-            hueColorTemperature = tbHueColorTemperature.Text;
-            hueHue = tbHueHue.Text;
-            hueOutputDevices = cbOutputHueDevicesRange.Text;
-            HueSetBrightnessStartup = cbHueSetBrightnessStartup.Checked;
-
-            calibrateXred = tbXRed.Text;
-            calibrateYred = tbYRed.Text;
-            calibrateZred = tbZRed.Text;
-            calibrateXgreen = tbXGreen.Text;
-            calibrateYgreen = tbYGreen.Text;
-            calibrateZgreen = tbZGreen.Text;
-            calibrateXblue = tbXBlue.Text;
-            calibrateYblue = tbYBlue.Text;
-            calibrateZblue = tbZBlue.Text;
-
-            atmowinLocation = addTrailingSlash(tbAtmowinLocation.Text);
-            atmowinStaticColor = tbAtmowinStaticColor.Text;
-            atmowinScanInterval = tbAtmowinScanInterval.Text;
-            remoteAPIip = tbRemoteAPIip.Text;
-            remoteAPIport = tbRemoteApiPort.Text;
-            remoteSendDelay = tbRemoteAPIsendDelay.Text;
-        }
         private void btnLocateHueBridge_Click(object sender, EventArgs e)
         {
+          MessageBox.Show("Click on the button on your Hue Bridge and press OK to continue afterwards.");
             if (cbRunningWindows8.Checked == false)
             {
                 BridgeLocator();
@@ -510,7 +827,7 @@ namespace AtmoHue
             //For Windows 8 and .NET45 projects you can use the SSDPBridgeLocator which actually scans your network. 
             //See the included BridgeDiscoveryTests and the specific .NET and .WinRT projects
             
-            IEnumerable<string> bridgeIPs = await locator.LocateBridgesAsync(TimeSpan.FromSeconds(5));
+            IEnumerable<string> bridgeIPs = await locator.LocateBridgesAsync(TimeSpan.FromSeconds(10));
             foreach (string bridgeIP in bridgeIPs)
             {
                tbHueBridgeIP.Text = bridgeIP;
@@ -518,13 +835,12 @@ namespace AtmoHue
                bridgesFound++;
             }
 
-
             if (bridgesFound == 0)
             {
                 Logger("Couldn't find any Hue Bridges in network using standard discovery method");
             }
 
-            refreshSettings();
+            
 
             //Connect to bridge if found and option is enabled
             if (string.IsNullOrEmpty(hueBridgeIP) == false && cbAutoConnectBridge.Checked == true)
@@ -564,7 +880,7 @@ namespace AtmoHue
                 Logger("Couldn't find any Hue Bridges in network using SSDP discovery method");
             }
 
-            refreshSettings();
+            
 
             //Connect to bridge if found and option is enabled
             if (string.IsNullOrEmpty(hueBridgeIP) == false && cbAutoConnectBridge.Checked == true)
@@ -755,16 +1071,8 @@ namespace AtmoHue
                   command.TurnOff();
                   colorisON = false;
                 }
-
-                //Split up if we have multiple led devices
-                devices.Clear();
-                string[] devicesSplit = hueOutputDevices.Trim().Split(',');
-                foreach (string device in devicesSplit)
-                {
-                  devices.Add(device);
-                }
                 
-                client.SendCommandAsync(command, devices);
+                client.SendCommandAsync(command, ledDevices);
                 //client.SendGroupCommandAsync(command, "0");
 
                 if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
@@ -792,7 +1100,7 @@ namespace AtmoHue
 
         private void btnStartAtmowinHue_Click(object sender, EventArgs e)
         {
-            refreshSettings();
+            
             if (string.IsNullOrEmpty(hueBridgeIP) == true)
             {
                 if (cbRunningWindows8.Checked == false)
@@ -807,6 +1115,7 @@ namespace AtmoHue
             scanAtmowin = true;
             Logger("Start monitoring Atmowin");
             Thread t = new Thread(startMonitoringAtmowin);
+            t.IsBackground = true;
             t.Start();
 
         }
@@ -976,31 +1285,31 @@ namespace AtmoHue
         private void btnTestRed_Click(object sender, EventArgs e)
         {
 
-            refreshSettings();
+            
             hueSetColor(Color.Red, sources.LOCAL,0);
         }
 
         private void btnTestGreen_Click(object sender, EventArgs e)
         {
-            refreshSettings();
+            
             hueSetColor(Color.Green, sources.LOCAL,0);
         }
 
         private void btnTestBlue_Click(object sender, EventArgs e)
         {
-            refreshSettings();
+            
             hueSetColor(Color.Blue, sources.LOCAL,0);
         }
 
         private void btnHueColorClear_Click(object sender, EventArgs e)
         {
-            refreshSettings();
+            
             hueSetColor(Color.Black, sources.LOCAL,0);
         }
 
         private void btnHueSendCustomColor_Click(object sender, EventArgs e)
         {
-            refreshSettings();
+            
             string hexColor = tbHueCustomColor.Text.Replace("#", string.Empty).Trim();
             hexColor = "#" + hexColor;
             System.Drawing.Color customColor = System.Drawing.ColorTranslator.FromHtml(hexColor);
@@ -1009,9 +1318,10 @@ namespace AtmoHue
 
         private void btnHueColorRotateTestStart_Click(object sender, EventArgs e)
         {
-            refreshSettings();
+            
             hueRotatingColors = true;
             Thread t = new Thread(rotateColors);
+            t.IsBackground = true;
             t.Start();
         }
         private void btnHueColorRotateTestStop_Click(object sender, EventArgs e)
@@ -1029,6 +1339,95 @@ namespace AtmoHue
         private void btnTestBlue_Click_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+          SaveSettings();
+        }
+
+        private void btnAddLed_Click(object sender, EventArgs e)
+        {
+          string id = tbLedID.Text;
+          string[] subItems = { cbLedType.Text, tbLedLocation.Text, tbLedSendDelay.Text, tbLedBrightness.Text, tbLedSaturation.Text, tbLedColorTemperature.Text, tbLedHue.Text };
+
+          lvLedDevices.Items.Add(id).SubItems.AddRange(subItems);
+
+          SetInUseLedDevices();
+
+          tbLedID.Text = "";
+          cbLedType.Text = "";
+          tbLedLocation.Text = "";
+          tbLedID.Focus();
+        }
+        private enum MoveDirection { Up = -1, Down = 1 };
+
+        private static void MoveListViewItems(ListView sender, MoveDirection direction)
+        {
+          int dir = (int)direction;
+          int opp = dir * -1;
+
+          bool valid = sender.SelectedItems.Count > 0 &&
+                          ((direction == MoveDirection.Down && (sender.SelectedItems[sender.SelectedItems.Count - 1].Index < sender.Items.Count - 1))
+                      || (direction == MoveDirection.Up && (sender.SelectedItems[0].Index > 0)));
+
+          if (valid)
+          {
+            foreach (ListViewItem item in sender.SelectedItems)
+            {
+              int index = item.Index + dir;
+              sender.Items.RemoveAt(item.Index);
+              sender.Items.Insert(index, item);
+
+              sender.Items[index + opp].SubItems[1].Text = (index + opp).ToString();
+              item.SubItems[1].Text = (index).ToString();
+            }
+          }
+        }
+
+        private void btnLedItemUp_Click(object sender, EventArgs e)
+        {
+          MoveListViewItems(lvLedDevices, MoveDirection.Up);
+
+        }
+
+        private void btnLedItemDown_Click(object sender, EventArgs e)
+        {
+          MoveListViewItems(lvLedDevices, MoveDirection.Down);
+
+        }
+
+        private void btnRemoveLeds_Click(object sender, EventArgs e)
+        {
+          lvLedDevices.Items.Cast<ListViewItem>().Where(T => T.Selected)
+              .Select(T => T.Index).ToList().ForEach(T => lvLedDevices.Items.RemoveAt(T));
+
+          SetInUseLedDevices();
+        }
+        private void SetInUseLedDevices()
+        {
+          ledDevices.Clear();
+          foreach (ListViewItem item in lvLedDevices.Items)
+          {
+            ledDevices.Add(item.Text);
+          }
+        }
+        private void btnHueSetScene_Click(object sender, EventArgs e)
+        {
+          client.CreateOrUpdateSceneAsync(tbHueSceneID.Text, tbHueSceneName.Text, ledDevices);
+        }
+
+        private void btnHueLocateScenes_Click(object sender, EventArgs e)
+        {
+          getScenes();
+        }
+        private async Task getScenes()
+        {
+          IEnumerable<Q42.HueApi.Models.Scene> scenes = await client.GetScenesAsync();
+          foreach (Q42.HueApi.Models.Scene scene in scenes)
+          {
+            Logger(string.Format("Active:{0} - ID:{1} - Name:{2} - Lights:{3}", scene.Active, scene.Id, scene.Name, scene.Lights));
+          }
         }
     }
 

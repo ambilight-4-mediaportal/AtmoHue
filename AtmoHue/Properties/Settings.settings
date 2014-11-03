@@ -48,7 +48,7 @@
       <Value Profile="(Default)">mypersonalappname</Value>
     </Setting>
     <Setting Name="HueAppKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)">mypersonalappkey</Value>
+      <Value Profile="(Default)">AtmoHueAppKey</Value>
     </Setting>
     <Setting Name="RemoteApiSendDelay" Type="System.String" Scope="User">
       <Value Profile="(Default)">300</Value>

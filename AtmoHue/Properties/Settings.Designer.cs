@@ -205,7 +205,7 @@ namespace AtmoHue.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("mypersonalappkey")]
+        [global::System.Configuration.DefaultSettingValueAttribute("AtmoHueAppKey")]
         public string HueAppKey {
             get {
                 return ((string)(this["HueAppKey"]));
