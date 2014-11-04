@@ -84,13 +84,13 @@
       this.btnLedItemDown = new System.Windows.Forms.Button();
       this.btnLedItemUp = new System.Windows.Forms.Button();
       this.gbManageLeds = new System.Windows.Forms.GroupBox();
+      this.tbLedLocation = new System.Windows.Forms.TextBox();
+      this.lblLedLocation = new System.Windows.Forms.Label();
       this.btnRemoveLeds = new System.Windows.Forms.Button();
       this.cbLedType = new System.Windows.Forms.ComboBox();
       this.gbLedOptional = new System.Windows.Forms.GroupBox();
       this.lblLedSendDelay = new System.Windows.Forms.Label();
-      this.lblLedHue = new System.Windows.Forms.Label();
       this.tbLedSendDelay = new System.Windows.Forms.TextBox();
-      this.tbLedHue = new System.Windows.Forms.TextBox();
       this.tbLedBrightness = new System.Windows.Forms.TextBox();
       this.lblLedColorTemperature = new System.Windows.Forms.Label();
       this.lblLedBrightness = new System.Windows.Forms.Label();
@@ -104,6 +104,7 @@
       this.lvLedDevices = new System.Windows.Forms.ListView();
       this.chID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.chType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chLedLocation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.chLedDelay = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.chLedBrightness = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.chLedSaturation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -115,8 +116,6 @@
       this.btnTestGreen = new System.Windows.Forms.Button();
       this.btnTestBlue = new System.Windows.Forms.Button();
       this.btnHueColorClear = new System.Windows.Forms.Button();
-      this.btnRefreshSettings = new System.Windows.Forms.Button();
-      this.tbHueCustomColor = new System.Windows.Forms.TextBox();
       this.tbRotateTestDelay = new System.Windows.Forms.TextBox();
       this.tabPageExperimental = new System.Windows.Forms.TabPage();
       this.gbHueSceneTester = new System.Windows.Forms.GroupBox();
@@ -154,9 +153,25 @@
       this.label9 = new System.Windows.Forms.Label();
       this.label8 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
-      this.lblLedLocation = new System.Windows.Forms.Label();
-      this.tbLedLocation = new System.Windows.Forms.TextBox();
-      this.chLedLocation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.lblLedHue = new System.Windows.Forms.Label();
+      this.tbLedHue = new System.Windows.Forms.TextBox();
+      this.chLedStaticColor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.lblLedStaticColor = new System.Windows.Forms.Label();
+      this.tbLedR = new System.Windows.Forms.TextBox();
+      this.tbLedG = new System.Windows.Forms.TextBox();
+      this.tbLedB = new System.Windows.Forms.TextBox();
+      this.lblLedR = new System.Windows.Forms.Label();
+      this.lblLedG = new System.Windows.Forms.Label();
+      this.lblLedB = new System.Windows.Forms.Label();
+      this.label22 = new System.Windows.Forms.Label();
+      this.label23 = new System.Windows.Forms.Label();
+      this.label24 = new System.Windows.Forms.Label();
+      this.cbTestCustomColorR = new System.Windows.Forms.ComboBox();
+      this.cbTestCustomColorG = new System.Windows.Forms.ComboBox();
+      this.cbTestCustomColorB = new System.Windows.Forms.ComboBox();
+      this.gbHueSettings = new System.Windows.Forms.GroupBox();
+      this.lblConnectionStatus = new System.Windows.Forms.Label();
+      this.gbColorTests = new System.Windows.Forms.GroupBox();
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
@@ -169,6 +184,8 @@
       this.tabPageExperimental.SuspendLayout();
       this.gbHueSceneTester.SuspendLayout();
       this.gbColorCalibration.SuspendLayout();
+      this.gbHueSettings.SuspendLayout();
+      this.gbColorTests.SuspendLayout();
       this.SuspendLayout();
       // 
       // btnLocateHueBridge
@@ -185,7 +202,7 @@
       // 
       this.label1.AutoSize = true;
       this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label1.Location = new System.Drawing.Point(20, 19);
+      this.label1.Location = new System.Drawing.Point(17, 26);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(59, 13);
       this.label1.TabIndex = 2;
@@ -205,7 +222,7 @@
       // 
       this.label3.AutoSize = true;
       this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label3.Location = new System.Drawing.Point(20, 59);
+      this.label3.Location = new System.Drawing.Point(17, 66);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(89, 13);
       this.label3.TabIndex = 13;
@@ -215,7 +232,7 @@
       // 
       this.label4.AutoSize = true;
       this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label4.Location = new System.Drawing.Point(20, 87);
+      this.label4.Location = new System.Drawing.Point(17, 94);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(79, 13);
       this.label4.TabIndex = 14;
@@ -252,7 +269,7 @@
       // 
       this.lblBrightness.AutoSize = true;
       this.lblBrightness.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblBrightness.Location = new System.Drawing.Point(20, 127);
+      this.lblBrightness.Location = new System.Drawing.Point(17, 134);
       this.lblBrightness.Name = "lblBrightness";
       this.lblBrightness.Size = new System.Drawing.Size(87, 13);
       this.lblBrightness.TabIndex = 21;
@@ -262,7 +279,7 @@
       // 
       this.lblHueSaturation.AutoSize = true;
       this.lblHueSaturation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueSaturation.Location = new System.Drawing.Point(20, 164);
+      this.lblHueSaturation.Location = new System.Drawing.Point(17, 171);
       this.lblHueSaturation.Name = "lblHueSaturation";
       this.lblHueSaturation.Size = new System.Drawing.Size(65, 13);
       this.lblHueSaturation.TabIndex = 25;
@@ -272,7 +289,7 @@
       // 
       this.lblHueTransTime.AutoSize = true;
       this.lblHueTransTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueTransTime.Location = new System.Drawing.Point(20, 267);
+      this.lblHueTransTime.Location = new System.Drawing.Point(17, 274);
       this.lblHueTransTime.Name = "lblHueTransTime";
       this.lblHueTransTime.Size = new System.Drawing.Size(117, 13);
       this.lblHueTransTime.TabIndex = 26;
@@ -282,7 +299,7 @@
       // 
       this.lblHueHue.AutoSize = true;
       this.lblHueHue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueHue.Location = new System.Drawing.Point(20, 238);
+      this.lblHueHue.Location = new System.Drawing.Point(17, 245);
       this.lblHueHue.Name = "lblHueHue";
       this.lblHueHue.Size = new System.Drawing.Size(30, 13);
       this.lblHueHue.TabIndex = 28;
@@ -292,28 +309,28 @@
       // 
       this.lblHueCustomColorTest.AutoSize = true;
       this.lblHueCustomColorTest.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueCustomColorTest.Location = new System.Drawing.Point(12, 118);
+      this.lblHueCustomColorTest.Location = new System.Drawing.Point(16, 125);
       this.lblHueCustomColorTest.Name = "lblHueCustomColorTest";
-      this.lblHueCustomColorTest.Size = new System.Drawing.Size(117, 13);
+      this.lblHueCustomColorTest.Size = new System.Drawing.Size(84, 13);
       this.lblHueCustomColorTest.TabIndex = 31;
-      this.lblHueCustomColorTest.Text = "Custom color(HEX):";
+      this.lblHueCustomColorTest.Text = "Custom color:";
       // 
       // btnHueSendCustomColor
       // 
-      this.btnHueSendCustomColor.Location = new System.Drawing.Point(274, 113);
+      this.btnHueSendCustomColor.Location = new System.Drawing.Point(391, 119);
       this.btnHueSendCustomColor.Name = "btnHueSendCustomColor";
-      this.btnHueSendCustomColor.Size = new System.Drawing.Size(64, 23);
-      this.btnHueSendCustomColor.TabIndex = 33;
+      this.btnHueSendCustomColor.Size = new System.Drawing.Size(93, 28);
+      this.btnHueSendCustomColor.TabIndex = 507;
       this.btnHueSendCustomColor.Text = "Test";
       this.btnHueSendCustomColor.UseVisualStyleBackColor = true;
       this.btnHueSendCustomColor.Click += new System.EventHandler(this.btnHueSendCustomColor_Click);
       // 
       // btnHueColorRotateTestStart
       // 
-      this.btnHueColorRotateTestStart.Location = new System.Drawing.Point(274, 181);
+      this.btnHueColorRotateTestStart.Location = new System.Drawing.Point(278, 188);
       this.btnHueColorRotateTestStart.Name = "btnHueColorRotateTestStart";
       this.btnHueColorRotateTestStart.Size = new System.Drawing.Size(57, 23);
-      this.btnHueColorRotateTestStart.TabIndex = 34;
+      this.btnHueColorRotateTestStart.TabIndex = 509;
       this.btnHueColorRotateTestStart.Text = "Start";
       this.btnHueColorRotateTestStart.UseVisualStyleBackColor = true;
       this.btnHueColorRotateTestStart.Click += new System.EventHandler(this.btnHueColorRotateTestStart_Click);
@@ -322,7 +339,7 @@
       // 
       this.label6.AutoSize = true;
       this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label6.Location = new System.Drawing.Point(12, 186);
+      this.label6.Location = new System.Drawing.Point(16, 193);
       this.label6.Name = "label6";
       this.label6.Size = new System.Drawing.Size(153, 13);
       this.label6.TabIndex = 35;
@@ -330,10 +347,10 @@
       // 
       // btnHueColorRotateTestStop
       // 
-      this.btnHueColorRotateTestStop.Location = new System.Drawing.Point(333, 181);
+      this.btnHueColorRotateTestStop.Location = new System.Drawing.Point(337, 188);
       this.btnHueColorRotateTestStop.Name = "btnHueColorRotateTestStop";
       this.btnHueColorRotateTestStop.Size = new System.Drawing.Size(53, 23);
-      this.btnHueColorRotateTestStop.TabIndex = 37;
+      this.btnHueColorRotateTestStop.TabIndex = 510;
       this.btnHueColorRotateTestStop.Text = "Stop";
       this.btnHueColorRotateTestStop.UseVisualStyleBackColor = true;
       this.btnHueColorRotateTestStop.Click += new System.EventHandler(this.btnHueColorRotateTestStop_Click);
@@ -378,7 +395,7 @@
       // llQ42
       // 
       this.llQ42.AutoSize = true;
-      this.llQ42.Location = new System.Drawing.Point(743, 717);
+      this.llQ42.Location = new System.Drawing.Point(1033, 718);
       this.llQ42.Name = "llQ42";
       this.llQ42.Size = new System.Drawing.Size(65, 13);
       this.llQ42.TabIndex = 42;
@@ -389,7 +406,7 @@
       // lCopyright
       // 
       this.lCopyright.AutoSize = true;
-      this.lCopyright.Location = new System.Drawing.Point(654, 717);
+      this.lCopyright.Location = new System.Drawing.Point(944, 718);
       this.lCopyright.Name = "lCopyright";
       this.lCopyright.Size = new System.Drawing.Size(92, 13);
       this.lCopyright.TabIndex = 43;
@@ -417,6 +434,7 @@
       this.cbRunningWindows8.TabIndex = 10;
       this.cbRunningWindows8.Text = "Running Windows 8.* ?";
       this.cbRunningWindows8.UseVisualStyleBackColor = true;
+      this.cbRunningWindows8.Validating += new System.ComponentModel.CancelEventHandler(this.cbRunningWindows8_Validating);
       // 
       // cbAutoConnectBridge
       // 
@@ -428,6 +446,7 @@
       this.cbAutoConnectBridge.TabIndex = 11;
       this.cbAutoConnectBridge.Text = "Auto connect if bridge found";
       this.cbAutoConnectBridge.UseVisualStyleBackColor = true;
+      this.cbAutoConnectBridge.Validating += new System.ComponentModel.CancelEventHandler(this.cbAutoConnectBridge_Validating);
       // 
       // grpAtmowin
       // 
@@ -563,6 +582,7 @@
       this.cbRemoteAPIEnabled.TabIndex = 13;
       this.cbRemoteAPIEnabled.Text = "Enable remote API *";
       this.cbRemoteAPIEnabled.UseVisualStyleBackColor = true;
+      this.cbRemoteAPIEnabled.Validating += new System.ComponentModel.CancelEventHandler(this.cbRemoteAPIEnabled_Validating);
       // 
       // tabControl1
       // 
@@ -579,28 +599,12 @@
       // tabPageGeneral
       // 
       this.tabPageGeneral.BackColor = System.Drawing.SystemColors.Control;
-      this.tabPageGeneral.Controls.Add(this.cbHueHue);
-      this.tabPageGeneral.Controls.Add(this.cbHueColorTemperature);
-      this.tabPageGeneral.Controls.Add(this.cbHueTransitionTime);
-      this.tabPageGeneral.Controls.Add(this.cbHueSaturation);
-      this.tabPageGeneral.Controls.Add(this.cbHueSetBrightnessStartup);
-      this.tabPageGeneral.Controls.Add(this.lblHueColorTemperature);
+      this.tabPageGeneral.Controls.Add(this.gbHueSettings);
       this.tabPageGeneral.Controls.Add(this.gbBridgeTools);
-      this.tabPageGeneral.Controls.Add(this.label1);
       this.tabPageGeneral.Controls.Add(this.cbLogRemoteApiCalls);
       this.tabPageGeneral.Controls.Add(this.grpRemoteAPI);
-      this.tabPageGeneral.Controls.Add(this.tbHueBridgeIP);
       this.tabPageGeneral.Controls.Add(this.cbEnableDebuglog);
-      this.tabPageGeneral.Controls.Add(this.label3);
-      this.tabPageGeneral.Controls.Add(this.label4);
-      this.tabPageGeneral.Controls.Add(this.tbHueAppName);
-      this.tabPageGeneral.Controls.Add(this.tbHueAppKey);
       this.tabPageGeneral.Controls.Add(this.lbOutputlog);
-      this.tabPageGeneral.Controls.Add(this.lblBrightness);
-      this.tabPageGeneral.Controls.Add(this.cbHueBrightness);
-      this.tabPageGeneral.Controls.Add(this.lblHueSaturation);
-      this.tabPageGeneral.Controls.Add(this.lblHueTransTime);
-      this.tabPageGeneral.Controls.Add(this.lblHueHue);
       this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
       this.tabPageGeneral.Name = "tabPageGeneral";
       this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
@@ -611,53 +615,58 @@
       // cbHueHue
       // 
       this.cbHueHue.FormattingEnabled = true;
-      this.cbHueHue.Location = new System.Drawing.Point(153, 229);
+      this.cbHueHue.Location = new System.Drawing.Point(150, 236);
       this.cbHueHue.Name = "cbHueHue";
       this.cbHueHue.Size = new System.Drawing.Size(98, 21);
       this.cbHueHue.TabIndex = 7;
+      this.cbHueHue.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueHue_Validating);
       // 
       // cbHueColorTemperature
       // 
       this.cbHueColorTemperature.FormattingEnabled = true;
-      this.cbHueColorTemperature.Location = new System.Drawing.Point(153, 199);
+      this.cbHueColorTemperature.Location = new System.Drawing.Point(150, 206);
       this.cbHueColorTemperature.Name = "cbHueColorTemperature";
       this.cbHueColorTemperature.Size = new System.Drawing.Size(98, 21);
       this.cbHueColorTemperature.TabIndex = 6;
       this.cbHueColorTemperature.Text = "500";
+      this.cbHueColorTemperature.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueColorTemperature_Validating);
       // 
       // cbHueTransitionTime
       // 
       this.cbHueTransitionTime.FormattingEnabled = true;
-      this.cbHueTransitionTime.Location = new System.Drawing.Point(153, 264);
+      this.cbHueTransitionTime.Location = new System.Drawing.Point(150, 271);
       this.cbHueTransitionTime.Name = "cbHueTransitionTime";
       this.cbHueTransitionTime.Size = new System.Drawing.Size(98, 21);
       this.cbHueTransitionTime.TabIndex = 8;
       this.cbHueTransitionTime.Text = "300";
+      this.cbHueTransitionTime.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueTransitionTime_Validating);
       // 
       // cbHueSaturation
       // 
       this.cbHueSaturation.FormattingEnabled = true;
-      this.cbHueSaturation.Location = new System.Drawing.Point(153, 161);
+      this.cbHueSaturation.Location = new System.Drawing.Point(150, 168);
       this.cbHueSaturation.Name = "cbHueSaturation";
       this.cbHueSaturation.Size = new System.Drawing.Size(98, 21);
       this.cbHueSaturation.TabIndex = 5;
       this.cbHueSaturation.Text = "100";
+      this.cbHueSaturation.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueSaturation_Validating);
       // 
       // cbHueSetBrightnessStartup
       // 
       this.cbHueSetBrightnessStartup.AutoSize = true;
-      this.cbHueSetBrightnessStartup.Location = new System.Drawing.Point(23, 309);
+      this.cbHueSetBrightnessStartup.Location = new System.Drawing.Point(20, 316);
       this.cbHueSetBrightnessStartup.Name = "cbHueSetBrightnessStartup";
       this.cbHueSetBrightnessStartup.Size = new System.Drawing.Size(289, 17);
       this.cbHueSetBrightnessStartup.TabIndex = 9;
       this.cbHueSetBrightnessStartup.Text = "Only set brightness on first color info send to Hue Bridge";
       this.cbHueSetBrightnessStartup.UseVisualStyleBackColor = true;
+      this.cbHueSetBrightnessStartup.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueSetBrightnessStartup_Validating);
       // 
       // lblHueColorTemperature
       // 
       this.lblHueColorTemperature.AutoSize = true;
       this.lblHueColorTemperature.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblHueColorTemperature.Location = new System.Drawing.Point(20, 202);
+      this.lblHueColorTemperature.Location = new System.Drawing.Point(17, 209);
       this.lblHueColorTemperature.Name = "lblHueColorTemperature";
       this.lblHueColorTemperature.Size = new System.Drawing.Size(107, 13);
       this.lblHueColorTemperature.TabIndex = 50;
@@ -665,35 +674,39 @@
       // 
       // tbHueBridgeIP
       // 
-      this.tbHueBridgeIP.Location = new System.Drawing.Point(153, 16);
+      this.tbHueBridgeIP.Location = new System.Drawing.Point(150, 23);
       this.tbHueBridgeIP.Name = "tbHueBridgeIP";
       this.tbHueBridgeIP.Size = new System.Drawing.Size(100, 20);
       this.tbHueBridgeIP.TabIndex = 1;
+      this.tbHueBridgeIP.Validating += new System.ComponentModel.CancelEventHandler(this.tbHueBridgeIP_Validating);
       // 
       // tbHueAppName
       // 
-      this.tbHueAppName.Location = new System.Drawing.Point(153, 56);
+      this.tbHueAppName.Location = new System.Drawing.Point(150, 63);
       this.tbHueAppName.Name = "tbHueAppName";
       this.tbHueAppName.Size = new System.Drawing.Size(173, 20);
       this.tbHueAppName.TabIndex = 2;
       this.tbHueAppName.Text = "AtmoHue";
+      this.tbHueAppName.Validating += new System.ComponentModel.CancelEventHandler(this.tbHueAppName_Validating);
       // 
       // tbHueAppKey
       // 
-      this.tbHueAppKey.Location = new System.Drawing.Point(153, 84);
+      this.tbHueAppKey.Location = new System.Drawing.Point(150, 91);
       this.tbHueAppKey.Name = "tbHueAppKey";
       this.tbHueAppKey.Size = new System.Drawing.Size(223, 20);
       this.tbHueAppKey.TabIndex = 3;
       this.tbHueAppKey.Text = "AtmoHueAppKey";
+      this.tbHueAppKey.Validating += new System.ComponentModel.CancelEventHandler(this.tbHueAppKey_Validating);
       // 
       // cbHueBrightness
       // 
       this.cbHueBrightness.FormattingEnabled = true;
-      this.cbHueBrightness.Location = new System.Drawing.Point(153, 124);
+      this.cbHueBrightness.Location = new System.Drawing.Point(150, 131);
       this.cbHueBrightness.Name = "cbHueBrightness";
       this.cbHueBrightness.Size = new System.Drawing.Size(75, 21);
       this.cbHueBrightness.TabIndex = 4;
       this.cbHueBrightness.Text = "100";
+      this.cbHueBrightness.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueBrightness_Validating);
       // 
       // tabPageLeds
       // 
@@ -749,12 +762,29 @@
       this.gbManageLeds.TabStop = false;
       this.gbManageLeds.Text = "Manage leds";
       // 
+      // tbLedLocation
+      // 
+      this.tbLedLocation.Location = new System.Drawing.Point(135, 97);
+      this.tbLedLocation.Name = "tbLedLocation";
+      this.tbLedLocation.Size = new System.Drawing.Size(121, 20);
+      this.tbLedLocation.TabIndex = 302;
+      // 
+      // lblLedLocation
+      // 
+      this.lblLedLocation.AutoSize = true;
+      this.lblLedLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedLocation.Location = new System.Drawing.Point(6, 97);
+      this.lblLedLocation.Name = "lblLedLocation";
+      this.lblLedLocation.Size = new System.Drawing.Size(60, 13);
+      this.lblLedLocation.TabIndex = 30;
+      this.lblLedLocation.Text = "Location:";
+      // 
       // btnRemoveLeds
       // 
       this.btnRemoveLeds.Location = new System.Drawing.Point(105, 529);
       this.btnRemoveLeds.Name = "btnRemoveLeds";
       this.btnRemoveLeds.Size = new System.Drawing.Size(112, 51);
-      this.btnRemoveLeds.TabIndex = 104;
+      this.btnRemoveLeds.TabIndex = 313;
       this.btnRemoveLeds.Text = "Remove Led";
       this.btnRemoveLeds.UseVisualStyleBackColor = true;
       this.btnRemoveLeds.Click += new System.EventHandler(this.btnRemoveLeds_Click);
@@ -770,10 +800,17 @@
       this.cbLedType.Location = new System.Drawing.Point(135, 61);
       this.cbLedType.Name = "cbLedType";
       this.cbLedType.Size = new System.Drawing.Size(121, 21);
-      this.cbLedType.TabIndex = 101;
+      this.cbLedType.TabIndex = 301;
       // 
       // gbLedOptional
       // 
+      this.gbLedOptional.Controls.Add(this.lblLedB);
+      this.gbLedOptional.Controls.Add(this.lblLedG);
+      this.gbLedOptional.Controls.Add(this.lblLedR);
+      this.gbLedOptional.Controls.Add(this.tbLedB);
+      this.gbLedOptional.Controls.Add(this.tbLedG);
+      this.gbLedOptional.Controls.Add(this.lblLedStaticColor);
+      this.gbLedOptional.Controls.Add(this.tbLedR);
       this.gbLedOptional.Controls.Add(this.lblLedSendDelay);
       this.gbLedOptional.Controls.Add(this.lblLedHue);
       this.gbLedOptional.Controls.Add(this.tbLedSendDelay);
@@ -789,8 +826,7 @@
       this.gbLedOptional.Size = new System.Drawing.Size(307, 284);
       this.gbLedOptional.TabIndex = 27;
       this.gbLedOptional.TabStop = false;
-      this.gbLedOptional.Text = "Optional (overrides default settings)";
-      this.gbLedOptional.Visible = false;
+      this.gbLedOptional.Text = "Optional (not utilized at the moment)";
       // 
       // lblLedSendDelay
       // 
@@ -802,36 +838,19 @@
       this.lblLedSendDelay.TabIndex = 18;
       this.lblLedSendDelay.Text = "Send delay";
       // 
-      // lblLedHue
-      // 
-      this.lblLedHue.AutoSize = true;
-      this.lblLedHue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblLedHue.Location = new System.Drawing.Point(6, 218);
-      this.lblLedHue.Name = "lblLedHue";
-      this.lblLedHue.Size = new System.Drawing.Size(34, 13);
-      this.lblLedHue.TabIndex = 25;
-      this.lblLedHue.Text = "Hue:";
-      // 
       // tbLedSendDelay
       // 
       this.tbLedSendDelay.Location = new System.Drawing.Point(134, 25);
       this.tbLedSendDelay.Name = "tbLedSendDelay";
       this.tbLedSendDelay.Size = new System.Drawing.Size(100, 20);
-      this.tbLedSendDelay.TabIndex = 14;
-      // 
-      // tbLedHue
-      // 
-      this.tbLedHue.Location = new System.Drawing.Point(134, 215);
-      this.tbLedHue.Name = "tbLedHue";
-      this.tbLedHue.Size = new System.Drawing.Size(100, 20);
-      this.tbLedHue.TabIndex = 24;
+      this.tbLedSendDelay.TabIndex = 304;
       // 
       // tbLedBrightness
       // 
       this.tbLedBrightness.Location = new System.Drawing.Point(134, 70);
       this.tbLedBrightness.Name = "tbLedBrightness";
       this.tbLedBrightness.Size = new System.Drawing.Size(100, 20);
-      this.tbLedBrightness.TabIndex = 15;
+      this.tbLedBrightness.TabIndex = 305;
       // 
       // lblLedColorTemperature
       // 
@@ -858,14 +877,14 @@
       this.tbLedColorTemperature.Location = new System.Drawing.Point(134, 162);
       this.tbLedColorTemperature.Name = "tbLedColorTemperature";
       this.tbLedColorTemperature.Size = new System.Drawing.Size(100, 20);
-      this.tbLedColorTemperature.TabIndex = 22;
+      this.tbLedColorTemperature.TabIndex = 307;
       // 
       // tbLedSaturation
       // 
       this.tbLedSaturation.Location = new System.Drawing.Point(134, 114);
       this.tbLedSaturation.Name = "tbLedSaturation";
       this.tbLedSaturation.Size = new System.Drawing.Size(100, 20);
-      this.tbLedSaturation.TabIndex = 20;
+      this.tbLedSaturation.TabIndex = 306;
       // 
       // lnlLedSaturation
       // 
@@ -883,7 +902,7 @@
       this.btnAddLed.Location = new System.Drawing.Point(52, 441);
       this.btnAddLed.Name = "btnAddLed";
       this.btnAddLed.Size = new System.Drawing.Size(225, 59);
-      this.btnAddLed.TabIndex = 103;
+      this.btnAddLed.TabIndex = 312;
       this.btnAddLed.Text = "Add Led";
       this.btnAddLed.UseVisualStyleBackColor = true;
       this.btnAddLed.Click += new System.EventHandler(this.btnAddLed_Click);
@@ -913,7 +932,7 @@
       this.tbLedID.Location = new System.Drawing.Point(135, 25);
       this.tbLedID.Name = "tbLedID";
       this.tbLedID.Size = new System.Drawing.Size(100, 20);
-      this.tbLedID.TabIndex = 100;
+      this.tbLedID.TabIndex = 300;
       // 
       // lvLedDevices
       // 
@@ -925,8 +944,9 @@
             this.chLedBrightness,
             this.chLedSaturation,
             this.chLedColorTemperature,
-            this.chLedHue});
-      this.lvLedDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chLedHue,
+            this.chLedStaticColor});
+      this.lvLedDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lvLedDevices.Location = new System.Drawing.Point(347, 19);
       this.lvLedDevices.Name = "lvLedDevices";
       this.lvLedDevices.Size = new System.Drawing.Size(720, 536);
@@ -937,17 +957,22 @@
       // chID
       // 
       this.chID.Text = "ID";
-      this.chID.Width = 83;
+      this.chID.Width = 66;
       // 
       // chType
       // 
       this.chType.Text = "Type";
-      this.chType.Width = 99;
+      this.chType.Width = 88;
+      // 
+      // chLedLocation
+      // 
+      this.chLedLocation.Text = "Location";
+      this.chLedLocation.Width = 76;
       // 
       // chLedDelay
       // 
       this.chLedDelay.Text = "Send delay";
-      this.chLedDelay.Width = 87;
+      this.chLedDelay.Width = 71;
       // 
       // chLedBrightness
       // 
@@ -962,7 +987,7 @@
       // chLedColorTemperature
       // 
       this.chLedColorTemperature.Text = "Color Temperature";
-      this.chLedColorTemperature.Width = 137;
+      this.chLedColorTemperature.Width = 105;
       // 
       // chLedHue
       // 
@@ -972,19 +997,7 @@
       // tabPageTesting
       // 
       this.tabPageTesting.BackColor = System.Drawing.SystemColors.Control;
-      this.tabPageTesting.Controls.Add(this.label2);
-      this.tabPageTesting.Controls.Add(this.btnTestRed);
-      this.tabPageTesting.Controls.Add(this.btnTestGreen);
-      this.tabPageTesting.Controls.Add(this.btnTestBlue);
-      this.tabPageTesting.Controls.Add(this.btnHueColorClear);
-      this.tabPageTesting.Controls.Add(this.btnRefreshSettings);
-      this.tabPageTesting.Controls.Add(this.lblHueCustomColorTest);
-      this.tabPageTesting.Controls.Add(this.btnHueSendCustomColor);
-      this.tabPageTesting.Controls.Add(this.btnHueColorRotateTestStop);
-      this.tabPageTesting.Controls.Add(this.btnHueColorRotateTestStart);
-      this.tabPageTesting.Controls.Add(this.label6);
-      this.tabPageTesting.Controls.Add(this.tbHueCustomColor);
-      this.tabPageTesting.Controls.Add(this.tbRotateTestDelay);
+      this.tabPageTesting.Controls.Add(this.gbColorTests);
       this.tabPageTesting.Location = new System.Drawing.Point(4, 22);
       this.tabPageTesting.Name = "tabPageTesting";
       this.tabPageTesting.Padding = new System.Windows.Forms.Padding(3);
@@ -996,7 +1009,7 @@
       // 
       this.label2.AutoSize = true;
       this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label2.Location = new System.Drawing.Point(19, 34);
+      this.label2.Location = new System.Drawing.Point(23, 41);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(65, 13);
       this.label2.TabIndex = 68;
@@ -1004,7 +1017,7 @@
       // 
       // btnTestRed
       // 
-      this.btnTestRed.Location = new System.Drawing.Point(90, 29);
+      this.btnTestRed.Location = new System.Drawing.Point(94, 36);
       this.btnTestRed.Name = "btnTestRed";
       this.btnTestRed.Size = new System.Drawing.Size(75, 23);
       this.btnTestRed.TabIndex = 500;
@@ -1014,7 +1027,7 @@
       // 
       // btnTestGreen
       // 
-      this.btnTestGreen.Location = new System.Drawing.Point(171, 29);
+      this.btnTestGreen.Location = new System.Drawing.Point(175, 36);
       this.btnTestGreen.Name = "btnTestGreen";
       this.btnTestGreen.Size = new System.Drawing.Size(75, 23);
       this.btnTestGreen.TabIndex = 501;
@@ -1024,7 +1037,7 @@
       // 
       // btnTestBlue
       // 
-      this.btnTestBlue.Location = new System.Drawing.Point(252, 29);
+      this.btnTestBlue.Location = new System.Drawing.Point(256, 36);
       this.btnTestBlue.Name = "btnTestBlue";
       this.btnTestBlue.Size = new System.Drawing.Size(75, 23);
       this.btnTestBlue.TabIndex = 502;
@@ -1034,7 +1047,7 @@
       // 
       // btnHueColorClear
       // 
-      this.btnHueColorClear.Location = new System.Drawing.Point(348, 29);
+      this.btnHueColorClear.Location = new System.Drawing.Point(352, 36);
       this.btnHueColorClear.Name = "btnHueColorClear";
       this.btnHueColorClear.Size = new System.Drawing.Size(92, 23);
       this.btnHueColorClear.TabIndex = 503;
@@ -1042,31 +1055,13 @@
       this.btnHueColorClear.UseVisualStyleBackColor = true;
       this.btnHueColorClear.Click += new System.EventHandler(this.btnHueColorClear_Click);
       // 
-      // btnRefreshSettings
-      // 
-      this.btnRefreshSettings.Location = new System.Drawing.Point(6, 299);
-      this.btnRefreshSettings.Name = "btnRefreshSettings";
-      this.btnRefreshSettings.Size = new System.Drawing.Size(112, 45);
-      this.btnRefreshSettings.TabIndex = 50;
-      this.btnRefreshSettings.Text = "Refresh settings";
-      this.btnRefreshSettings.UseVisualStyleBackColor = true;
-      // 
-      // tbHueCustomColor
-      // 
-      this.tbHueCustomColor.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "testCustomColorHex", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbHueCustomColor.Location = new System.Drawing.Point(168, 115);
-      this.tbHueCustomColor.Name = "tbHueCustomColor";
-      this.tbHueCustomColor.Size = new System.Drawing.Size(100, 20);
-      this.tbHueCustomColor.TabIndex = 32;
-      this.tbHueCustomColor.Text = global::AtmoHue.Properties.Settings.Default.testCustomColorHex;
-      // 
       // tbRotateTestDelay
       // 
       this.tbRotateTestDelay.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AtmoHue.Properties.Settings.Default, "HueRotateDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-      this.tbRotateTestDelay.Location = new System.Drawing.Point(168, 183);
+      this.tbRotateTestDelay.Location = new System.Drawing.Point(172, 190);
       this.tbRotateTestDelay.Name = "tbRotateTestDelay";
       this.tbRotateTestDelay.Size = new System.Drawing.Size(100, 20);
-      this.tbRotateTestDelay.TabIndex = 36;
+      this.tbRotateTestDelay.TabIndex = 508;
       this.tbRotateTestDelay.Text = global::AtmoHue.Properties.Settings.Default.HueRotateDelay;
       // 
       // tabPageExperimental
@@ -1434,27 +1429,207 @@
     "7 / Green  0.743075 / Blue  0.022598\r\nZ = Red 0.0000000 / Green  0.053077 / Blue" +
     "  1.035763\r\n";
       // 
-      // lblLedLocation
+      // lblLedHue
       // 
-      this.lblLedLocation.AutoSize = true;
-      this.lblLedLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblLedLocation.Location = new System.Drawing.Point(6, 97);
-      this.lblLedLocation.Name = "lblLedLocation";
-      this.lblLedLocation.Size = new System.Drawing.Size(60, 13);
-      this.lblLedLocation.TabIndex = 30;
-      this.lblLedLocation.Text = "Location:";
+      this.lblLedHue.AutoSize = true;
+      this.lblLedHue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedHue.Location = new System.Drawing.Point(6, 209);
+      this.lblLedHue.Name = "lblLedHue";
+      this.lblLedHue.Size = new System.Drawing.Size(34, 13);
+      this.lblLedHue.TabIndex = 25;
+      this.lblLedHue.Text = "Hue:";
+      this.lblLedHue.Visible = false;
       // 
-      // tbLedLocation
+      // tbLedHue
       // 
-      this.tbLedLocation.Location = new System.Drawing.Point(135, 97);
-      this.tbLedLocation.Name = "tbLedLocation";
-      this.tbLedLocation.Size = new System.Drawing.Size(121, 20);
-      this.tbLedLocation.TabIndex = 102;
+      this.tbLedHue.Location = new System.Drawing.Point(134, 206);
+      this.tbLedHue.Name = "tbLedHue";
+      this.tbLedHue.Size = new System.Drawing.Size(100, 20);
+      this.tbLedHue.TabIndex = 308;
+      this.tbLedHue.Visible = false;
       // 
-      // chLedLocation
+      // chLedStaticColor
       // 
-      this.chLedLocation.Text = "Location";
-      this.chLedLocation.Width = 99;
+      this.chLedStaticColor.Text = "Static Color";
+      this.chLedStaticColor.Width = 100;
+      // 
+      // lblLedStaticColor
+      // 
+      this.lblLedStaticColor.AutoSize = true;
+      this.lblLedStaticColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedStaticColor.Location = new System.Drawing.Point(5, 252);
+      this.lblLedStaticColor.Name = "lblLedStaticColor";
+      this.lblLedStaticColor.Size = new System.Drawing.Size(73, 13);
+      this.lblLedStaticColor.TabIndex = 27;
+      this.lblLedStaticColor.Text = "Static Color";
+      // 
+      // tbLedR
+      // 
+      this.tbLedR.Location = new System.Drawing.Point(113, 249);
+      this.tbLedR.Name = "tbLedR";
+      this.tbLedR.Size = new System.Drawing.Size(48, 20);
+      this.tbLedR.TabIndex = 309;
+      // 
+      // tbLedG
+      // 
+      this.tbLedG.Location = new System.Drawing.Point(182, 249);
+      this.tbLedG.Name = "tbLedG";
+      this.tbLedG.Size = new System.Drawing.Size(48, 20);
+      this.tbLedG.TabIndex = 310;
+      // 
+      // tbLedB
+      // 
+      this.tbLedB.Location = new System.Drawing.Point(249, 249);
+      this.tbLedB.Name = "tbLedB";
+      this.tbLedB.Size = new System.Drawing.Size(48, 20);
+      this.tbLedB.TabIndex = 311;
+      // 
+      // lblLedR
+      // 
+      this.lblLedR.AutoSize = true;
+      this.lblLedR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedR.Location = new System.Drawing.Point(92, 252);
+      this.lblLedR.Name = "lblLedR";
+      this.lblLedR.Size = new System.Drawing.Size(16, 13);
+      this.lblLedR.TabIndex = 30;
+      this.lblLedR.Text = "R";
+      // 
+      // lblLedG
+      // 
+      this.lblLedG.AutoSize = true;
+      this.lblLedG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedG.Location = new System.Drawing.Point(163, 252);
+      this.lblLedG.Name = "lblLedG";
+      this.lblLedG.Size = new System.Drawing.Size(16, 13);
+      this.lblLedG.TabIndex = 31;
+      this.lblLedG.Text = "G";
+      // 
+      // lblLedB
+      // 
+      this.lblLedB.AutoSize = true;
+      this.lblLedB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedB.Location = new System.Drawing.Point(231, 252);
+      this.lblLedB.Name = "lblLedB";
+      this.lblLedB.Size = new System.Drawing.Size(15, 13);
+      this.lblLedB.TabIndex = 32;
+      this.lblLedB.Text = "B";
+      // 
+      // label22
+      // 
+      this.label22.AutoSize = true;
+      this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label22.Location = new System.Drawing.Point(293, 125);
+      this.label22.Name = "label22";
+      this.label22.Size = new System.Drawing.Size(15, 13);
+      this.label22.TabIndex = 509;
+      this.label22.Text = "B";
+      // 
+      // label23
+      // 
+      this.label23.AutoSize = true;
+      this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label23.Location = new System.Drawing.Point(207, 125);
+      this.label23.Name = "label23";
+      this.label23.Size = new System.Drawing.Size(16, 13);
+      this.label23.TabIndex = 508;
+      this.label23.Text = "G";
+      // 
+      // label24
+      // 
+      this.label24.AutoSize = true;
+      this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label24.Location = new System.Drawing.Point(119, 125);
+      this.label24.Name = "label24";
+      this.label24.Size = new System.Drawing.Size(16, 13);
+      this.label24.TabIndex = 507;
+      this.label24.Text = "R";
+      // 
+      // cbTestCustomColorR
+      // 
+      this.cbTestCustomColorR.FormattingEnabled = true;
+      this.cbTestCustomColorR.Location = new System.Drawing.Point(141, 122);
+      this.cbTestCustomColorR.Name = "cbTestCustomColorR";
+      this.cbTestCustomColorR.Size = new System.Drawing.Size(62, 21);
+      this.cbTestCustomColorR.TabIndex = 504;
+      // 
+      // cbTestCustomColorG
+      // 
+      this.cbTestCustomColorG.FormattingEnabled = true;
+      this.cbTestCustomColorG.Location = new System.Drawing.Point(225, 122);
+      this.cbTestCustomColorG.Name = "cbTestCustomColorG";
+      this.cbTestCustomColorG.Size = new System.Drawing.Size(62, 21);
+      this.cbTestCustomColorG.TabIndex = 505;
+      // 
+      // cbTestCustomColorB
+      // 
+      this.cbTestCustomColorB.FormattingEnabled = true;
+      this.cbTestCustomColorB.Location = new System.Drawing.Point(314, 122);
+      this.cbTestCustomColorB.Name = "cbTestCustomColorB";
+      this.cbTestCustomColorB.Size = new System.Drawing.Size(62, 21);
+      this.cbTestCustomColorB.Sorted = true;
+      this.cbTestCustomColorB.TabIndex = 506;
+      // 
+      // gbHueSettings
+      // 
+      this.gbHueSettings.Controls.Add(this.label1);
+      this.gbHueSettings.Controls.Add(this.cbHueHue);
+      this.gbHueSettings.Controls.Add(this.lblHueHue);
+      this.gbHueSettings.Controls.Add(this.cbHueColorTemperature);
+      this.gbHueSettings.Controls.Add(this.lblHueTransTime);
+      this.gbHueSettings.Controls.Add(this.cbHueTransitionTime);
+      this.gbHueSettings.Controls.Add(this.lblHueSaturation);
+      this.gbHueSettings.Controls.Add(this.cbHueSaturation);
+      this.gbHueSettings.Controls.Add(this.cbHueBrightness);
+      this.gbHueSettings.Controls.Add(this.cbHueSetBrightnessStartup);
+      this.gbHueSettings.Controls.Add(this.lblBrightness);
+      this.gbHueSettings.Controls.Add(this.lblHueColorTemperature);
+      this.gbHueSettings.Controls.Add(this.tbHueAppKey);
+      this.gbHueSettings.Controls.Add(this.tbHueAppName);
+      this.gbHueSettings.Controls.Add(this.label4);
+      this.gbHueSettings.Controls.Add(this.label3);
+      this.gbHueSettings.Controls.Add(this.tbHueBridgeIP);
+      this.gbHueSettings.Location = new System.Drawing.Point(6, 6);
+      this.gbHueSettings.Name = "gbHueSettings";
+      this.gbHueSettings.Size = new System.Drawing.Size(473, 373);
+      this.gbHueSettings.TabIndex = 51;
+      this.gbHueSettings.TabStop = false;
+      this.gbHueSettings.Text = "Hue overview";
+      // 
+      // lblConnectionStatus
+      // 
+      this.lblConnectionStatus.AutoSize = true;
+      this.lblConnectionStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblConnectionStatus.Location = new System.Drawing.Point(19, 718);
+      this.lblConnectionStatus.Name = "lblConnectionStatus";
+      this.lblConnectionStatus.Size = new System.Drawing.Size(47, 13);
+      this.lblConnectionStatus.TabIndex = 51;
+      this.lblConnectionStatus.Text = "Status:";
+      // 
+      // gbColorTests
+      // 
+      this.gbColorTests.Controls.Add(this.label2);
+      this.gbColorTests.Controls.Add(this.cbTestCustomColorB);
+      this.gbColorTests.Controls.Add(this.tbRotateTestDelay);
+      this.gbColorTests.Controls.Add(this.cbTestCustomColorG);
+      this.gbColorTests.Controls.Add(this.label6);
+      this.gbColorTests.Controls.Add(this.cbTestCustomColorR);
+      this.gbColorTests.Controls.Add(this.btnHueColorRotateTestStart);
+      this.gbColorTests.Controls.Add(this.label22);
+      this.gbColorTests.Controls.Add(this.btnHueColorRotateTestStop);
+      this.gbColorTests.Controls.Add(this.label23);
+      this.gbColorTests.Controls.Add(this.btnHueSendCustomColor);
+      this.gbColorTests.Controls.Add(this.label24);
+      this.gbColorTests.Controls.Add(this.lblHueCustomColorTest);
+      this.gbColorTests.Controls.Add(this.btnHueColorClear);
+      this.gbColorTests.Controls.Add(this.btnTestRed);
+      this.gbColorTests.Controls.Add(this.btnTestBlue);
+      this.gbColorTests.Controls.Add(this.btnTestGreen);
+      this.gbColorTests.Location = new System.Drawing.Point(17, 21);
+      this.gbColorTests.Name = "gbColorTests";
+      this.gbColorTests.Size = new System.Drawing.Size(619, 304);
+      this.gbColorTests.TabIndex = 511;
+      this.gbColorTests.TabStop = false;
+      this.gbColorTests.Text = "Color tests";
       // 
       // Form1
       // 
@@ -1462,6 +1637,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.ClientSize = new System.Drawing.Size(1108, 740);
+      this.Controls.Add(this.lblConnectionStatus);
       this.Controls.Add(this.tabControl1);
       this.Controls.Add(this.lCopyright);
       this.Controls.Add(this.llQ42);
@@ -1486,12 +1662,15 @@
       this.gbLedOptional.ResumeLayout(false);
       this.gbLedOptional.PerformLayout();
       this.tabPageTesting.ResumeLayout(false);
-      this.tabPageTesting.PerformLayout();
       this.tabPageExperimental.ResumeLayout(false);
       this.gbHueSceneTester.ResumeLayout(false);
       this.gbHueSceneTester.PerformLayout();
       this.gbColorCalibration.ResumeLayout(false);
       this.gbColorCalibration.PerformLayout();
+      this.gbHueSettings.ResumeLayout(false);
+      this.gbHueSettings.PerformLayout();
+      this.gbColorTests.ResumeLayout(false);
+      this.gbColorTests.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -1519,7 +1698,6 @@
         private System.Windows.Forms.Label lblHueTransTime;
         private System.Windows.Forms.Label lblHueHue;
         private System.Windows.Forms.Label lblHueCustomColorTest;
-        private System.Windows.Forms.TextBox tbHueCustomColor;
         private System.Windows.Forms.Button btnHueSendCustomColor;
         private System.Windows.Forms.Button btnHueColorRotateTestStart;
         private System.Windows.Forms.Label label6;
@@ -1548,7 +1726,6 @@
         private System.Windows.Forms.TabPage tabPageGeneral;
         private System.Windows.Forms.TabPage tabPageTesting;
         private System.Windows.Forms.TabPage tabPageExperimental;
-        private System.Windows.Forms.Button btnRefreshSettings;
         private System.Windows.Forms.Label lblHueColorTemperature;
         private System.Windows.Forms.GroupBox gbColorCalibration;
         private System.Windows.Forms.Label label7;
@@ -1598,8 +1775,6 @@
         private System.Windows.Forms.Label lblLedSendDelay;
         private System.Windows.Forms.Label lblLedType;
         private System.Windows.Forms.Label lblLedID;
-        private System.Windows.Forms.Label lblLedHue;
-        private System.Windows.Forms.TextBox tbLedHue;
         private System.Windows.Forms.Label lblLedColorTemperature;
         private System.Windows.Forms.TextBox tbLedColorTemperature;
         private System.Windows.Forms.Label lnlLedSaturation;
@@ -1627,6 +1802,25 @@
         private System.Windows.Forms.TextBox tbLedLocation;
         private System.Windows.Forms.Label lblLedLocation;
         private System.Windows.Forms.ColumnHeader chLedLocation;
+        private System.Windows.Forms.Label lblLedHue;
+        private System.Windows.Forms.TextBox tbLedHue;
+        private System.Windows.Forms.ColumnHeader chLedStaticColor;
+        private System.Windows.Forms.Label lblLedB;
+        private System.Windows.Forms.Label lblLedG;
+        private System.Windows.Forms.Label lblLedR;
+        private System.Windows.Forms.TextBox tbLedB;
+        private System.Windows.Forms.TextBox tbLedG;
+        private System.Windows.Forms.Label lblLedStaticColor;
+        private System.Windows.Forms.TextBox tbLedR;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.ComboBox cbTestCustomColorB;
+        private System.Windows.Forms.ComboBox cbTestCustomColorG;
+        private System.Windows.Forms.ComboBox cbTestCustomColorR;
+        private System.Windows.Forms.GroupBox gbHueSettings;
+        private System.Windows.Forms.Label lblConnectionStatus;
+        private System.Windows.Forms.GroupBox gbColorTests;
     }
 }
 
