@@ -1684,16 +1684,23 @@ namespace AtmoHue
 
     private void cbMinimizeOnStartup_CheckedChanged(object sender, EventArgs e)
     {
-      refreshSettings();
       if (cbMinimizeOnStartup.Checked)
       {
+        MinimizeOnStartup = true;
         cbMinimizeToTray.Checked = true;
       }
     }
 
     private void cbMinimizeToTray_CheckedChanged(object sender, EventArgs e)
     {
-      refreshSettings();
+      if (cbMinimizeToTray.Checked)
+      {
+        MinimizeToTray = true;
+      }
+      else
+      {
+        MinimizeToTray = false;
+      }
     }
 
     private void cbTestCustomColorR_Validating(object sender, CancelEventArgs e)
