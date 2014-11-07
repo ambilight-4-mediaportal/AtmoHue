@@ -906,7 +906,7 @@ namespace AtmoHue
     {
       SaveSettings(false);
       scanAtmowin = false;
-      notifyIcon1.Dispose();
+      trayIconHue.Dispose();
       Application.ExitThread();
       Environment.Exit(0);
     }
@@ -1665,13 +1665,13 @@ namespace AtmoHue
       {
         if (FormWindowState.Minimized == this.WindowState)
         {
-          notifyIcon1.Visible = true;
+          trayIconHue.Visible = true;
           this.Hide();
         }
 
         else if (FormWindowState.Normal == this.WindowState)
         {
-          notifyIcon1.Visible = false;
+          trayIconHue.Visible = false;
         }
       }
     }

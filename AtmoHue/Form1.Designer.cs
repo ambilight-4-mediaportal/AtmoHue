@@ -175,7 +175,7 @@
       this.label8 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
       this.lblConnectionStatus = new System.Windows.Forms.Label();
-      this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+      this.trayIconHue = new System.Windows.Forms.NotifyIcon(this.components);
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
@@ -1662,12 +1662,12 @@
       this.lblConnectionStatus.TabIndex = 51;
       this.lblConnectionStatus.Text = "Status:";
       // 
-      // notifyIcon1
+      // trayIconHue
       // 
-      this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-      this.notifyIcon1.Text = "notifyIcon1";
-      this.notifyIcon1.Visible = true;
-      this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
+      this.trayIconHue.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIconHue.Icon")));
+      this.trayIconHue.Text = "AtmoHue";
+      this.trayIconHue.Visible = true;
+      this.trayIconHue.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
       // 
       // Form1
       // 
@@ -1860,7 +1860,7 @@
         private System.Windows.Forms.GroupBox gbHueSettings;
         private System.Windows.Forms.Label lblConnectionStatus;
         private System.Windows.Forms.GroupBox gbColorTests;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.NotifyIcon trayIconHue;
         private System.Windows.Forms.CheckBox cbMinimizeOnStartup;
         private System.Windows.Forms.CheckBox cbMinimizeToTray;
     }
