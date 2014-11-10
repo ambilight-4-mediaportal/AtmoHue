@@ -176,6 +176,10 @@
       this.label7 = new System.Windows.Forms.Label();
       this.lblConnectionStatus = new System.Windows.Forms.Label();
       this.trayIconHue = new System.Windows.Forms.NotifyIcon(this.components);
+      this.trayIconHueContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.toolStripMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
@@ -190,6 +194,7 @@
       this.tabPageExperimental.SuspendLayout();
       this.gbHueSceneTester.SuspendLayout();
       this.gbColorCalibration.SuspendLayout();
+      this.trayIconHueContextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // btnLocateHueBridge
@@ -818,7 +823,7 @@
       // 
       // tbLedLocation
       // 
-      this.tbLedLocation.Location = new System.Drawing.Point(135, 97);
+      this.tbLedLocation.Location = new System.Drawing.Point(143, 97);
       this.tbLedLocation.Name = "tbLedLocation";
       this.tbLedLocation.Size = new System.Drawing.Size(121, 20);
       this.tbLedLocation.TabIndex = 302;
@@ -851,7 +856,7 @@
             "Bulb",
             "Iris",
             "Strips"});
-      this.cbLedType.Location = new System.Drawing.Point(135, 61);
+      this.cbLedType.Location = new System.Drawing.Point(143, 61);
       this.cbLedType.Name = "cbLedType";
       this.cbLedType.Size = new System.Drawing.Size(121, 21);
       this.cbLedType.TabIndex = 301;
@@ -1063,7 +1068,7 @@
       // 
       // tbLedID
       // 
-      this.tbLedID.Location = new System.Drawing.Point(135, 25);
+      this.tbLedID.Location = new System.Drawing.Point(143, 25);
       this.tbLedID.Name = "tbLedID";
       this.tbLedID.Size = new System.Drawing.Size(100, 20);
       this.tbLedID.TabIndex = 300;
@@ -1664,10 +1669,39 @@
       // 
       // trayIconHue
       // 
+      this.trayIconHue.ContextMenuStrip = this.trayIconHueContextMenu;
       this.trayIconHue.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIconHue.Icon")));
       this.trayIconHue.Text = "AtmoHue";
       this.trayIconHue.Visible = true;
       this.trayIconHue.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
+      // 
+      // trayIconHueContextMenu
+      // 
+      this.trayIconHueContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemOpen,
+            this.toolStripSeparator1,
+            this.toolStripMenuItemClose});
+      this.trayIconHueContextMenu.Name = "trayIconHueContextMenu";
+      this.trayIconHueContextMenu.Size = new System.Drawing.Size(153, 76);
+      // 
+      // toolStripMenuItemOpen
+      // 
+      this.toolStripMenuItemOpen.Name = "toolStripMenuItemOpen";
+      this.toolStripMenuItemOpen.Size = new System.Drawing.Size(152, 22);
+      this.toolStripMenuItemOpen.Text = "Open";
+      this.toolStripMenuItemOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
+      // 
+      // toolStripSeparator1
+      // 
+      this.toolStripSeparator1.Name = "toolStripSeparator1";
+      this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+      // 
+      // toolStripMenuItemClose
+      // 
+      this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
+      this.toolStripMenuItemClose.Size = new System.Drawing.Size(152, 22);
+      this.toolStripMenuItemClose.Text = "Exit";
+      this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
       // 
       // Form1
       // 
@@ -1710,6 +1744,7 @@
       this.gbHueSceneTester.PerformLayout();
       this.gbColorCalibration.ResumeLayout(false);
       this.gbColorCalibration.PerformLayout();
+      this.trayIconHueContextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -1863,6 +1898,10 @@
         private System.Windows.Forms.NotifyIcon trayIconHue;
         private System.Windows.Forms.CheckBox cbMinimizeOnStartup;
         private System.Windows.Forms.CheckBox cbMinimizeToTray;
+        private System.Windows.Forms.ContextMenuStrip trayIconHueContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemOpen;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemClose;
     }
 }
 

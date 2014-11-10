@@ -17,6 +17,7 @@ using System.Xml;
 using Q42.HueApi;
 using Q42.HueApi.NET;
 using Q42.HueApi.Interfaces;
+using Microsoft.Win32;
 
 using System.Windows.Forms;
 
@@ -92,6 +93,8 @@ namespace AtmoHue
     public Boolean MinimizeOnStartup = false;
     public Boolean MinimizeToTray = false;
 
+    // Tray icon
+
     public Form1()
     {
       InitializeComponent();
@@ -107,7 +110,9 @@ namespace AtmoHue
 
       if (MinimizeOnStartup)
       {
+        this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
         this.WindowState = FormWindowState.Minimized;
+        this.Visible = false;
         this.ShowInTaskbar = false;
       }
       //Start remote server if enabled
@@ -1665,12 +1670,14 @@ namespace AtmoHue
       {
         if (FormWindowState.Minimized == this.WindowState)
         {
+          this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
           trayIconHue.Visible = true;
           this.Hide();
         }
 
         else if (FormWindowState.Normal == this.WindowState)
         {
+          this.FormBorderStyle = FormBorderStyle.FixedSingle;
           trayIconHue.Visible = false;
         }
       }
@@ -1732,5 +1739,33 @@ namespace AtmoHue
         MessageBox.Show("RGB color value must be between 0 and 255");
       }
     }
+    private void toolStripMenuItemOpen_Click(object sender, EventArgs e)
+    {
+      this.Show();
+      this.WindowState = FormWindowState.Normal;
+    }
+    private void toolStripMenuItemClose_Click(object sender, EventArgs e)
+    {
+      this.Close();
+    }
+
+    #region powerstate monitoring
+    private void monitorPowerState()
+    {
+      SystemEvents.PowerModeChanged += OnPowerModeChanged;
+    }
+    private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+    {
+      switch (e.Mode)
+      {
+        case PowerModes.Resume:
+          break;
+        case PowerModes.Suspend:
+          //Turn off Hue lights when suspending
+          hueSetColor(Color.Black,sources.LOCAL,0);
+          break;
+      }
+    }
+    #endregion
   }
 }
