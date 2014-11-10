@@ -180,6 +180,7 @@
       this.toolStripMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+      this.cbHueTurnOffOnSuspend = new System.Windows.Forms.CheckBox();
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
@@ -647,6 +648,7 @@
       // 
       // gbHueSettings
       // 
+      this.gbHueSettings.Controls.Add(this.cbHueTurnOffOnSuspend);
       this.gbHueSettings.Controls.Add(this.label1);
       this.gbHueSettings.Controls.Add(this.cbHueHue);
       this.gbHueSettings.Controls.Add(this.lblHueHue);
@@ -1682,26 +1684,37 @@
             this.toolStripSeparator1,
             this.toolStripMenuItemClose});
       this.trayIconHueContextMenu.Name = "trayIconHueContextMenu";
-      this.trayIconHueContextMenu.Size = new System.Drawing.Size(153, 76);
+      this.trayIconHueContextMenu.Size = new System.Drawing.Size(104, 54);
       // 
       // toolStripMenuItemOpen
       // 
       this.toolStripMenuItemOpen.Name = "toolStripMenuItemOpen";
-      this.toolStripMenuItemOpen.Size = new System.Drawing.Size(152, 22);
+      this.toolStripMenuItemOpen.Size = new System.Drawing.Size(103, 22);
       this.toolStripMenuItemOpen.Text = "Open";
       this.toolStripMenuItemOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
       // 
       // toolStripSeparator1
       // 
       this.toolStripSeparator1.Name = "toolStripSeparator1";
-      this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator1.Size = new System.Drawing.Size(100, 6);
       // 
       // toolStripMenuItemClose
       // 
       this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
-      this.toolStripMenuItemClose.Size = new System.Drawing.Size(152, 22);
+      this.toolStripMenuItemClose.Size = new System.Drawing.Size(103, 22);
       this.toolStripMenuItemClose.Text = "Exit";
       this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
+      // 
+      // cbHueTurnOffOnSuspend
+      // 
+      this.cbHueTurnOffOnSuspend.AutoSize = true;
+      this.cbHueTurnOffOnSuspend.Location = new System.Drawing.Point(20, 339);
+      this.cbHueTurnOffOnSuspend.Name = "cbHueTurnOffOnSuspend";
+      this.cbHueTurnOffOnSuspend.Size = new System.Drawing.Size(150, 17);
+      this.cbHueTurnOffOnSuspend.TabIndex = 54;
+      this.cbHueTurnOffOnSuspend.Text = "Turn lights off on Suspend";
+      this.cbHueTurnOffOnSuspend.UseVisualStyleBackColor = true;
+      this.cbHueTurnOffOnSuspend.CheckedChanged += new System.EventHandler(this.cbHueTurnOffOnSuspend_CheckedChanged);
       // 
       // Form1
       // 
@@ -1902,6 +1915,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemOpen;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemClose;
+        private System.Windows.Forms.CheckBox cbHueTurnOffOnSuspend;
     }
 }
 

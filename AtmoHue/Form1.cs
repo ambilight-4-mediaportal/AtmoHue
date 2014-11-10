@@ -92,6 +92,7 @@ namespace AtmoHue
     // Various
     public Boolean MinimizeOnStartup = false;
     public Boolean MinimizeToTray = false;
+    public Boolean HueTurnOffOnSuspend = false;
 
     // Tray icon
 
@@ -180,6 +181,9 @@ namespace AtmoHue
       {
         lblConnectionStatus.Text = "Status: Disconnected";
       }
+
+      // Monitor power state
+      monitorPowerState();
 
       //Set window title
       this.Text = formatTitle();
@@ -374,6 +378,16 @@ namespace AtmoHue
                   cbMinimizeOnStartup.Checked = MinimizeOnStartup;
                 }
               }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueTurnOffOnSuspend"))
+              {
+                HueTurnOffOnSuspend = Boolean.Parse(reader.ReadString());
+                if (init)
+                {
+                  cbHueTurnOffOnSuspend.Checked = HueTurnOffOnSuspend;
+                }
+              }
+
+
 
               // LED devices
               string id = "";
@@ -550,6 +564,8 @@ namespace AtmoHue
           writer.WriteElementString("MinimizeToTray", cbMinimizeToTray.Checked.ToString());
           writer.WriteElementString("MinimizeToTrayOnStartup", cbMinimizeOnStartup.Checked.ToString());
           writer.WriteElementString("RemoteAPISenDelay", tbRemoteAPIsendDelay.Text);
+          writer.WriteElementString("HueTurnOffOnSuspend", cbHueTurnOffOnSuspend.Checked.ToString());
+
 
           writer.WriteEndElement();
 
@@ -1709,6 +1725,17 @@ namespace AtmoHue
         MinimizeToTray = false;
       }
     }
+    private void cbHueTurnOffOnSuspend_CheckedChanged(object sender, EventArgs e)
+    {
+      if (cbHueTurnOffOnSuspend.Checked)
+      {
+        HueTurnOffOnSuspend = true;
+      }
+      else
+      {
+        HueTurnOffOnSuspend = false;
+      }
+    }
 
     private void cbTestCustomColorR_Validating(object sender, CancelEventArgs e)
     {
@@ -1761,8 +1788,11 @@ namespace AtmoHue
         case PowerModes.Resume:
           break;
         case PowerModes.Suspend:
-          //Turn off Hue lights when suspending
-          hueSetColor(Color.Black,sources.LOCAL,0);
+          if (HueTurnOffOnSuspend)
+          {
+            //Turn off Hue lights when suspending
+            hueSetColor(Color.Black, sources.LOCAL, 0);
+          }
           break;
       }
     }
