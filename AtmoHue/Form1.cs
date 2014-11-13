@@ -896,7 +896,6 @@ namespace AtmoHue
           //Command type COLOR
           if (commandType == APIcommandType.Color.ToString())
           {
-
             int red = int.Parse(apiMessageSplit[2]);
             int green = int.Parse(apiMessageSplit[3]);
             int blue = int.Parse(apiMessageSplit[4]);
@@ -909,7 +908,7 @@ namespace AtmoHue
             {
               if (cbLogRemoteApiCalls.Checked)
               {
-                Logger(string.Format("[ {0} ][PRIO {1} ] - {2}", commandSender, priority.ToString(), "Got color command from Atmolight"));
+                Logger(string.Format("[ {0} ] [ PRIO {1} ] - {2}", commandSender, priority.ToString(), "Got color command from Atmolight"));
               }
               if (red == 0 && green == 0 && blue == 0)
               {
@@ -931,8 +930,7 @@ namespace AtmoHue
                   hueSetColor(inputColor, sources.HUEHELPER, 0);
                 }
 
-                Thread.Sleep(2000);
-                swRemoteApi.Restart();
+                Thread.Sleep(1000);
               }
 
               //Validate if colors are correct
@@ -940,20 +938,23 @@ namespace AtmoHue
               {
                 if (commandSender.ToLower() == "atmolight")
                 {
-                hueSetColor(inputColor, sources.ATMOLIGHT, 0);
+                  hueSetColor(inputColor, sources.ATMOLIGHT, 0);
                 }
                 if (commandSender.ToLower() == "huehelper")
                 {
-                hueSetColor(inputColor, sources.HUEHELPER , 0);
+                  hueSetColor(inputColor, sources.HUEHELPER, 0);
                 }
-
               }
+
+              //Restart stop watch
+              swRemoteApi.Restart();
+            }
           }
           //Command type POWER
           if (commandType == APIcommandType.Power.ToString())
           {
-            string powerCommand = apiMessageSplit[1];
-            Logger(string.Format("[ {0} ], {1}", commandSender, "Powering " + powerCommand + "Hue Bridge"));
+            string powerCommand = apiMessageSplit[2];
+            Logger(string.Format("[ {0} ], Powering {1} Hue Bridge", commandSender,powerCommand));
             if (powerCommand == "ON")
             {
               TurnLightsON();
@@ -963,14 +964,10 @@ namespace AtmoHue
               TurnLightsOFF();
             }
           }
-
-
-          swRemoteApi.Restart();
-          }
         }
         catch (Exception e)
         {
-          Logger(string.Format("[ {0} ] {1}", "UNKNOWN", e.Message));
+          //Logger(string.Format("[ {0} ] {1}", "UNKNOWN", e.Message));
         }
       }
 
@@ -1864,9 +1861,9 @@ namespace AtmoHue
       {
         case PowerModes.Resume:
           int selectedPowerModeResume = HuePowerHandling;
-          if (selectedPowerModeResume == 0 && selectedPowerModeResume == 2)
+          if (selectedPowerModeResume == 0 || selectedPowerModeResume == 2)
           {
-            Logger("StandbyHandler - resuming AtmoHue connection and setting initial command");
+            Logger("[ STANDBY ] - resuming AtmoHue connection and setting initial command");
             Thread tResume = new Thread(TurnLightsON);
             tResume.IsBackground = true;
             tResume.Start();
@@ -1874,9 +1871,9 @@ namespace AtmoHue
           break;
         case PowerModes.Suspend:
           int selectedPowerModeSuspend = HuePowerHandling;
-          if (selectedPowerModeSuspend == 1 && selectedPowerModeSuspend == 2)
+          if (selectedPowerModeSuspend == 1 || selectedPowerModeSuspend == 2)
           {
-            Logger("StandbyHandler - suspending AtmoHue and turning off leds");
+            Logger("[ STANDBY ] - Suspending AtmoHue and turning off leds");
             Thread tSuspend = new Thread(TurnLightsOFF);
             tSuspend.IsBackground = true;
             tSuspend.Start();
@@ -1894,12 +1891,12 @@ namespace AtmoHue
         command.TurnOff();
         client.SendCommandAsync(command, ledDevices);
         command.On = false;
-        Logger("StandbyHandler - suspended AtmoHue and set color to black");
+        Logger("[ STANDBY ] - Suspended AtmoHue and set color to black");
 
       }
       catch (Exception e)
       {
-        Logger("StandbyHandler - error while sending color black on suspend");
+        Logger("[ STANDBY ] - Error while sending color black on suspend");
         Logger(e.Message);
       }
     }
@@ -1907,8 +1904,6 @@ namespace AtmoHue
     {
       try
       {
-        //Delay the command for 2.5s to allow for startup
-        Thread.Sleep(2500);
         if (client.IsInitialized == false)
         {
           client.Initialize(hueAppKey);
@@ -1917,14 +1912,15 @@ namespace AtmoHue
         LightCommand command = new LightCommand();
         command.On = true;
         command.Brightness = byte.Parse(hueBrightness);
+        command.ColorCoordinates = getRGBtoXY(Color.Black, DeviceType.bloom);
         command.TurnOn();
         client.SendCommandAsync(command, ledDevices);
         command.On = false;
-        Logger("StandbyHandler - resumed AtmoHue and set initial color command (TurnOn) with brightness " + hueBrightness);
+        Logger("[ STANDBY ] - Resumed AtmoHue and set initial color command (TurnOn) with brightness " + hueBrightness);
       }
       catch (Exception e)
       {
-        Logger("StandbyHandler - error while turning on Hue on resume");
+        Logger("[ STANDBY ] - Error while turning on Hue on resume");
         Logger(e.Message);
       }
     }
