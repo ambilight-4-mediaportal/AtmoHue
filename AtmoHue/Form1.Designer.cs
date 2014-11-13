@@ -74,13 +74,14 @@
       this.cbMinimizeToTray = new System.Windows.Forms.CheckBox();
       this.cbMinimizeOnStartup = new System.Windows.Forms.CheckBox();
       this.gbHueSettings = new System.Windows.Forms.GroupBox();
-      this.cbHueTurnOffOnSuspend = new System.Windows.Forms.CheckBox();
+      this.lblHuePowerHandling = new System.Windows.Forms.Label();
+      this.cbHuePowerHandling = new System.Windows.Forms.ComboBox();
       this.cbHueHue = new System.Windows.Forms.ComboBox();
       this.cbHueColorTemperature = new System.Windows.Forms.ComboBox();
       this.cbHueTransitionTime = new System.Windows.Forms.ComboBox();
+      this.cbHueSetBrightnessStartup = new System.Windows.Forms.CheckBox();
       this.cbHueSaturation = new System.Windows.Forms.ComboBox();
       this.cbHueBrightness = new System.Windows.Forms.ComboBox();
-      this.cbHueSetBrightnessStartup = new System.Windows.Forms.CheckBox();
       this.lblHueColorTemperature = new System.Windows.Forms.Label();
       this.tbHueAppKey = new System.Windows.Forms.TextBox();
       this.tbHueAppName = new System.Windows.Forms.TextBox();
@@ -648,17 +649,18 @@
       // 
       // gbHueSettings
       // 
-      this.gbHueSettings.Controls.Add(this.cbHueTurnOffOnSuspend);
+      this.gbHueSettings.Controls.Add(this.lblHuePowerHandling);
+      this.gbHueSettings.Controls.Add(this.cbHuePowerHandling);
       this.gbHueSettings.Controls.Add(this.label1);
       this.gbHueSettings.Controls.Add(this.cbHueHue);
       this.gbHueSettings.Controls.Add(this.lblHueHue);
       this.gbHueSettings.Controls.Add(this.cbHueColorTemperature);
       this.gbHueSettings.Controls.Add(this.lblHueTransTime);
       this.gbHueSettings.Controls.Add(this.cbHueTransitionTime);
+      this.gbHueSettings.Controls.Add(this.cbHueSetBrightnessStartup);
       this.gbHueSettings.Controls.Add(this.lblHueSaturation);
       this.gbHueSettings.Controls.Add(this.cbHueSaturation);
       this.gbHueSettings.Controls.Add(this.cbHueBrightness);
-      this.gbHueSettings.Controls.Add(this.cbHueSetBrightnessStartup);
       this.gbHueSettings.Controls.Add(this.lblBrightness);
       this.gbHueSettings.Controls.Add(this.lblHueColorTemperature);
       this.gbHueSettings.Controls.Add(this.tbHueAppKey);
@@ -673,16 +675,30 @@
       this.gbHueSettings.TabStop = false;
       this.gbHueSettings.Text = "Hue overview";
       // 
-      // cbHueTurnOffOnSuspend
+      // lblHuePowerHandling
       // 
-      this.cbHueTurnOffOnSuspend.AutoSize = true;
-      this.cbHueTurnOffOnSuspend.Location = new System.Drawing.Point(20, 339);
-      this.cbHueTurnOffOnSuspend.Name = "cbHueTurnOffOnSuspend";
-      this.cbHueTurnOffOnSuspend.Size = new System.Drawing.Size(150, 17);
-      this.cbHueTurnOffOnSuspend.TabIndex = 54;
-      this.cbHueTurnOffOnSuspend.Text = "Turn lights off on Suspend";
-      this.cbHueTurnOffOnSuspend.UseVisualStyleBackColor = true;
-      this.cbHueTurnOffOnSuspend.CheckedChanged += new System.EventHandler(this.cbHueTurnOffOnSuspend_CheckedChanged);
+      this.lblHuePowerHandling.AutoSize = true;
+      this.lblHuePowerHandling.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblHuePowerHandling.Location = new System.Drawing.Point(17, 308);
+      this.lblHuePowerHandling.Name = "lblHuePowerHandling";
+      this.lblHuePowerHandling.Size = new System.Drawing.Size(94, 13);
+      this.lblHuePowerHandling.TabIndex = 52;
+      this.lblHuePowerHandling.Text = "Power handling";
+      // 
+      // cbHuePowerHandling
+      // 
+      this.cbHuePowerHandling.FormattingEnabled = true;
+      this.cbHuePowerHandling.Items.AddRange(new object[] {
+            "Power bridge ON on resume",
+            "Power bridge OFF on standby",
+            "Power bridge ON and OFF during power events",
+            "Let Atmolight handle power events for bridge",
+            "Do Nothing"});
+      this.cbHuePowerHandling.Location = new System.Drawing.Point(150, 305);
+      this.cbHuePowerHandling.Name = "cbHuePowerHandling";
+      this.cbHuePowerHandling.Size = new System.Drawing.Size(317, 21);
+      this.cbHuePowerHandling.TabIndex = 51;
+      this.cbHuePowerHandling.SelectedIndexChanged += new System.EventHandler(this.cbHuePowerHandling_SelectedIndexChanged);
       // 
       // cbHueHue
       // 
@@ -713,6 +729,17 @@
       this.cbHueTransitionTime.Text = "300";
       this.cbHueTransitionTime.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueTransitionTime_Validating);
       // 
+      // cbHueSetBrightnessStartup
+      // 
+      this.cbHueSetBrightnessStartup.AutoSize = true;
+      this.cbHueSetBrightnessStartup.Location = new System.Drawing.Point(20, 347);
+      this.cbHueSetBrightnessStartup.Name = "cbHueSetBrightnessStartup";
+      this.cbHueSetBrightnessStartup.Size = new System.Drawing.Size(289, 17);
+      this.cbHueSetBrightnessStartup.TabIndex = 9;
+      this.cbHueSetBrightnessStartup.Text = "Only set brightness on first color info send to Hue Bridge";
+      this.cbHueSetBrightnessStartup.UseVisualStyleBackColor = true;
+      this.cbHueSetBrightnessStartup.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueSetBrightnessStartup_Validating);
+      // 
       // cbHueSaturation
       // 
       this.cbHueSaturation.FormattingEnabled = true;
@@ -732,17 +759,6 @@
       this.cbHueBrightness.TabIndex = 4;
       this.cbHueBrightness.Text = "100";
       this.cbHueBrightness.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueBrightness_Validating);
-      // 
-      // cbHueSetBrightnessStartup
-      // 
-      this.cbHueSetBrightnessStartup.AutoSize = true;
-      this.cbHueSetBrightnessStartup.Location = new System.Drawing.Point(20, 316);
-      this.cbHueSetBrightnessStartup.Name = "cbHueSetBrightnessStartup";
-      this.cbHueSetBrightnessStartup.Size = new System.Drawing.Size(289, 17);
-      this.cbHueSetBrightnessStartup.TabIndex = 9;
-      this.cbHueSetBrightnessStartup.Text = "Only set brightness on first color info send to Hue Bridge";
-      this.cbHueSetBrightnessStartup.UseVisualStyleBackColor = true;
-      this.cbHueSetBrightnessStartup.Validating += new System.ComponentModel.CancelEventHandler(this.cbHueSetBrightnessStartup_Validating);
       // 
       // lblHueColorTemperature
       // 
@@ -1915,7 +1931,8 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemOpen;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemClose;
-        private System.Windows.Forms.CheckBox cbHueTurnOffOnSuspend;
+        private System.Windows.Forms.ComboBox cbHuePowerHandling;
+        private System.Windows.Forms.Label lblHuePowerHandling;
     }
 }
 

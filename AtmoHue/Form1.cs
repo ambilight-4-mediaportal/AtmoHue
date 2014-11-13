@@ -41,6 +41,14 @@ namespace AtmoHue
       unknown
     }
 
+    private enum APIcommandType
+    {
+      Color,
+      Group,
+      Power,
+      Room,
+    }
+
     // Server
     private TcpListener tcpListener;
     private Thread listenThread;
@@ -92,7 +100,8 @@ namespace AtmoHue
     // Various
     public Boolean MinimizeOnStartup = false;
     public Boolean MinimizeToTray = false;
-    public Boolean HueTurnOffOnSuspend = false;
+    public int HuePowerHandling = 0;
+
 
     // Tray icon
 
@@ -378,12 +387,15 @@ namespace AtmoHue
                   cbMinimizeOnStartup.Checked = MinimizeOnStartup;
                 }
               }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueTurnOffOnSuspend"))
+
+
+
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HuePowerHandling"))
               {
-                HueTurnOffOnSuspend = Boolean.Parse(reader.ReadString());
+                HuePowerHandling = int.Parse(reader.ReadString());
                 if (init)
                 {
-                  cbHueTurnOffOnSuspend.Checked = HueTurnOffOnSuspend;
+                  cbHuePowerHandling.SelectedIndex = HuePowerHandling;
                 }
               }
 
@@ -567,7 +579,7 @@ namespace AtmoHue
           writer.WriteElementString("MinimizeToTray", cbMinimizeToTray.Checked.ToString());
           writer.WriteElementString("MinimizeToTrayOnStartup", cbMinimizeOnStartup.Checked.ToString());
           writer.WriteElementString("RemoteAPISenDelay", tbRemoteAPIsendDelay.Text);
-          writer.WriteElementString("HueTurnOffOnSuspend", cbHueTurnOffOnSuspend.Checked.ToString());
+          writer.WriteElementString("HuePowerHandling", cbHuePowerHandling.SelectedIndex.ToString());
 
 
           writer.WriteEndElement();
@@ -871,47 +883,70 @@ namespace AtmoHue
 
         //message has successfully been received
         ASCIIEncoding encoder = new ASCIIEncoding();
-        string ColorMessage = encoder.GetString(message, 0, bytesRead);
+        string apiCommandMessage = encoder.GetString(message, 0, bytesRead);
         try
         {
-          string[] colorMessageSplit = ColorMessage.Split(',');
-          int red = int.Parse(colorMessageSplit[0]);
-          int green = int.Parse(colorMessageSplit[1]);
-          int blue = int.Parse(colorMessageSplit[2]);
-          int priority = int.Parse(colorMessageSplit[3]);
 
-          Color inputColor = Color.FromArgb(red, green, blue);
+          //Get command type
+          string[] apiMessageSplit = apiCommandMessage.Split(',');
 
-          //Only send if delay has expired or if we get a high priority color
-          if (swRemoteApi.ElapsedMilliseconds >= int.Parse(remoteSendDelay) || priority < 50)
+          //Command type COLOR
+          if (apiMessageSplit[0] == APIcommandType.Color.ToString())
           {
-            if (cbLogRemoteApiCalls.Checked)
-            {
-              Logger(string.Format("[ {0} ][PRIO {1} ] - {2}", sources.ATMOLIGHT, priority.ToString(), "Got color command from Atmolight"));
-            }
-            if (red == 0 && green == 0 && blue == 0)
-            {
-              inputColor = Color.Black;
-            }
 
-            //If we receive a high priority messsage drop subsequent messages for x amount of time
-            if (priority < 50)
-            {
-              swRemoteApi.Reset();
-              swRemoteApi.Stop();
-              Thread.Sleep(1000);
-              hueSetColor(inputColor, sources.ATMOLIGHT, 0);
-              Thread.Sleep(2000);
-              swRemoteApi.Restart();
-            }
+            int red = int.Parse(apiMessageSplit[1]);
+            int green = int.Parse(apiMessageSplit[2]);
+            int blue = int.Parse(apiMessageSplit[3]);
+            int priority = int.Parse(apiMessageSplit[4]);
 
-            //Validate if colors are correct
-            if (red >= 0 && red <= 255 && green >= 0 && green <= 255 && blue >= 0 && blue <= 255)
-            {
-              hueSetColor(inputColor, sources.ATMOLIGHT, 0);
-            }
+            Color inputColor = Color.FromArgb(red, green, blue);
 
-            swRemoteApi.Restart();
+            //Only send if delay has expired or if we get a high priority color
+            if (swRemoteApi.ElapsedMilliseconds >= int.Parse(remoteSendDelay) || priority < 50)
+            {
+              if (cbLogRemoteApiCalls.Checked)
+              {
+                Logger(string.Format("[ {0} ][PRIO {1} ] - {2}", sources.ATMOLIGHT, priority.ToString(), "Got color command from Atmolight"));
+              }
+              if (red == 0 && green == 0 && blue == 0)
+              {
+                inputColor = Color.Black;
+              }
+
+              //If we receive a high priority messsage drop subsequent messages for x amount of time
+              if (priority < 50)
+              {
+                swRemoteApi.Reset();
+                swRemoteApi.Stop();
+                Thread.Sleep(1000);
+                hueSetColor(inputColor, sources.ATMOLIGHT, 0);
+                Thread.Sleep(2000);
+                swRemoteApi.Restart();
+              }
+
+              //Validate if colors are correct
+              if (red >= 0 && red <= 255 && green >= 0 && green <= 255 && blue >= 0 && blue <= 255)
+              {
+                hueSetColor(inputColor, sources.ATMOLIGHT, 0);
+              }
+          }
+          //Command type POWER
+          if (apiMessageSplit[0] == APIcommandType.Power.ToString())
+          {
+            string powerCommand = apiMessageSplit[1];
+            Logger(string.Format("[ {0} ], {1}", sources.ATMOLIGHT, "Powering " + powerCommand  + "Hue Bridge"));
+            if (powerCommand == "ON")
+            {
+              TurnLightsON();
+            }
+            else if (powerCommand == "OFF")
+            {
+              TurnLightsOFF();
+            }
+          }
+
+
+          swRemoteApi.Restart();
           }
         }
         catch (Exception e)
@@ -1756,17 +1791,6 @@ namespace AtmoHue
         MinimizeToTray = false;
       }
     }
-    private void cbHueTurnOffOnSuspend_CheckedChanged(object sender, EventArgs e)
-    {
-      if (cbHueTurnOffOnSuspend.Checked)
-      {
-        HueTurnOffOnSuspend = true;
-      }
-      else
-      {
-        HueTurnOffOnSuspend = false;
-      }
-    }
 
     private void cbTestCustomColorR_Validating(object sender, CancelEventArgs e)
     {
@@ -1806,6 +1830,10 @@ namespace AtmoHue
     {
       this.Close();
     }
+    private void cbHuePowerHandling_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      HuePowerHandling = cbHuePowerHandling.SelectedIndex;
+    }
 
     #region powerstate monitoring
     private void monitorPowerState()
@@ -1817,13 +1845,18 @@ namespace AtmoHue
       switch (e.Mode)
       {
         case PowerModes.Resume:
-          Logger("StandbyHandler - resuming AtmoHue connection and setting initial command");
-          Thread tResume = new Thread(TurnLightsON);
-          tResume.IsBackground = true;
-          tResume.Start();
+          int selectedPowerModeResume = cbHuePowerHandling.SelectedIndex;
+          if (selectedPowerModeResume == 0 && selectedPowerModeResume == 2)
+          {
+            Logger("StandbyHandler - resuming AtmoHue connection and setting initial command");
+            Thread tResume = new Thread(TurnLightsON);
+            tResume.IsBackground = true;
+            tResume.Start();
+          }
           break;
         case PowerModes.Suspend:
-          if (HueTurnOffOnSuspend)
+          int selectedPowerModeSuspend = cbHuePowerHandling.SelectedIndex;
+          if (selectedPowerModeSuspend == 1 && selectedPowerModeSuspend == 2)
           {
             Logger("StandbyHandler - suspending AtmoHue and turning off leds");
             Thread tSuspend = new Thread(TurnLightsOFF);
@@ -1869,7 +1902,7 @@ namespace AtmoHue
         command.TurnOn();
         client.SendCommandAsync(command, ledDevices);
         command.On = false;
-        Logger("StandbyHandler - resumed AtmoHue and set initial color command (TurnOn) with default brightness 100");
+        Logger("StandbyHandler - resumed AtmoHue and set initial color command (TurnOn) with brightness " + hueBrightness);
       }
       catch (Exception e)
       {
