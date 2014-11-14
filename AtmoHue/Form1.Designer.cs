@@ -35,7 +35,6 @@
       this.lblAtmoWinFolder = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
-      this.lbOutputlog = new System.Windows.Forms.ListBox();
       this.btnStartAtmowinHue = new System.Windows.Forms.Button();
       this.label5 = new System.Windows.Forms.Label();
       this.lblBrightness = new System.Windows.Forms.Label();
@@ -51,8 +50,6 @@
       this.lblAtmoinPresetColor = new System.Windows.Forms.Label();
       this.tbAtmowinStaticColor = new System.Windows.Forms.TextBox();
       this.btnStopAtmowinHue = new System.Windows.Forms.Button();
-      this.llQ42 = new System.Windows.Forms.LinkLabel();
-      this.lCopyright = new System.Windows.Forms.Label();
       this.gbBridgeTools = new System.Windows.Forms.GroupBox();
       this.cbRunningWindows8 = new System.Windows.Forms.CheckBox();
       this.cbAutoConnectBridge = new System.Windows.Forms.CheckBox();
@@ -71,6 +68,11 @@
       this.cbRemoteAPIEnabled = new System.Windows.Forms.CheckBox();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPageGeneral = new System.Windows.Forms.TabPage();
+      this.lblConnectionStatus = new System.Windows.Forms.Label();
+      this.lCopyright = new System.Windows.Forms.Label();
+      this.llQ42 = new System.Windows.Forms.LinkLabel();
+      this.gbLogOutput = new System.Windows.Forms.GroupBox();
+      this.lbOutputlog = new System.Windows.Forms.ListBox();
       this.cbMinimizeToTray = new System.Windows.Forms.CheckBox();
       this.cbMinimizeOnStartup = new System.Windows.Forms.CheckBox();
       this.gbHueSettings = new System.Windows.Forms.GroupBox();
@@ -141,6 +143,7 @@
       this.btnTestBlue = new System.Windows.Forms.Button();
       this.btnTestGreen = new System.Windows.Forms.Button();
       this.tabPageExperimental = new System.Windows.Forms.TabPage();
+      this.btnGetLedIDs = new System.Windows.Forms.Button();
       this.gbHueSceneTester = new System.Windows.Forms.GroupBox();
       this.label21 = new System.Windows.Forms.Label();
       this.lblHueSceneID = new System.Windows.Forms.Label();
@@ -176,7 +179,6 @@
       this.label9 = new System.Windows.Forms.Label();
       this.label8 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
-      this.lblConnectionStatus = new System.Windows.Forms.Label();
       this.trayIconHue = new System.Windows.Forms.NotifyIcon(this.components);
       this.trayIconHueContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.toolStripMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -187,6 +189,7 @@
       this.grpRemoteAPI.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabPageGeneral.SuspendLayout();
+      this.gbLogOutput.SuspendLayout();
       this.gbHueSettings.SuspendLayout();
       this.tabPageLeds.SuspendLayout();
       this.gbManageLeds.SuspendLayout();
@@ -248,14 +251,6 @@
       this.label4.Size = new System.Drawing.Size(79, 13);
       this.label4.TabIndex = 14;
       this.label4.Text = "Hue app key";
-      // 
-      // lbOutputlog
-      // 
-      this.lbOutputlog.FormattingEnabled = true;
-      this.lbOutputlog.Location = new System.Drawing.Point(6, 408);
-      this.lbOutputlog.Name = "lbOutputlog";
-      this.lbOutputlog.Size = new System.Drawing.Size(1059, 264);
-      this.lbOutputlog.TabIndex = 17;
       // 
       // btnStartAtmowinHue
       // 
@@ -369,7 +364,7 @@
       // cbEnableDebuglog
       // 
       this.cbEnableDebuglog.AutoSize = true;
-      this.cbEnableDebuglog.Location = new System.Drawing.Point(137, 385);
+      this.cbEnableDebuglog.Location = new System.Drawing.Point(145, 401);
       this.cbEnableDebuglog.Name = "cbEnableDebuglog";
       this.cbEnableDebuglog.Size = new System.Drawing.Size(109, 17);
       this.cbEnableDebuglog.TabIndex = 38;
@@ -402,26 +397,6 @@
       this.btnStopAtmowinHue.Text = "Stop monitoring Atmowin";
       this.btnStopAtmowinHue.UseVisualStyleBackColor = true;
       this.btnStopAtmowinHue.Click += new System.EventHandler(this.btnStopAtmowinHue_Click);
-      // 
-      // llQ42
-      // 
-      this.llQ42.AutoSize = true;
-      this.llQ42.Location = new System.Drawing.Point(1033, 718);
-      this.llQ42.Name = "llQ42";
-      this.llQ42.Size = new System.Drawing.Size(65, 13);
-      this.llQ42.TabIndex = 42;
-      this.llQ42.TabStop = true;
-      this.llQ42.Text = "Q42.HueApi";
-      this.llQ42.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llQ42_LinkClicked);
-      // 
-      // lCopyright
-      // 
-      this.lCopyright.AutoSize = true;
-      this.lCopyright.Location = new System.Drawing.Point(944, 718);
-      this.lCopyright.Name = "lCopyright";
-      this.lCopyright.Size = new System.Drawing.Size(92, 13);
-      this.lCopyright.TabIndex = 43;
-      this.lCopyright.Text = "Made possible by:";
       // 
       // gbBridgeTools
       // 
@@ -496,12 +471,13 @@
       // cbLogRemoteApiCalls
       // 
       this.cbLogRemoteApiCalls.AutoSize = true;
-      this.cbLogRemoteApiCalls.Location = new System.Drawing.Point(6, 385);
+      this.cbLogRemoteApiCalls.Location = new System.Drawing.Point(14, 401);
       this.cbLogRemoteApiCalls.Name = "cbLogRemoteApiCalls";
       this.cbLogRemoteApiCalls.Size = new System.Drawing.Size(123, 17);
       this.cbLogRemoteApiCalls.TabIndex = 47;
       this.cbLogRemoteApiCalls.Text = "Log remote API calls";
       this.cbLogRemoteApiCalls.UseVisualStyleBackColor = true;
+      this.cbLogRemoteApiCalls.CheckedChanged += new System.EventHandler(this.cbLogRemoteApiCalls_CheckedChanged);
       // 
       // grpRemoteAPI
       // 
@@ -601,15 +577,20 @@
       this.tabControl1.Controls.Add(this.tabPageLeds);
       this.tabControl1.Controls.Add(this.tabPageTesting);
       this.tabControl1.Controls.Add(this.tabPageExperimental);
-      this.tabControl1.Location = new System.Drawing.Point(12, 12);
+      this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tabControl1.Location = new System.Drawing.Point(0, 0);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(1094, 702);
+      this.tabControl1.Size = new System.Drawing.Size(1108, 740);
       this.tabControl1.TabIndex = 50;
       // 
       // tabPageGeneral
       // 
       this.tabPageGeneral.BackColor = System.Drawing.SystemColors.Control;
+      this.tabPageGeneral.Controls.Add(this.lblConnectionStatus);
+      this.tabPageGeneral.Controls.Add(this.lCopyright);
+      this.tabPageGeneral.Controls.Add(this.llQ42);
+      this.tabPageGeneral.Controls.Add(this.gbLogOutput);
       this.tabPageGeneral.Controls.Add(this.cbMinimizeToTray);
       this.tabPageGeneral.Controls.Add(this.cbMinimizeOnStartup);
       this.tabPageGeneral.Controls.Add(this.gbHueSettings);
@@ -617,18 +598,65 @@
       this.tabPageGeneral.Controls.Add(this.cbLogRemoteApiCalls);
       this.tabPageGeneral.Controls.Add(this.grpRemoteAPI);
       this.tabPageGeneral.Controls.Add(this.cbEnableDebuglog);
-      this.tabPageGeneral.Controls.Add(this.lbOutputlog);
       this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
       this.tabPageGeneral.Name = "tabPageGeneral";
       this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageGeneral.Size = new System.Drawing.Size(1086, 676);
+      this.tabPageGeneral.Size = new System.Drawing.Size(1100, 714);
       this.tabPageGeneral.TabIndex = 0;
       this.tabPageGeneral.Text = "General";
+      // 
+      // lblConnectionStatus
+      // 
+      this.lblConnectionStatus.AutoSize = true;
+      this.lblConnectionStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblConnectionStatus.Location = new System.Drawing.Point(8, 696);
+      this.lblConnectionStatus.Name = "lblConnectionStatus";
+      this.lblConnectionStatus.Size = new System.Drawing.Size(47, 13);
+      this.lblConnectionStatus.TabIndex = 57;
+      this.lblConnectionStatus.Text = "Status:";
+      // 
+      // lCopyright
+      // 
+      this.lCopyright.AutoSize = true;
+      this.lCopyright.Location = new System.Drawing.Point(940, 696);
+      this.lCopyright.Name = "lCopyright";
+      this.lCopyright.Size = new System.Drawing.Size(92, 13);
+      this.lCopyright.TabIndex = 56;
+      this.lCopyright.Text = "Made possible by:";
+      // 
+      // llQ42
+      // 
+      this.llQ42.AutoSize = true;
+      this.llQ42.Location = new System.Drawing.Point(1029, 696);
+      this.llQ42.Name = "llQ42";
+      this.llQ42.Size = new System.Drawing.Size(65, 13);
+      this.llQ42.TabIndex = 55;
+      this.llQ42.TabStop = true;
+      this.llQ42.Text = "Q42.HueApi";
+      // 
+      // gbLogOutput
+      // 
+      this.gbLogOutput.Controls.Add(this.lbOutputlog);
+      this.gbLogOutput.Location = new System.Drawing.Point(7, 424);
+      this.gbLogOutput.Name = "gbLogOutput";
+      this.gbLogOutput.Size = new System.Drawing.Size(1073, 246);
+      this.gbLogOutput.TabIndex = 54;
+      this.gbLogOutput.TabStop = false;
+      this.gbLogOutput.Text = "Log";
+      // 
+      // lbOutputlog
+      // 
+      this.lbOutputlog.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lbOutputlog.FormattingEnabled = true;
+      this.lbOutputlog.Location = new System.Drawing.Point(3, 16);
+      this.lbOutputlog.Name = "lbOutputlog";
+      this.lbOutputlog.Size = new System.Drawing.Size(1067, 227);
+      this.lbOutputlog.TabIndex = 17;
       // 
       // cbMinimizeToTray
       // 
       this.cbMinimizeToTray.AutoSize = true;
-      this.cbMinimizeToTray.Location = new System.Drawing.Point(783, 385);
+      this.cbMinimizeToTray.Location = new System.Drawing.Point(795, 401);
       this.cbMinimizeToTray.Name = "cbMinimizeToTray";
       this.cbMinimizeToTray.Size = new System.Drawing.Size(98, 17);
       this.cbMinimizeToTray.TabIndex = 53;
@@ -639,7 +667,7 @@
       // cbMinimizeOnStartup
       // 
       this.cbMinimizeOnStartup.AutoSize = true;
-      this.cbMinimizeOnStartup.Location = new System.Drawing.Point(917, 385);
+      this.cbMinimizeOnStartup.Location = new System.Drawing.Point(929, 401);
       this.cbMinimizeOnStartup.Name = "cbMinimizeOnStartup";
       this.cbMinimizeOnStartup.Size = new System.Drawing.Size(148, 17);
       this.cbMinimizeOnStartup.TabIndex = 52;
@@ -692,8 +720,7 @@
             "Power bridge ON on resume",
             "Power bridge OFF on standby",
             "Power bridge ON and OFF during power events",
-            "Let Atmolight handle power events for bridge",
-            "Do Nothing"});
+            "Let Atmolight handle power events for bridge"});
       this.cbHuePowerHandling.Location = new System.Drawing.Point(150, 305);
       this.cbHuePowerHandling.Name = "cbHuePowerHandling";
       this.cbHuePowerHandling.Size = new System.Drawing.Size(317, 21);
@@ -806,7 +833,7 @@
       this.tabPageLeds.Location = new System.Drawing.Point(4, 22);
       this.tabPageLeds.Name = "tabPageLeds";
       this.tabPageLeds.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageLeds.Size = new System.Drawing.Size(1086, 676);
+      this.tabPageLeds.Size = new System.Drawing.Size(1100, 714);
       this.tabPageLeds.TabIndex = 3;
       this.tabPageLeds.Text = "Hue Leds";
       // 
@@ -1174,7 +1201,7 @@
       this.tabPageTesting.Location = new System.Drawing.Point(4, 22);
       this.tabPageTesting.Name = "tabPageTesting";
       this.tabPageTesting.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageTesting.Size = new System.Drawing.Size(1086, 676);
+      this.tabPageTesting.Size = new System.Drawing.Size(1100, 714);
       this.tabPageTesting.TabIndex = 1;
       this.tabPageTesting.Text = "Testing";
       // 
@@ -1324,14 +1351,25 @@
       // tabPageExperimental
       // 
       this.tabPageExperimental.BackColor = System.Drawing.SystemColors.Control;
+      this.tabPageExperimental.Controls.Add(this.btnGetLedIDs);
       this.tabPageExperimental.Controls.Add(this.gbHueSceneTester);
       this.tabPageExperimental.Controls.Add(this.gbColorCalibration);
       this.tabPageExperimental.Controls.Add(this.grpAtmowin);
       this.tabPageExperimental.Location = new System.Drawing.Point(4, 22);
       this.tabPageExperimental.Name = "tabPageExperimental";
-      this.tabPageExperimental.Size = new System.Drawing.Size(1086, 676);
+      this.tabPageExperimental.Size = new System.Drawing.Size(1100, 714);
       this.tabPageExperimental.TabIndex = 2;
       this.tabPageExperimental.Text = "Experimental";
+      // 
+      // btnGetLedIDs
+      // 
+      this.btnGetLedIDs.Location = new System.Drawing.Point(808, 244);
+      this.btnGetLedIDs.Name = "btnGetLedIDs";
+      this.btnGetLedIDs.Size = new System.Drawing.Size(242, 65);
+      this.btnGetLedIDs.TabIndex = 50;
+      this.btnGetLedIDs.Text = "Get LED Ids";
+      this.btnGetLedIDs.UseVisualStyleBackColor = true;
+      this.btnGetLedIDs.Click += new System.EventHandler(this.btnGetLedIDs_Click);
       // 
       // gbHueSceneTester
       // 
@@ -1686,16 +1724,6 @@
     "7 / Green  0.743075 / Blue  0.022598\r\nZ = Red 0.0000000 / Green  0.053077 / Blue" +
     "  1.035763\r\n";
       // 
-      // lblConnectionStatus
-      // 
-      this.lblConnectionStatus.AutoSize = true;
-      this.lblConnectionStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblConnectionStatus.Location = new System.Drawing.Point(19, 718);
-      this.lblConnectionStatus.Name = "lblConnectionStatus";
-      this.lblConnectionStatus.Size = new System.Drawing.Size(47, 13);
-      this.lblConnectionStatus.TabIndex = 51;
-      this.lblConnectionStatus.Text = "Status:";
-      // 
       // trayIconHue
       // 
       this.trayIconHue.ContextMenuStrip = this.trayIconHueContextMenu;
@@ -1738,11 +1766,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.ClientSize = new System.Drawing.Size(1108, 740);
-      this.Controls.Add(this.lblConnectionStatus);
       this.Controls.Add(this.tabControl1);
-      this.Controls.Add(this.lCopyright);
-      this.Controls.Add(this.llQ42);
-      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MaximizeBox = false;
       this.Name = "Form1";
@@ -1758,6 +1782,7 @@
       this.tabControl1.ResumeLayout(false);
       this.tabPageGeneral.ResumeLayout(false);
       this.tabPageGeneral.PerformLayout();
+      this.gbLogOutput.ResumeLayout(false);
       this.gbHueSettings.ResumeLayout(false);
       this.gbHueSettings.PerformLayout();
       this.tabPageLeds.ResumeLayout(false);
@@ -1775,7 +1800,6 @@
       this.gbColorCalibration.PerformLayout();
       this.trayIconHueContextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
         }
 
@@ -1791,7 +1815,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tbHueAppName;
         private System.Windows.Forms.TextBox tbHueAppKey;
-        private System.Windows.Forms.ListBox lbOutputlog;
         private System.Windows.Forms.Button btnStartAtmowinHue;
         private System.Windows.Forms.TextBox tbAtmowinScanInterval;
         private System.Windows.Forms.Label label5;
@@ -1810,8 +1833,6 @@
         private System.Windows.Forms.Label lblAtmoinPresetColor;
         private System.Windows.Forms.TextBox tbAtmowinStaticColor;
         private System.Windows.Forms.Button btnStopAtmowinHue;
-        private System.Windows.Forms.LinkLabel llQ42;
-        private System.Windows.Forms.Label lCopyright;
         private System.Windows.Forms.CheckBox cbAutoConnectBridge;
         private System.Windows.Forms.GroupBox gbBridgeTools;
         private System.Windows.Forms.GroupBox grpAtmowin;
@@ -1922,7 +1943,6 @@
         private System.Windows.Forms.ComboBox cbTestCustomColorG;
         private System.Windows.Forms.ComboBox cbTestCustomColorR;
         private System.Windows.Forms.GroupBox gbHueSettings;
-        private System.Windows.Forms.Label lblConnectionStatus;
         private System.Windows.Forms.GroupBox gbColorTests;
         private System.Windows.Forms.NotifyIcon trayIconHue;
         private System.Windows.Forms.CheckBox cbMinimizeOnStartup;
@@ -1933,6 +1953,12 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemClose;
         private System.Windows.Forms.ComboBox cbHuePowerHandling;
         private System.Windows.Forms.Label lblHuePowerHandling;
+        private System.Windows.Forms.Button btnGetLedIDs;
+        private System.Windows.Forms.Label lblConnectionStatus;
+        private System.Windows.Forms.Label lCopyright;
+        private System.Windows.Forms.LinkLabel llQ42;
+        private System.Windows.Forms.GroupBox gbLogOutput;
+        private System.Windows.Forms.ListBox lbOutputlog;
     }
 }
 

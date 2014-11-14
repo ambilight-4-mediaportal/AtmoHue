@@ -41,7 +41,6 @@ namespace AtmoHue
       strips,
       unknown
     }
-
     private enum APIcommandType
     {
       Color,
@@ -49,11 +48,6 @@ namespace AtmoHue
       Power,
       Room,
     }
-
-    // Server
-    private TcpListener tcpListener;
-    private Thread listenThread;
-    private Stopwatch swRemoteApi = new Stopwatch();
 
     // Atmowin
     public Boolean scanAtmowin = false;
@@ -92,19 +86,20 @@ namespace AtmoHue
     public string calibrateYblue = "";
     public string calibrateZblue = "";
 
-    // Remote API
-    public string remoteAPIip = "127.0.0.1";
-    public string remoteAPIport = "20123";
-    public string remoteSendDelay = "300";
-
-
     // Various
     public Boolean MinimizeOnStartup = false;
     public Boolean MinimizeToTray = false;
     public int HuePowerHandling = 0;
 
 
-    // Tray icon
+    // API
+    private TcpListener tcpListener;
+    private Thread listenThread;
+    private Stopwatch swRemoteApi = new Stopwatch();
+    public static string remoteAPIip = "127.0.0.1";
+    public static string remoteAPIport = "20123";
+    public static string remoteSendDelay = "300";
+    public static Boolean LogRemoteApiCalls = false;
 
     public Form1()
     {
@@ -127,7 +122,7 @@ namespace AtmoHue
         this.ShowInTaskbar = false;
       }
       //Start remote server if enabled
-      if (cbRemoteAPIEnabled.Checked)
+      if (HueRemoteAPIenabled)
       {
         startAPIserver();
       }
@@ -655,184 +650,46 @@ namespace AtmoHue
 
     public static string formatTitle()
     {
-      string title = AssemblyInfo.Title;
-      string version = AssemblyInfo.VersionFull.ToString();
-      string copyright = AssemblyInfo.Copyright;
+      string title = AssemblyInfo.AssemblyInfoLookUp.Title;
+      string version = AssemblyInfo.AssemblyInfoLookUp.VersionFull.ToString();
+      string copyright = AssemblyInfo.AssemblyInfoLookUp.Copyright;
 
       string formattedTitle = string.Format("{0} - {1} - {2}", title, version, copyright);
       return formattedTitle;
     }
-
-    static public class AssemblyInfo
+    private void Form1_FormClosing(object sender, FormClosingEventArgs e)
     {
-      public static string Company { get { return GetExecutingAssemblyAttribute<AssemblyCompanyAttribute>(a => a.Company); } }
-      public static string Configuration { get { return GetExecutingAssemblyAttribute<AssemblyDescriptionAttribute>(a => a.Description); } }
-
-      public static string Copyright { get { return GetExecutingAssemblyAttribute<AssemblyCopyrightAttribute>(a => a.Copyright); } }
-
-      public static string Description { get { return GetExecutingAssemblyAttribute<AssemblyDescriptionAttribute>(a => a.Description); } }
-
-      public static string FileVersion { get { return GetExecutingAssemblyAttribute<AssemblyFileVersionAttribute>(a => a.Version); } }
-
-      public static string Product { get { return GetExecutingAssemblyAttribute<AssemblyProductAttribute>(a => a.Product); } }
-      public static string Title { get { return GetExecutingAssemblyAttribute<AssemblyTitleAttribute>(a => a.Title); } }
-
-      public static string Trademark { get { return GetExecutingAssemblyAttribute<AssemblyTrademarkAttribute>(a => a.Trademark); } }
-      public static Version Version { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
-      public static string VersionBuild { get { return Version.Build.ToString(); } }
-
-      public static string VersionFull { get { return Version.ToString(); } }
-      public static string VersionMajor { get { return Version.Major.ToString(); } }
-      public static string VersionMinor { get { return Version.Minor.ToString(); } }
-      public static string VersionRevision { get { return Version.Revision.ToString(); } }
-
-      private static string GetExecutingAssemblyAttribute<T>(Func<T, string> value) where T : Attribute
-      {
-        T attribute = (T)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(T));
-        return value.Invoke(attribute);
-      }
+      SaveSettings(false);
+      scanAtmowin = false;
+      trayIconHue.Dispose();
+      Application.ExitThread();
+      Environment.Exit(0);
     }
-
-
-    /// <summary>
-    /// Gets the values from the AssemblyInfo.cs file for the previous assembly
-    /// </summary>
-    /// <example>
-    /// AssemblyInfoCalling assembly = new AssemblyInfoCalling();
-    /// string company1 = assembly.Company;
-    /// string product1 = assembly.Product;
-    /// string copyright1 = assembly.Copyright;
-    /// string trademark1 = assembly.Trademark;
-    /// string title1 = assembly.Title;
-    /// string description1 = assembly.Description;
-    /// string configuration1 = assembly.Configuration;
-    /// string fileversion1 = assembly.FileVersion;
-    /// Version version1 = assembly.Version;
-    /// string versionFull1 = assembly.VersionFull;
-    /// string versionMajor1 = assembly.VersionMajor;
-    /// string versionMinor1 = assembly.VersionMinor;
-    /// string versionBuild1 = assembly.VersionBuild;
-    /// string versionRevision1 = assembly.VersionRevision;
-    /// </example>
-    public class AssemblyInfoCalling
+    public static void ControlInvike(Control control, Action function)
     {
-      /// <summary>
-      /// Initializes a new instance of the <see cref="AssemblyInfoCalling"/> class.
-      /// </summary>
-      /// <param name="traceLevel">The trace level needed to get correct assembly 
-      /// - will need to adjust based on where you put these classes in your project(s).</param>
-      public AssemblyInfoCalling(int traceLevel = 4)
+      if (control.IsDisposed || control.Disposing)
+        return;
+
+      if (control.InvokeRequired)
       {
-        //----------------------------------------------------------------------
-        // Default to "3" as the number of levels back in the stack trace to get the 
-        //  correct assembly for "calling" assembly
-        //----------------------------------------------------------------------
-        StackTraceLevel = traceLevel;
+        control.Invoke(new UniversalVoidDelegate(() => ControlInvike(control, function)));
+        return;
       }
-
-      //----------------------------------------------------------------------
-      // Set how deep in the stack trace we're looking - allows for customized changes
-      //----------------------------------------------------------------------
-      public static int StackTraceLevel { get; set; }
-
-      //----------------------------------------------------------------------
-      // Version attributes
-      //----------------------------------------------------------------------
-      public static Version Version
-      {
-        get
-        {
-          //----------------------------------------------------------------------
-          // Get the assembly, return empty if null
-          //----------------------------------------------------------------------
-          Assembly assembly = GetAssembly(StackTraceLevel);
-          return assembly == null ? new Version() : assembly.GetName().Version;
-        }
-      }
-
-      //----------------------------------------------------------------------
-      // Standard assembly attributes
-      //----------------------------------------------------------------------
-      public string Company { get { return GetCallingAssemblyAttribute<AssemblyCompanyAttribute>(a => a.Company); } }
-      public string Configuration { get { return GetCallingAssemblyAttribute<AssemblyDescriptionAttribute>(a => a.Description); } }
-
-      public string Copyright { get { return GetCallingAssemblyAttribute<AssemblyCopyrightAttribute>(a => a.Copyright); } }
-
-      public string Description { get { return GetCallingAssemblyAttribute<AssemblyDescriptionAttribute>(a => a.Description); } }
-
-      public string FileVersion { get { return GetCallingAssemblyAttribute<AssemblyFileVersionAttribute>(a => a.Version); } }
-
-      public string Product { get { return GetCallingAssemblyAttribute<AssemblyProductAttribute>(a => a.Product); } }
-      public string Title { get { return GetCallingAssemblyAttribute<AssemblyTitleAttribute>(a => a.Title); } }
-
-      public string Trademark { get { return GetCallingAssemblyAttribute<AssemblyTrademarkAttribute>(a => a.Trademark); } }
-      public string VersionBuild { get { return Version.Build.ToString(); } }
-
-      public string VersionFull { get { return Version.ToString(); } }
-      public string VersionMajor { get { return Version.Major.ToString(); } }
-      public string VersionMinor { get { return Version.Minor.ToString(); } }
-      public string VersionRevision { get { return Version.Revision.ToString(); } }
-      /// <summary>
-      /// Go through the stack and gets the assembly
-      /// </summary>
-      /// <param name="stackTraceLevel">The stack trace level.</param>
-      /// <returns></returns>
-      private static Assembly GetAssembly(int stackTraceLevel)
-      {
-        //----------------------------------------------------------------------
-        // Get the stack frame, returning null if none
-        //----------------------------------------------------------------------
-        StackTrace stackTrace = new StackTrace();
-        StackFrame[] stackFrames = stackTrace.GetFrames();
-        if (stackFrames == null) return null;
-
-        //----------------------------------------------------------------------
-        // Get the declaring type from the associated stack frame, returning null if nonw
-        //----------------------------------------------------------------------
-        var declaringType = stackFrames[stackTraceLevel].GetMethod().DeclaringType;
-        if (declaringType == null) return null;
-
-        //----------------------------------------------------------------------
-        // Return the assembly
-        //----------------------------------------------------------------------
-        var assembly = declaringType.Assembly;
-        return assembly;
-      }
-
-      /// <summary>
-      /// Gets the calling assembly attribute.
-      /// </summary>
-      /// <typeparam name="T"></typeparam>
-      /// <param name="value">The value.</param>
-      /// <example>return GetCallingAssemblyAttribute&lt;AssemblyCompanyAttribute&gt;(a => a.Company);</example>
-      /// <returns></returns>
-      private string GetCallingAssemblyAttribute<T>(Func<T, string> value) where T : Attribute
-      {
-        //----------------------------------------------------------------------
-        // Get the assembly, return empty if null
-        //----------------------------------------------------------------------
-        Assembly assembly = GetAssembly(StackTraceLevel);
-        if (assembly == null) return string.Empty;
-
-        //----------------------------------------------------------------------
-        // Get the attribute value
-        //----------------------------------------------------------------------
-        T attribute = (T)Attribute.GetCustomAttribute(assembly, typeof(T));
-        return value.Invoke(attribute);
-      }
+      function();
     }
-    private void startAPIserver()
+    public void startAPIserver()
     {
       swRemoteApi.Start();
-      if (remoteAPIip == "Any")
+      if (Form1.remoteAPIip == "Any")
       {
         tcpListener = new TcpListener(IPAddress.Any, int.Parse(remoteAPIport));
       }
       else
       {
-        IPAddress IP = IPAddress.Parse(remoteAPIip);
+        IPAddress IP = IPAddress.Parse(Form1.remoteAPIip);
         tcpListener = new TcpListener(IP, int.Parse(remoteAPIport));
       }
+
       listenThread = new Thread(new ThreadStart(ListenForClients));
       listenThread.Start();
       Logger("Started service for remote API calls");
@@ -904,9 +761,9 @@ namespace AtmoHue
             Color inputColor = Color.FromArgb(red, green, blue);
 
             //Only send if delay has expired or if we get a high priority color
-            if (swRemoteApi.ElapsedMilliseconds >= int.Parse(remoteSendDelay) || priority < 50)
+            if (swRemoteApi.ElapsedMilliseconds >= int.Parse(Form1.remoteSendDelay) || priority < 50)
             {
-              if (cbLogRemoteApiCalls.Checked)
+              if (Form1.LogRemoteApiCalls)
               {
                 Logger(string.Format("[ {0} ] [ PRIO {1} ] - {2}", commandSender, priority.ToString(), "Got color command from Atmolight"));
               }
@@ -923,11 +780,11 @@ namespace AtmoHue
                 Thread.Sleep(1000);
                 if (commandSender.ToLower() == "atmolight")
                 {
-                  hueSetColor(inputColor, sources.ATMOLIGHT, 0);
+                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0);
                 }
                 if (commandSender.ToLower() == "huehelper")
                 {
-                  hueSetColor(inputColor, sources.HUEHELPER, 0);
+                  hueSetColor(inputColor, Form1.sources.HUEHELPER, 0);
                 }
 
                 Thread.Sleep(1000);
@@ -938,11 +795,11 @@ namespace AtmoHue
               {
                 if (commandSender.ToLower() == "atmolight")
                 {
-                  hueSetColor(inputColor, sources.ATMOLIGHT, 0);
+                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0);
                 }
                 if (commandSender.ToLower() == "huehelper")
                 {
-                  hueSetColor(inputColor, sources.HUEHELPER, 0);
+                  hueSetColor(inputColor, Form1.sources.HUEHELPER, 0);
                 }
               }
 
@@ -954,7 +811,7 @@ namespace AtmoHue
           if (commandType == APIcommandType.Power.ToString())
           {
             string powerCommand = apiMessageSplit[2];
-            Logger(string.Format("[ {0} ], Powering {1} Hue Bridge", commandSender,powerCommand));
+            Logger(string.Format("[ {0} ], Powering {1} Hue Bridge", commandSender, powerCommand));
             if (powerCommand == "ON")
             {
               TurnLightsON();
@@ -973,33 +830,6 @@ namespace AtmoHue
 
       tcpClient.Close();
     }
-    public static void APIChangeColor(int red, int green, int blue, sources source)
-    {
-      Form1 hue = new Form1();
-      Color inputColor = Color.FromArgb(red, green, blue);
-      hue.hueSetColor(inputColor, source, 0);
-    }
-
-    private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-    {
-      SaveSettings(false);
-      scanAtmowin = false;
-      trayIconHue.Dispose();
-      Application.ExitThread();
-      Environment.Exit(0);
-    }
-    public static void ControlInvike(Control control, Action function)
-    {
-      if (control.IsDisposed || control.Disposing)
-        return;
-
-      if (control.InvokeRequired)
-      {
-        control.Invoke(new UniversalVoidDelegate(() => ControlInvike(control, function)));
-        return;
-      }
-      function();
-    }
 
     private void btnLocateHueBridge_Click(object sender, EventArgs e)
     {
@@ -1014,6 +844,7 @@ namespace AtmoHue
         SSDPBridgeLocator();
       }
     }
+
     public async Task BridgeLocator()
     {
       IBridgeLocator locator = new HttpBridgeLocator();
@@ -1447,7 +1278,7 @@ namespace AtmoHue
       catch { };
       return atmowinFolder;
     }
-    private void Logger(string text)
+    public void Logger(string text)
     {
       string timestamp = DateTime.Now.ToString("HH:mm:ss.ffffff");
       string message = string.Format("[ {0} ] - {1}", timestamp, text);
@@ -1806,6 +1637,17 @@ namespace AtmoHue
         MinimizeToTray = false;
       }
     }
+    private void cbLogRemoteApiCalls_CheckedChanged(object sender, EventArgs e)
+    {
+      if (cbLogRemoteApiCalls.Checked)
+      {
+        LogRemoteApiCalls = true;
+      }
+      else
+      {
+        LogRemoteApiCalls = false;
+      }
+    }
 
     private void cbTestCustomColorR_Validating(object sender, CancelEventArgs e)
     {
@@ -1881,7 +1723,7 @@ namespace AtmoHue
           break;
       }
     }
-    private void TurnLightsOFF()
+    public void TurnLightsOFF()
     {
       try
       {
@@ -1900,7 +1742,7 @@ namespace AtmoHue
         Logger(e.Message);
       }
     }
-    private void TurnLightsON()
+    public void TurnLightsON()
     {
       try
       {
@@ -1925,5 +1767,20 @@ namespace AtmoHue
       }
     }
     #endregion
+
+    private void btnGetLedIDs_Click(object sender, EventArgs e)
+    {
+      getLights();
+      MessageBox.Show("Please check log window for listing of located light IDs");
+    }
+    private async Task getLights()
+    {
+      IEnumerable<Light> lights = await client.GetLightsAsync();
+
+      foreach (Light light in lights)
+      {
+        Logger(string.Format("{0} - {1} - {2} - {3} - {4} - {5}", light.Id,light.ModelId,light.Name,light.SoftwareVersion,light.State,light.Type));
+      }
+    }
   }
 }
