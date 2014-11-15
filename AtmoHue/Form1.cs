@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -41,6 +42,20 @@ namespace AtmoHue
       strips,
       unknown
     }
+
+    public class LEDDevice
+    {
+      public string ID { get; set; }
+      public string type { get; set; }
+      public string location { get; set; }
+      public string sendDelay { get; set; }
+      public string brightness { get; set; }
+      public string saturation { get; set; }
+      public string colorTemperature { get; set; }
+      public string hue { get; set; }
+      public string staticColor { get; set; }
+    }
+
     private enum APIcommandType
     {
       Color,
@@ -48,6 +63,13 @@ namespace AtmoHue
       Power,
       Room,
     }
+
+    public class HueXYColor
+    {
+      public float X;
+      public float Y;
+      public float Brightness;
+    } 
 
     // Atmowin
     public Boolean scanAtmowin = false;
@@ -58,7 +80,8 @@ namespace AtmoHue
     // HUE
     public Boolean hueRotatingColors = false;
     HueClient client = new HueClient("127.0.0.1");
-    public List<string> ledDevices = new List<string>();
+    public List<LEDDevice> ledDevices = new List<LEDDevice>();
+
     public List<string> commandCache = new List<string>();
     public Boolean colorCommand = false;
     public Boolean colorisON = false;
@@ -86,10 +109,15 @@ namespace AtmoHue
     public string calibrateYblue = "";
     public string calibrateZblue = "";
 
+
     // Various
     public Boolean MinimizeOnStartup = false;
     public Boolean MinimizeToTray = false;
     public int HuePowerHandling = 0;
+    public Boolean userEditedSettings = false;
+    public Boolean EnableIndividualLightSettings = false;
+
+    public Boolean waitTimer = false;
 
 
     // API
@@ -98,7 +126,7 @@ namespace AtmoHue
     private Stopwatch swRemoteApi = new Stopwatch();
     public static string remoteAPIip = "127.0.0.1";
     public static string remoteAPIport = "20123";
-    public static string remoteSendDelay = "300";
+    public static string remoteAPISendDelay = "300";
     public static Boolean LogRemoteApiCalls = false;
 
     public Form1()
@@ -158,7 +186,6 @@ namespace AtmoHue
       setDefaultCombBoxValues(cbTestCustomColorR, 0, 255);
       setDefaultCombBoxValues(cbTestCustomColorG, 0, 254);
       setDefaultCombBoxValues(cbTestCustomColorB, 0, 254);
-
 
       if (client.IsInitialized == false && string.IsNullOrEmpty(hueBridgeIP) == false)
       {
@@ -332,7 +359,6 @@ namespace AtmoHue
 
 
               // Remote API
-
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPIenabled"))
               {
                 HueRemoteAPIenabled = Boolean.Parse(reader.ReadString());
@@ -359,10 +385,10 @@ namespace AtmoHue
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPISenDelay"))
               {
-                remoteSendDelay = reader.ReadString();
+                remoteAPISendDelay = reader.ReadString();
                 if (init)
                 {
-                  tbRemoteAPIsendDelay.Text = remoteSendDelay;
+                  tbRemoteAPIsendDelay.Text = remoteAPISendDelay;
                 }
               }
 
@@ -384,8 +410,6 @@ namespace AtmoHue
                 }
               }
 
-
-
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HuePowerHandling"))
               {
                 HuePowerHandling = int.Parse(reader.ReadString());
@@ -395,7 +419,14 @@ namespace AtmoHue
                 }
               }
 
-
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "EnableIndividualLightSettings"))
+              {
+                EnableIndividualLightSettings = Boolean.Parse(reader.ReadString());
+                if (init)
+                {
+                  cbEnableIndividualLightSettings.Checked = EnableIndividualLightSettings;
+                }
+              }
 
               // LED devices
               string id = "";
@@ -432,7 +463,18 @@ namespace AtmoHue
                 //Add LED ID to devices list
                 if (string.IsNullOrEmpty(id.Trim()) == false)
                 {
-                  ledDevices.Add(id);
+
+                  LEDDevice ld = new LEDDevice();
+                  ld.ID = id;
+                  ld.location = location;
+                  ld.sendDelay = sendDelay;
+                  ld.brightness = brightness;
+                  ld.saturation = saturation;
+                  ld.colorTemperature = colorTemperature;
+                  ld.hue = hue;
+                  ld.staticColor = staticColors;
+                  ledDevices.Add(ld);
+
                   string[] subItems = { type, location, sendDelay, brightness, saturation, colorTemperature, hue, staticColors };
                   lvLedDevices.Items.Add(id).SubItems.AddRange(subItems);
                 }
@@ -455,78 +497,82 @@ namespace AtmoHue
                   tbAtmowinScanInterval.Text = atmowinScanInterval;
                 }
               }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XRed"))
-              {
-                calibrateXred = reader.ReadString();
-                if (init)
+
+              //Color calibrations
+
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XRed"))
                 {
-                  tbXRed.Text = calibrateXred;
+                  calibrateXred = reader.ReadString();
+
+                  if (init)
+                  {
+                    tbXRed.Text = calibrateXred;
+                  }
                 }
-              }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YRed"))
-              {
-                calibrateYred = reader.ReadString();
-                if (init)
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YRed"))
                 {
-                  tbYRed.Text = calibrateYred;
+                  calibrateYred = reader.ReadString();
+                  if (init)
+                  {
+                    tbYRed.Text = calibrateYred;
+                  }
                 }
-              }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZRed"))
-              {
-                calibrateZred = reader.ReadString();
-                if (init)
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZRed"))
                 {
-                  tbZRed.Text = calibrateZred;
+                  calibrateZred = reader.ReadString();
+                  if (init)
+                  {
+                    tbZRed.Text = calibrateZred;
+                  }
                 }
-              }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XGreen"))
-              {
-                calibrateXgreen = reader.ReadString();
-                if (init)
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XGreen"))
                 {
-                  tbXGreen.Text = calibrateXgreen;
+                  calibrateXgreen = reader.ReadString();
+                  if (init)
+                  {
+                    tbXGreen.Text = calibrateXgreen;
+                  }
                 }
-              }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YGreen"))
-              {
-                calibrateYgreen = reader.ReadString();
-                if (init)
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YGreen"))
                 {
-                  tbYGreen.Text = calibrateYgreen;
+                  calibrateYgreen = reader.ReadString();
+                  if (init)
+                  {
+                    tbYGreen.Text = calibrateYgreen;
+                  }
                 }
-              }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZGreen"))
-              {
-                calibrateZgreen = reader.ReadString();
-                if (init)
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZGreen"))
                 {
-                  tbZGreen.Text = calibrateZgreen;
+                  calibrateZgreen = reader.ReadString();
+                  if (init)
+                  {
+                    tbZGreen.Text = calibrateZgreen;
+                  }
                 }
-              }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XBlue"))
-              {
-                calibrateXblue = reader.ReadString();
-                if (init)
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XBlue"))
                 {
-                  tbXBlue.Text = calibrateXblue;
+                  calibrateXblue = reader.ReadString();
+                  if (init)
+                  {
+                    tbXBlue.Text = calibrateXblue;
+                  }
                 }
-              }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YBlue"))
-              {
-                calibrateYblue = reader.ReadString();
-                if (init)
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YBlue"))
                 {
-                  tbYBlue.Text = calibrateYblue;
+                  calibrateYblue = reader.ReadString();
+                  if (init)
+                  {
+                    tbYBlue.Text = calibrateYblue;
+                  }
                 }
-              }
-              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZBlue"))
-              {
-                calibrateZblue = reader.ReadString();
-                if (init)
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZBlue"))
                 {
-                  tbZBlue.Text = calibrateZblue;
+                  calibrateZblue = reader.ReadString();
+                  if (init)
+                  {
+                    tbZBlue.Text = calibrateZblue;
+                  }
                 }
-              }
             }
           }
         }
@@ -576,8 +622,8 @@ namespace AtmoHue
           writer.WriteElementString("MinimizeToTrayOnStartup", cbMinimizeOnStartup.Checked.ToString());
           writer.WriteElementString("RemoteAPISenDelay", tbRemoteAPIsendDelay.Text);
           writer.WriteElementString("HuePowerHandling", cbHuePowerHandling.SelectedIndex.ToString());
-
-
+          writer.WriteElementString("EnableIndividualLightSettings", cbEnableIndividualLightSettings.Checked.ToString());
+          
           writer.WriteEndElement();
 
           writer.WriteStartElement("LedDevices");
@@ -644,6 +690,7 @@ namespace AtmoHue
     }
     private void refreshSettings()
     {
+      userEditedSettings = true;
       SaveSettings(false);
       LoadSettings(true);
     }
@@ -761,7 +808,7 @@ namespace AtmoHue
             Color inputColor = Color.FromArgb(red, green, blue);
 
             //Only send if delay has expired or if we get a high priority color
-            if (swRemoteApi.ElapsedMilliseconds >= int.Parse(Form1.remoteSendDelay) || priority < 50)
+            if (swRemoteApi.ElapsedMilliseconds >= int.Parse(remoteAPISendDelay) || priority < 50)
             {
               if (Form1.LogRemoteApiCalls)
               {
@@ -866,10 +913,8 @@ namespace AtmoHue
         Logger("Couldn't find any Hue Bridges in network using standard discovery method");
       }
 
-
-
       //Connect to bridge if found and option is enabled
-      if (string.IsNullOrEmpty(hueBridgeIP) == false && cbAutoConnectBridge.Checked == true)
+      if (hueAutoconnectBridge)
       {
         client = new HueClient(hueBridgeIP);
         client.RegisterAsync(hueAppName, hueAppKey);
@@ -916,7 +961,7 @@ namespace AtmoHue
       }
 
       //Connect to bridge if found and option is enabled
-      if (hueAutoconnectBridge == true)
+      if (hueAutoconnectBridge)
       {
         client = new HueClient(hueBridgeIP);
         client.RegisterAsync(hueAppName, hueAppKey);
@@ -1041,11 +1086,121 @@ namespace AtmoHue
       List<double> xyAsList = new List<double>(xy);
       return xy;
     }
+    /*
+    public HueXYColor ConvertRGBToXY(Color RGB)
+    {
+      PointF xy = new PointF(0f, 0f);
+      float red = RGB.R / 255f;
+      float green = RGB.G / 255f;
+      float blue = RGB.B / 255f;
+      float r = (red > 0.04045f) ? (float)Math.Pow((red + 0.055f) / (1.0f + 0.055f), 2.4f) : (red / 12.92f);
+      float g = (green > 0.04045f) ? (float)Math.Pow((green + 0.055f) / (1.0f + 0.055f), 2.4f) : (green / 12.92f);
+      float b = (blue > 0.04045f) ? (float)Math.Pow((blue + 0.055f) / (1.0f + 0.055f), 2.4f) : (blue / 12.92f);
+
+      float X = r * float.Parse(calibrateXred, CultureInfo.InvariantCulture.NumberFormat) + g * float.Parse(calibrateXgreen, CultureInfo.InvariantCulture.NumberFormat) + b * float.Parse(calibrateXblue, CultureInfo.InvariantCulture.NumberFormat);
+      float Y = r * float.Parse(calibrateYred, CultureInfo.InvariantCulture.NumberFormat) + g * float.Parse(calibrateYgreen, CultureInfo.InvariantCulture.NumberFormat) + b * float.Parse(calibrateYblue, CultureInfo.InvariantCulture.NumberFormat);
+      float Z = r * float.Parse(calibrateZred, CultureInfo.InvariantCulture.NumberFormat) + g * float.Parse(calibrateZgreen, CultureInfo.InvariantCulture.NumberFormat) + b * float.Parse(calibrateZblue, CultureInfo.InvariantCulture.NumberFormat);
+
+      float cx = X / (X + Y + Z);
+      float cy = Y / (X + Y + Z);
+
+      if (cx == float.NaN)
+      {
+        cx = 0.0f;
+      }
+      if (cy == float.NaN)
+      {
+        cy = 0.0f;
+      }
+      PointF xyPoint = new PointF(cx, cy);
+      if (!CheckIfInLampGamut(xyPoint))
+      {
+        PointF pAB = getClosestPointToPoints(Red, Green, xyPoint);
+        PointF pAC = getClosestPointToPoints(Blue, Red, xyPoint);
+        PointF pBC = getClosestPointToPoints(Green, Blue, xyPoint);
+        float dAB = getDistanceBetweenTwoPoints(xyPoint, pAB);
+        float dAC = getDistanceBetweenTwoPoints(xyPoint, pAC);
+        float dBC = getDistanceBetweenTwoPoints(xyPoint, pBC);
+        float lowest = dAB;
+        PointF closestPoint = pAB;
+        if (dAC < lowest)
+        {
+          lowest = dAC;
+          closestPoint = pAC;
+        }
+        if (dBC < lowest)
+        {
+          lowest = dBC;
+          closestPoint = pBC;
+        }
+        xy.X = closestPoint.X;
+        xy.Y = closestPoint.Y;
+      }
+      HueXYColor XYColor = new HueXYColor();
+      XYColor.X = cx;
+      XYColor.Y = cy;
+      XYColor.Brightness = Y;
+      return XYColor;
+    }
+
+    public float getDistanceBetweenTwoPoints(PointF p1, PointF p2)
+    {
+      float dx = p1.X - p2.X;
+      float dy = p1.Y - p2.Y;
+      float dist = (float)Math.Sqrt(dx * dx + dy * dy);
+      return dist;
+    }
+
+    public bool CheckIfInLampGamut(PointF XYCoordinates)
+    {
+      bool IsReachable = false;
+      PointF v1 = new PointF(Green.X - Red.X, Green.Y - Red.Y);
+      PointF v2 = new PointF(Blue.X - Red.X, Blue.Y - Red.Y);
+      PointF q = new PointF(XYCoordinates.X - Red.X, XYCoordinates.Y - Red.Y);
+      float s = CrossProduct(q, v2) / CrossProduct(v1, v2);
+      float t = CrossProduct(v1, q) / CrossProduct(v1, v2);
+      if ((s >= 0.0f) && (t >= 0.0f) && (s + t <= 1.0f))
+      {
+        IsReachable = true;
+      }
+      else
+      {
+        IsReachable = false;
+      }
+      return IsReachable;
+    }
+    private PointF getClosestPointToPoints(PointF A, PointF B, PointF P)
+    {
+      PointF AP = new PointF(P.X - A.X, P.Y - A.Y);
+      PointF AB = new PointF(B.X - A.X, B.Y - A.Y);
+      float ab2 = AB.X * AB.X + AB.Y * AB.Y;
+      float ap_ab = AP.X * AB.X + AP.Y * AB.Y;
+      float t = ap_ab / ab2;
+      if (t < 0.0f)
+      {
+        t = 0.0f;
+      }
+      else
+      {
+        if (t > 1.0f)
+          t = 1.0f;
+      }
+      PointF newPoint = new PointF(A.X + AB.X * t, A.Y + AB.Y * t);
+      return newPoint;
+    }
+    private float CrossProduct(PointF p1, PointF p2)
+    {
+      return p1.X * p2.Y - p1.Y * p2.X;
+    }*/
 
     public async Task hueSetColor(Color ColorInput, sources source, int delay)
     {
       try
       {
+
+        //Reset wait flag
+
+        waitTimer = false;
         if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
         {
           Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + ColorInput.ToString() + " to Hue Bridge"));
@@ -1074,80 +1229,207 @@ namespace AtmoHue
           }
         }
 
-        //Enable initial command
-        LightCommand command = new LightCommand();
-        command.On = true;
-
-        // Set custom values
-
-        //0-254
-        if (HueSetBrightnessStartup == false)
-        {
-          command.Brightness = byte.Parse(hueBrightness);
-        }
-
-        //0-254
-        command.Saturation = int.Parse(hueSaturation);
-
-        //0-~
-        command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
-
-        //154-500
-        if (string.IsNullOrEmpty(hueColorTemperature) == false)
-        {
-          command.ColorTemperature = int.Parse(hueColorTemperature);
-        }
-
-        //0-254
-        if (string.IsNullOrEmpty(hueHue) == false)
-        {
-          command.Hue = int.Parse(hueHue);
-        }
-
-        //Calculate color coordinates from RGB
-        double[] colorCoordinates = getRGBtoXY(ColorInput, DeviceType.bloom);
-
-        if (colorisON)
-        {
-          command.ColorCoordinates = colorCoordinates;
-        }
-        else
-        {
-          command.TurnOn();
-          command.ColorCoordinates = colorCoordinates;
-
-          if (HueSetBrightnessStartup)
-          {
-            command.Brightness = byte.Parse(hueBrightness);
-          }
-
-          colorisON = true;
-        }
-
-        //Turn leds off if we receive black
-        if (ColorInput == Color.Black)
-        {
-          colorisON = false;
-          command.TurnOff();
-        }
-
-        //Send command to Hue
+        //Send command to Hue and split up commands for every light
         if (ledDevices.Count > 0)
         {
-          client.SendCommandAsync(command, ledDevices);
-        }
 
-        if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
-        {
+          if (EnableIndividualLightSettings)
+          {
+            List<string> lights = new List<string>();
+            foreach (LEDDevice ld in ledDevices)
+            {
+              waitTimer = true;
+              lights.Add(ld.ID);
+              IEnumerable<string> lightList = lights;
 
-          Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + ColorInput.ToString() + " to Hue Bridge."));
-        }
-        else
-        {
-          Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color #" + ColorInput.ToString() + " to Hue Bridge."));
-        }
 
-        command.On = false;
+              LightCommand command = new LightCommand();
+              command.On = true;
+
+              double[] colorCoordinates = getRGBtoXY(ColorInput, DeviceType.bloom);
+              if (colorisON)
+              {
+                command.ColorCoordinates = colorCoordinates;
+              }
+              else
+              {
+                command.TurnOn();
+                command.ColorCoordinates = colorCoordinates;
+
+                colorisON = true;
+              }
+
+              //Turn leds off if we receive black
+              if (ColorInput == Color.Black)
+              {
+                colorisON = false;
+                command.TurnOff();
+              }
+
+              //Check to see if LED device has custom settings
+
+
+              //Color transition
+              //0-~
+              if (ld.sendDelay != hueTransitiontime && string.IsNullOrEmpty(ld.sendDelay) == false)
+              {
+                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(ld.sendDelay));
+              }
+              else
+              {
+                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
+              }
+
+              //Brightness
+              //0-254
+              if (ld.brightness != hueBrightness && string.IsNullOrEmpty(ld.brightness) == false)
+              {
+                command.Brightness = byte.Parse(ld.brightness);
+              }
+              else
+              {
+                if (HueSetBrightnessStartup == false || userEditedSettings)
+                {
+                  command.Brightness = byte.Parse(hueBrightness);
+                }
+              }
+
+              //Saturation
+              //0-254
+              if (ld.saturation != hueSaturation && string.IsNullOrEmpty(ld.saturation) == false)
+              {
+                command.Saturation = int.Parse(ld.saturation);
+              }
+              else
+              {
+                if (userEditedSettings)
+                {
+                  command.Saturation = int.Parse(hueSaturation);
+                }
+              }
+
+              //Color temperature
+              //154-500
+              if (ld.colorTemperature != hueColorTemperature && string.IsNullOrEmpty(ld.colorTemperature) == false)
+              {
+                command.ColorTemperature = int.Parse(ld.colorTemperature);
+              }
+              else
+              {
+                if (string.IsNullOrEmpty(hueColorTemperature) == false)
+                {
+                  if (userEditedSettings)
+                  {
+                    command.ColorTemperature = int.Parse(hueColorTemperature);
+                  }
+                }
+              }
+
+              //Hue
+              if (ld.hue != hueHue && string.IsNullOrEmpty(ld.hue) == false)
+              {
+                command.Hue = int.Parse(ld.hue);
+              }
+              else
+              {
+                if (string.IsNullOrEmpty(hueHue) == false || userEditedSettings)
+                {
+                  command.Hue = int.Parse(hueHue);
+                }
+              }
+
+              userEditedSettings = false;
+
+              Logger(string.Format("[ {0} ] {1}", source.ToString(), "Sending color " + ColorInput.ToString() + " to Hue Bridge for LIGHT " + ld.ID.ToString()));
+
+              //Logger(ld.ID + "  ->> transition time" + command.TransitionTime.ToString() + "- >> brightness" + command.Brightness.ToString() + " ->> saturation" + command.Saturation.ToString() + " ->> list #" + lightList.Count().ToString());
+
+              client.SendCommandAsync(command, lightList);
+              command.On = false;
+              lights.Clear();
+            }
+            waitTimer = false;
+          }
+          else
+          {
+            LightCommand command = new LightCommand();
+            command.On = true;
+
+            double[] colorCoordinates = getRGBtoXY(ColorInput, DeviceType.bloom);
+            if (colorisON)
+            {
+              command.ColorCoordinates = colorCoordinates;
+            }
+            else
+            {
+              command.TurnOn();
+              command.ColorCoordinates = colorCoordinates;
+
+              colorisON = true;
+            }
+
+            //Turn leds off if we receive black
+            if (ColorInput == Color.Black)
+            {
+              colorisON = false;
+              command.TurnOff();
+            }
+
+            //Color transition
+            //0-~
+            command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
+
+            //Brightness
+            //0-254
+            if (HueSetBrightnessStartup == false || userEditedSettings)
+            {
+              command.Brightness = byte.Parse(hueBrightness);
+            }
+
+            //Saturation
+            //0-254
+            if (userEditedSettings)
+            {
+              command.Saturation = int.Parse(hueSaturation);
+            }
+
+            //Color temperature
+            //154-500
+            if (string.IsNullOrEmpty(hueColorTemperature) == false)
+            {
+              if (userEditedSettings)
+              {
+                command.ColorTemperature = int.Parse(hueColorTemperature);
+              }
+            }
+
+            //Hue
+            if (string.IsNullOrEmpty(hueHue) == false || userEditedSettings)
+            {
+              command.Hue = int.Parse(hueHue);
+            }
+
+            userEditedSettings = false;
+
+            List<string> lights = new List<string>();
+            foreach (LEDDevice ld in ledDevices)
+            {
+              lights.Add(ld.ID);
+            }
+            IEnumerable<string> lightList = lights;
+            client.SendCommandAsync(command, lightList);
+            command.On = false;
+          }
+          if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
+          {
+
+            Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color " + ColorInput.ToString() + " to Hue Bridge"));
+          }
+          else
+          {
+            Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color " + ColorInput.ToString() + " to Hue Bridge"));
+          }
+        }
       }
       catch (Exception et)
       {
@@ -1158,7 +1440,16 @@ namespace AtmoHue
         }
       }
     }
-
+    private void sendLightCommand(LightCommand command,IEnumerable<string> lightList)
+    {
+      /*
+      while(waitTimer)
+      {
+        //Wait
+        Thread.Sleep(1);
+      }*/
+      client.SendCommandAsync(command, lightList);
+    }
     private void btnStartAtmowinHue_Click(object sender, EventArgs e)
     {
 
@@ -1482,12 +1773,14 @@ namespace AtmoHue
       ledDevices.Clear();
       foreach (ListViewItem item in lvLedDevices.Items)
       {
-        ledDevices.Add(item.Text);
+        LEDDevice ld = new LEDDevice();
+        ld.ID = item.Text;
+        ledDevices.Add(ld);
       }
     }
     private void btnHueSetScene_Click(object sender, EventArgs e)
     {
-      client.CreateOrUpdateSceneAsync(tbHueSceneID.Text, tbHueSceneName.Text, ledDevices);
+      //client.CreateOrUpdateSceneAsync(tbHueSceneID.Text, tbHueSceneName.Text, ledDevices);
     }
 
     private void btnHueLocateScenes_Click(object sender, EventArgs e)
@@ -1731,7 +2024,16 @@ namespace AtmoHue
         LightCommand command = new LightCommand();
         command.On = true;
         command.TurnOff();
-        client.SendCommandAsync(command, ledDevices);
+
+        List<string> lights = new List<string>();
+        foreach (LEDDevice ld in ledDevices)
+        {
+          lights.Add(ld.ID);
+        }
+
+        IEnumerable<string> lightList = lights;
+
+        client.SendCommandAsync(command, lightList);
         command.On = false;
         Logger("[ STANDBY ] - Suspended AtmoHue and set color to black");
 
@@ -1754,9 +2056,21 @@ namespace AtmoHue
         LightCommand command = new LightCommand();
         command.On = true;
         command.Brightness = byte.Parse(hueBrightness);
-        command.ColorCoordinates = getRGBtoXY(Color.Black, DeviceType.bloom);
+
+        double[] colorCoordinates = getRGBtoXY(Color.Black, DeviceType.bloom);
+
+        command.ColorCoordinates = colorCoordinates;
         command.TurnOn();
-        client.SendCommandAsync(command, ledDevices);
+
+        List<string> lights = new List<string>();
+        foreach (LEDDevice ld in ledDevices)
+        {
+          lights.Add(ld.ID);
+        }
+
+        IEnumerable<string> lightList = lights;
+
+        client.SendCommandAsync(command, lightList);
         command.On = false;
         Logger("[ STANDBY ] - Resumed AtmoHue and set initial color command (TurnOn) with brightness " + hueBrightness);
       }
@@ -1770,17 +2084,131 @@ namespace AtmoHue
 
     private void btnGetLedIDs_Click(object sender, EventArgs e)
     {
-      getLights();
-      MessageBox.Show("Please check log window for listing of located light IDs");
+      if (client.IsInitialized)
+      {
+        getLights();
+        MessageBox.Show("Please check log window for listing of located light IDs");
+      }
+      else
+      {
+        MessageBox.Show("Not connected to Hue Bridge");
+      }
     }
     private async Task getLights()
     {
       IEnumerable<Light> lights = await client.GetLightsAsync();
-
       foreach (Light light in lights)
       {
         Logger(string.Format("{0} - {1} - {2} - {3} - {4} - {5}", light.Id,light.ModelId,light.Name,light.SoftwareVersion,light.State,light.Type));
       }
+    }
+
+    private void tbXRed_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Red,sources.LOCAL,0);
+      }
+    }
+
+    private void tbXGreen_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Red, sources.LOCAL, 0);
+      }
+
+    }
+
+    private void tbXBlue_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Red, sources.LOCAL, 0);
+      }
+
+    }
+
+    private void tbYRed_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Green, sources.LOCAL, 0);
+      }
+    }
+
+    private void tbYGreen_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Green, sources.LOCAL, 0);
+      }
+    }
+
+    private void tbYBlue_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Green, sources.LOCAL, 0);
+      }
+    }
+
+    private void tbZRed_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Blue, sources.LOCAL, 0);
+      }
+    }
+
+    private void tbZGreen_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Blue, sources.LOCAL, 0);
+      }
+    }
+
+    private void tbZBlue_KeyDown(object sender, KeyEventArgs e)
+    {
+      refreshColorCalibrations();
+      if (e.KeyCode.ToString().ToLower() == "return")
+      {
+        hueSetColor(Color.Blue, sources.LOCAL, 0);
+      }
+    }
+    private void refreshColorCalibrations()
+    {
+        calibrateXred = tbXRed.Text;
+        calibrateYred = tbYRed.Text;
+        calibrateZred = tbZRed.Text;
+        calibrateXgreen = tbXGreen.Text;
+        calibrateYgreen = tbYGreen.Text;
+        calibrateZgreen = tbZGreen.Text;
+        calibrateXblue = tbXBlue.Text;
+        calibrateYblue = tbYBlue.Text;
+        calibrateZblue = tbZBlue.Text;
+    }
+
+    private void cbEnableIndividualLightSettings_CheckedChanged(object sender, EventArgs e)
+    {
+      if (cbEnableIndividualLightSettings.Checked)
+      {
+        EnableIndividualLightSettings = true;
+      }
+      else
+      {
+        EnableIndividualLightSettings = false;
+      }
+
     }
   }
 }
