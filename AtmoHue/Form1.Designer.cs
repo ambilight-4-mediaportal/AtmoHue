@@ -76,6 +76,7 @@
       this.cbMinimizeToTray = new System.Windows.Forms.CheckBox();
       this.cbMinimizeOnStartup = new System.Windows.Forms.CheckBox();
       this.gbHueSettings = new System.Windows.Forms.GroupBox();
+      this.cbEnableIndividualLightSettings = new System.Windows.Forms.CheckBox();
       this.lblHuePowerHandling = new System.Windows.Forms.Label();
       this.cbHuePowerHandling = new System.Windows.Forms.ComboBox();
       this.cbHueHue = new System.Windows.Forms.ComboBox();
@@ -89,21 +90,43 @@
       this.tbHueAppName = new System.Windows.Forms.TextBox();
       this.tbHueBridgeIP = new System.Windows.Forms.TextBox();
       this.tabPageLeds = new System.Windows.Forms.TabPage();
+      this.btnRemoveLedPredefinedStaticColor = new System.Windows.Forms.Button();
+      this.btnRemoveLedLocation = new System.Windows.Forms.Button();
+      this.label25 = new System.Windows.Forms.Label();
+      this.label26 = new System.Windows.Forms.Label();
+      this.label27 = new System.Windows.Forms.Label();
+      this.tbPredefinedColorB = new System.Windows.Forms.TextBox();
+      this.tbPredefinedColorG = new System.Windows.Forms.TextBox();
+      this.label28 = new System.Windows.Forms.Label();
+      this.tbPredefinedColorR = new System.Windows.Forms.TextBox();
+      this.lblPredefinedStaticColorName = new System.Windows.Forms.Label();
+      this.tbPredefinedStaticColorName = new System.Windows.Forms.TextBox();
+      this.lblAddLedPriority = new System.Windows.Forms.Label();
+      this.lblAddLedLocation = new System.Windows.Forms.Label();
+      this.tbLedLocationPriority = new System.Windows.Forms.TextBox();
+      this.tbLedLocation = new System.Windows.Forms.TextBox();
+      this.btnAddPredefinedStaticColor = new System.Windows.Forms.Button();
+      this.btnAddLedLocation = new System.Windows.Forms.Button();
+      this.btnLedStaticColorDOWN = new System.Windows.Forms.Button();
+      this.btnLedStaticColorUP = new System.Windows.Forms.Button();
+      this.btnLedLocationDOWN = new System.Windows.Forms.Button();
+      this.btnLedLocationUP = new System.Windows.Forms.Button();
+      this.grpPredefinedStaticColors = new System.Windows.Forms.GroupBox();
+      this.lvPredefinedStaticColors = new System.Windows.Forms.ListView();
+      this.chPredefinedStaticColorName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chPredefinedStaticColorRGB = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.grpLedLocations = new System.Windows.Forms.GroupBox();
+      this.lvLedLocations = new System.Windows.Forms.ListView();
+      this.chLedLocationName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.chLedLocationPriority = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.btnLedItemDown = new System.Windows.Forms.Button();
       this.btnLedItemUp = new System.Windows.Forms.Button();
       this.gbManageLeds = new System.Windows.Forms.GroupBox();
-      this.tbLedLocation = new System.Windows.Forms.TextBox();
+      this.cbLedLocation = new System.Windows.Forms.ComboBox();
       this.lblLedLocation = new System.Windows.Forms.Label();
       this.btnRemoveLeds = new System.Windows.Forms.Button();
       this.cbLedType = new System.Windows.Forms.ComboBox();
       this.gbLedOptional = new System.Windows.Forms.GroupBox();
-      this.lblLedB = new System.Windows.Forms.Label();
-      this.lblLedG = new System.Windows.Forms.Label();
-      this.lblLedR = new System.Windows.Forms.Label();
-      this.tbLedB = new System.Windows.Forms.TextBox();
-      this.tbLedG = new System.Windows.Forms.TextBox();
-      this.lblLedStaticColor = new System.Windows.Forms.Label();
-      this.tbLedR = new System.Windows.Forms.TextBox();
       this.lblLedSendDelay = new System.Windows.Forms.Label();
       this.lblLedHue = new System.Windows.Forms.Label();
       this.tbLedSendDelay = new System.Windows.Forms.TextBox();
@@ -111,9 +134,16 @@
       this.tbLedBrightness = new System.Windows.Forms.TextBox();
       this.lblLedColorTemperature = new System.Windows.Forms.Label();
       this.lblLedBrightness = new System.Windows.Forms.Label();
+      this.lblLedB = new System.Windows.Forms.Label();
       this.tbLedColorTemperature = new System.Windows.Forms.TextBox();
       this.tbLedSaturation = new System.Windows.Forms.TextBox();
+      this.lblLedG = new System.Windows.Forms.Label();
       this.lnlLedSaturation = new System.Windows.Forms.Label();
+      this.tbLedB = new System.Windows.Forms.TextBox();
+      this.lblLedR = new System.Windows.Forms.Label();
+      this.tbLedR = new System.Windows.Forms.TextBox();
+      this.lblLedStaticColor = new System.Windows.Forms.Label();
+      this.tbLedG = new System.Windows.Forms.TextBox();
       this.btnAddLed = new System.Windows.Forms.Button();
       this.lblLedType = new System.Windows.Forms.Label();
       this.lblLedID = new System.Windows.Forms.Label();
@@ -184,7 +214,6 @@
       this.toolStripMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
-      this.cbEnableIndividualLightSettings = new System.Windows.Forms.CheckBox();
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
@@ -193,6 +222,8 @@
       this.gbLogOutput.SuspendLayout();
       this.gbHueSettings.SuspendLayout();
       this.tabPageLeds.SuspendLayout();
+      this.grpPredefinedStaticColors.SuspendLayout();
+      this.grpLedLocations.SuspendLayout();
       this.gbManageLeds.SuspendLayout();
       this.gbLedOptional.SuspendLayout();
       this.tabPageTesting.SuspendLayout();
@@ -705,6 +736,17 @@
       this.gbHueSettings.TabStop = false;
       this.gbHueSettings.Text = "Hue overview";
       // 
+      // cbEnableIndividualLightSettings
+      // 
+      this.cbEnableIndividualLightSettings.AutoSize = true;
+      this.cbEnableIndividualLightSettings.Location = new System.Drawing.Point(20, 349);
+      this.cbEnableIndividualLightSettings.Name = "cbEnableIndividualLightSettings";
+      this.cbEnableIndividualLightSettings.Size = new System.Drawing.Size(291, 17);
+      this.cbEnableIndividualLightSettings.TabIndex = 53;
+      this.cbEnableIndividualLightSettings.Text = "Enable individual Light settings (might cause sync errors)";
+      this.cbEnableIndividualLightSettings.UseVisualStyleBackColor = true;
+      this.cbEnableIndividualLightSettings.CheckedChanged += new System.EventHandler(this.cbEnableIndividualLightSettings_CheckedChanged);
+      // 
       // lblHuePowerHandling
       // 
       this.lblHuePowerHandling.AutoSize = true;
@@ -828,6 +870,29 @@
       // tabPageLeds
       // 
       this.tabPageLeds.BackColor = System.Drawing.SystemColors.Control;
+      this.tabPageLeds.Controls.Add(this.btnRemoveLedPredefinedStaticColor);
+      this.tabPageLeds.Controls.Add(this.btnRemoveLedLocation);
+      this.tabPageLeds.Controls.Add(this.label25);
+      this.tabPageLeds.Controls.Add(this.label26);
+      this.tabPageLeds.Controls.Add(this.label27);
+      this.tabPageLeds.Controls.Add(this.tbPredefinedColorB);
+      this.tabPageLeds.Controls.Add(this.tbPredefinedColorG);
+      this.tabPageLeds.Controls.Add(this.label28);
+      this.tabPageLeds.Controls.Add(this.tbPredefinedColorR);
+      this.tabPageLeds.Controls.Add(this.lblPredefinedStaticColorName);
+      this.tabPageLeds.Controls.Add(this.tbPredefinedStaticColorName);
+      this.tabPageLeds.Controls.Add(this.lblAddLedPriority);
+      this.tabPageLeds.Controls.Add(this.lblAddLedLocation);
+      this.tabPageLeds.Controls.Add(this.tbLedLocationPriority);
+      this.tabPageLeds.Controls.Add(this.tbLedLocation);
+      this.tabPageLeds.Controls.Add(this.btnAddPredefinedStaticColor);
+      this.tabPageLeds.Controls.Add(this.btnAddLedLocation);
+      this.tabPageLeds.Controls.Add(this.btnLedStaticColorDOWN);
+      this.tabPageLeds.Controls.Add(this.btnLedStaticColorUP);
+      this.tabPageLeds.Controls.Add(this.btnLedLocationDOWN);
+      this.tabPageLeds.Controls.Add(this.btnLedLocationUP);
+      this.tabPageLeds.Controls.Add(this.grpPredefinedStaticColors);
+      this.tabPageLeds.Controls.Add(this.grpLedLocations);
       this.tabPageLeds.Controls.Add(this.btnLedItemDown);
       this.tabPageLeds.Controls.Add(this.btnLedItemUp);
       this.tabPageLeds.Controls.Add(this.gbManageLeds);
@@ -839,9 +904,267 @@
       this.tabPageLeds.TabIndex = 3;
       this.tabPageLeds.Text = "Hue Leds";
       // 
+      // btnRemoveLedPredefinedStaticColor
+      // 
+      this.btnRemoveLedPredefinedStaticColor.Location = new System.Drawing.Point(825, 630);
+      this.btnRemoveLedPredefinedStaticColor.Name = "btnRemoveLedPredefinedStaticColor";
+      this.btnRemoveLedPredefinedStaticColor.Size = new System.Drawing.Size(112, 23);
+      this.btnRemoveLedPredefinedStaticColor.TabIndex = 1224;
+      this.btnRemoveLedPredefinedStaticColor.Text = "remove static color";
+      this.btnRemoveLedPredefinedStaticColor.UseVisualStyleBackColor = true;
+      this.btnRemoveLedPredefinedStaticColor.Click += new System.EventHandler(this.btnRemoveLedPredefinedStaticColor_Click);
+      // 
+      // btnRemoveLedLocation
+      // 
+      this.btnRemoveLedLocation.Location = new System.Drawing.Point(446, 630);
+      this.btnRemoveLedLocation.Name = "btnRemoveLedLocation";
+      this.btnRemoveLedLocation.Size = new System.Drawing.Size(112, 23);
+      this.btnRemoveLedLocation.TabIndex = 1213;
+      this.btnRemoveLedLocation.Text = "remove location";
+      this.btnRemoveLedLocation.UseVisualStyleBackColor = true;
+      this.btnRemoveLedLocation.Click += new System.EventHandler(this.btnRemoveLedLocation_Click);
+      // 
+      // label25
+      // 
+      this.label25.AutoSize = true;
+      this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label25.Location = new System.Drawing.Point(899, 436);
+      this.label25.Name = "label25";
+      this.label25.Size = new System.Drawing.Size(15, 13);
+      this.label25.TabIndex = 1220;
+      this.label25.Text = "B";
+      // 
+      // label26
+      // 
+      this.label26.AutoSize = true;
+      this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label26.Location = new System.Drawing.Point(831, 436);
+      this.label26.Name = "label26";
+      this.label26.Size = new System.Drawing.Size(16, 13);
+      this.label26.TabIndex = 1219;
+      this.label26.Text = "G";
+      // 
+      // label27
+      // 
+      this.label27.AutoSize = true;
+      this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label27.Location = new System.Drawing.Point(760, 436);
+      this.label27.Name = "label27";
+      this.label27.Size = new System.Drawing.Size(16, 13);
+      this.label27.TabIndex = 1218;
+      this.label27.Text = "R";
+      // 
+      // tbPredefinedColorB
+      // 
+      this.tbPredefinedColorB.Location = new System.Drawing.Point(917, 433);
+      this.tbPredefinedColorB.Name = "tbPredefinedColorB";
+      this.tbPredefinedColorB.Size = new System.Drawing.Size(48, 20);
+      this.tbPredefinedColorB.TabIndex = 1223;
+      // 
+      // tbPredefinedColorG
+      // 
+      this.tbPredefinedColorG.Location = new System.Drawing.Point(850, 433);
+      this.tbPredefinedColorG.Name = "tbPredefinedColorG";
+      this.tbPredefinedColorG.Size = new System.Drawing.Size(48, 20);
+      this.tbPredefinedColorG.TabIndex = 1222;
+      // 
+      // label28
+      // 
+      this.label28.AutoSize = true;
+      this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label28.Location = new System.Drawing.Point(681, 436);
+      this.label28.Name = "label28";
+      this.label28.Size = new System.Drawing.Size(77, 13);
+      this.label28.TabIndex = 1217;
+      this.label28.Text = "Static Color:";
+      // 
+      // tbPredefinedColorR
+      // 
+      this.tbPredefinedColorR.Location = new System.Drawing.Point(781, 433);
+      this.tbPredefinedColorR.Name = "tbPredefinedColorR";
+      this.tbPredefinedColorR.Size = new System.Drawing.Size(48, 20);
+      this.tbPredefinedColorR.TabIndex = 1221;
+      // 
+      // lblPredefinedStaticColorName
+      // 
+      this.lblPredefinedStaticColorName.AutoSize = true;
+      this.lblPredefinedStaticColorName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblPredefinedStaticColorName.Location = new System.Drawing.Point(681, 408);
+      this.lblPredefinedStaticColorName.Name = "lblPredefinedStaticColorName";
+      this.lblPredefinedStaticColorName.Size = new System.Drawing.Size(43, 13);
+      this.lblPredefinedStaticColorName.TabIndex = 1215;
+      this.lblPredefinedStaticColorName.Text = "Name:";
+      // 
+      // tbPredefinedStaticColorName
+      // 
+      this.tbPredefinedStaticColorName.Location = new System.Drawing.Point(781, 405);
+      this.tbPredefinedStaticColorName.Name = "tbPredefinedStaticColorName";
+      this.tbPredefinedStaticColorName.Size = new System.Drawing.Size(126, 20);
+      this.tbPredefinedStaticColorName.TabIndex = 1216;
+      // 
+      // lblAddLedPriority
+      // 
+      this.lblAddLedPriority.AutoSize = true;
+      this.lblAddLedPriority.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblAddLedPriority.Location = new System.Drawing.Point(347, 433);
+      this.lblAddLedPriority.Name = "lblAddLedPriority";
+      this.lblAddLedPriority.Size = new System.Drawing.Size(50, 13);
+      this.lblAddLedPriority.TabIndex = 1214;
+      this.lblAddLedPriority.Text = "Priority:";
+      // 
+      // lblAddLedLocation
+      // 
+      this.lblAddLedLocation.AutoSize = true;
+      this.lblAddLedLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblAddLedLocation.Location = new System.Drawing.Point(347, 405);
+      this.lblAddLedLocation.Name = "lblAddLedLocation";
+      this.lblAddLedLocation.Size = new System.Drawing.Size(60, 13);
+      this.lblAddLedLocation.TabIndex = 1212;
+      this.lblAddLedLocation.Text = "Location:";
+      // 
+      // tbLedLocationPriority
+      // 
+      this.tbLedLocationPriority.Location = new System.Drawing.Point(416, 430);
+      this.tbLedLocationPriority.Name = "tbLedLocationPriority";
+      this.tbLedLocationPriority.Size = new System.Drawing.Size(124, 20);
+      this.tbLedLocationPriority.TabIndex = 1213;
+      // 
+      // tbLedLocation
+      // 
+      this.tbLedLocation.Location = new System.Drawing.Point(416, 402);
+      this.tbLedLocation.Name = "tbLedLocation";
+      this.tbLedLocation.Size = new System.Drawing.Size(124, 20);
+      this.tbLedLocation.TabIndex = 1212;
+      // 
+      // btnAddPredefinedStaticColor
+      // 
+      this.btnAddPredefinedStaticColor.Location = new System.Drawing.Point(981, 408);
+      this.btnAddPredefinedStaticColor.Name = "btnAddPredefinedStaticColor";
+      this.btnAddPredefinedStaticColor.Size = new System.Drawing.Size(107, 48);
+      this.btnAddPredefinedStaticColor.TabIndex = 23;
+      this.btnAddPredefinedStaticColor.Text = "Add static color";
+      this.btnAddPredefinedStaticColor.UseVisualStyleBackColor = true;
+      this.btnAddPredefinedStaticColor.Click += new System.EventHandler(this.btnAddPredefinedStaticColor_Click);
+      // 
+      // btnAddLedLocation
+      // 
+      this.btnAddLedLocation.Location = new System.Drawing.Point(546, 401);
+      this.btnAddLedLocation.Name = "btnAddLedLocation";
+      this.btnAddLedLocation.Size = new System.Drawing.Size(107, 48);
+      this.btnAddLedLocation.TabIndex = 22;
+      this.btnAddLedLocation.Text = "Add LED location";
+      this.btnAddLedLocation.UseVisualStyleBackColor = true;
+      this.btnAddLedLocation.Click += new System.EventHandler(this.btnAddLedLocation_Click);
+      // 
+      // btnLedStaticColorDOWN
+      // 
+      this.btnLedStaticColorDOWN.Location = new System.Drawing.Point(1014, 630);
+      this.btnLedStaticColorDOWN.Name = "btnLedStaticColorDOWN";
+      this.btnLedStaticColorDOWN.Size = new System.Drawing.Size(75, 23);
+      this.btnLedStaticColorDOWN.TabIndex = 21;
+      this.btnLedStaticColorDOWN.Text = "DOWN";
+      this.btnLedStaticColorDOWN.UseVisualStyleBackColor = true;
+      this.btnLedStaticColorDOWN.Click += new System.EventHandler(this.btnLedStaticColorDOWN_Click);
+      // 
+      // btnLedStaticColorUP
+      // 
+      this.btnLedStaticColorUP.Location = new System.Drawing.Point(680, 630);
+      this.btnLedStaticColorUP.Name = "btnLedStaticColorUP";
+      this.btnLedStaticColorUP.Size = new System.Drawing.Size(75, 23);
+      this.btnLedStaticColorUP.TabIndex = 20;
+      this.btnLedStaticColorUP.Text = "UP";
+      this.btnLedStaticColorUP.UseVisualStyleBackColor = true;
+      this.btnLedStaticColorUP.Click += new System.EventHandler(this.btnLedStaticColorUP_Click);
+      // 
+      // btnLedLocationDOWN
+      // 
+      this.btnLedLocationDOWN.Location = new System.Drawing.Point(581, 630);
+      this.btnLedLocationDOWN.Name = "btnLedLocationDOWN";
+      this.btnLedLocationDOWN.Size = new System.Drawing.Size(75, 23);
+      this.btnLedLocationDOWN.TabIndex = 19;
+      this.btnLedLocationDOWN.Text = "DOWN";
+      this.btnLedLocationDOWN.UseVisualStyleBackColor = true;
+      this.btnLedLocationDOWN.Click += new System.EventHandler(this.btnLedLocationDOWN_Click);
+      // 
+      // btnLedLocationUP
+      // 
+      this.btnLedLocationUP.Location = new System.Drawing.Point(347, 630);
+      this.btnLedLocationUP.Name = "btnLedLocationUP";
+      this.btnLedLocationUP.Size = new System.Drawing.Size(75, 23);
+      this.btnLedLocationUP.TabIndex = 18;
+      this.btnLedLocationUP.Text = "UP";
+      this.btnLedLocationUP.UseVisualStyleBackColor = true;
+      this.btnLedLocationUP.Click += new System.EventHandler(this.btnLedLocationUP_Click);
+      // 
+      // grpPredefinedStaticColors
+      // 
+      this.grpPredefinedStaticColors.Controls.Add(this.lvPredefinedStaticColors);
+      this.grpPredefinedStaticColors.Location = new System.Drawing.Point(680, 459);
+      this.grpPredefinedStaticColors.Name = "grpPredefinedStaticColors";
+      this.grpPredefinedStaticColors.Size = new System.Drawing.Size(412, 165);
+      this.grpPredefinedStaticColors.TabIndex = 17;
+      this.grpPredefinedStaticColors.TabStop = false;
+      this.grpPredefinedStaticColors.Text = "Predefined statis colors (for use in group commands)";
+      // 
+      // lvPredefinedStaticColors
+      // 
+      this.lvPredefinedStaticColors.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chPredefinedStaticColorName,
+            this.chPredefinedStaticColorRGB});
+      this.lvPredefinedStaticColors.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvPredefinedStaticColors.Location = new System.Drawing.Point(3, 16);
+      this.lvPredefinedStaticColors.Name = "lvPredefinedStaticColors";
+      this.lvPredefinedStaticColors.Size = new System.Drawing.Size(406, 146);
+      this.lvPredefinedStaticColors.TabIndex = 0;
+      this.lvPredefinedStaticColors.UseCompatibleStateImageBehavior = false;
+      this.lvPredefinedStaticColors.View = System.Windows.Forms.View.Details;
+      // 
+      // chPredefinedStaticColorName
+      // 
+      this.chPredefinedStaticColorName.Text = "Color name";
+      this.chPredefinedStaticColorName.Width = 154;
+      // 
+      // chPredefinedStaticColorRGB
+      // 
+      this.chPredefinedStaticColorRGB.Text = "RGB value";
+      this.chPredefinedStaticColorRGB.Width = 191;
+      // 
+      // grpLedLocations
+      // 
+      this.grpLedLocations.Controls.Add(this.lvLedLocations);
+      this.grpLedLocations.Location = new System.Drawing.Point(347, 455);
+      this.grpLedLocations.Name = "grpLedLocations";
+      this.grpLedLocations.Size = new System.Drawing.Size(309, 169);
+      this.grpLedLocations.TabIndex = 16;
+      this.grpLedLocations.TabStop = false;
+      this.grpLedLocations.Text = "Led Locations";
+      // 
+      // lvLedLocations
+      // 
+      this.lvLedLocations.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chLedLocationName,
+            this.chLedLocationPriority});
+      this.lvLedLocations.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvLedLocations.Location = new System.Drawing.Point(3, 16);
+      this.lvLedLocations.Name = "lvLedLocations";
+      this.lvLedLocations.Size = new System.Drawing.Size(303, 150);
+      this.lvLedLocations.TabIndex = 0;
+      this.lvLedLocations.UseCompatibleStateImageBehavior = false;
+      this.lvLedLocations.View = System.Windows.Forms.View.Details;
+      // 
+      // chLedLocationName
+      // 
+      this.chLedLocationName.Text = "Location";
+      this.chLedLocationName.Width = 193;
+      // 
+      // chLedLocationPriority
+      // 
+      this.chLedLocationPriority.Text = "Priority";
+      this.chLedLocationPriority.Width = 104;
+      // 
       // btnLedItemDown
       // 
-      this.btnLedItemDown.Location = new System.Drawing.Point(992, 561);
+      this.btnLedItemDown.Location = new System.Drawing.Point(1014, 379);
       this.btnLedItemDown.Name = "btnLedItemDown";
       this.btnLedItemDown.Size = new System.Drawing.Size(75, 23);
       this.btnLedItemDown.TabIndex = 15;
@@ -852,7 +1175,7 @@
       // 
       // btnLedItemUp
       // 
-      this.btnLedItemUp.Location = new System.Drawing.Point(382, 561);
+      this.btnLedItemUp.Location = new System.Drawing.Point(347, 373);
       this.btnLedItemUp.Name = "btnLedItemUp";
       this.btnLedItemUp.Size = new System.Drawing.Size(75, 23);
       this.btnLedItemUp.TabIndex = 14;
@@ -863,7 +1186,7 @@
       // 
       // gbManageLeds
       // 
-      this.gbManageLeds.Controls.Add(this.tbLedLocation);
+      this.gbManageLeds.Controls.Add(this.cbLedLocation);
       this.gbManageLeds.Controls.Add(this.lblLedLocation);
       this.gbManageLeds.Controls.Add(this.btnRemoveLeds);
       this.gbManageLeds.Controls.Add(this.cbLedType);
@@ -874,17 +1197,18 @@
       this.gbManageLeds.Controls.Add(this.tbLedID);
       this.gbManageLeds.Location = new System.Drawing.Point(19, 18);
       this.gbManageLeds.Name = "gbManageLeds";
-      this.gbManageLeds.Size = new System.Drawing.Size(322, 652);
+      this.gbManageLeds.Size = new System.Drawing.Size(322, 606);
       this.gbManageLeds.TabIndex = 13;
       this.gbManageLeds.TabStop = false;
       this.gbManageLeds.Text = "Manage leds";
       // 
-      // tbLedLocation
+      // cbLedLocation
       // 
-      this.tbLedLocation.Location = new System.Drawing.Point(143, 97);
-      this.tbLedLocation.Name = "tbLedLocation";
-      this.tbLedLocation.Size = new System.Drawing.Size(121, 20);
-      this.tbLedLocation.TabIndex = 1202;
+      this.cbLedLocation.FormattingEnabled = true;
+      this.cbLedLocation.Location = new System.Drawing.Point(143, 104);
+      this.cbLedLocation.Name = "cbLedLocation";
+      this.cbLedLocation.Size = new System.Drawing.Size(121, 21);
+      this.cbLedLocation.TabIndex = 1212;
       // 
       // lblLedLocation
       // 
@@ -921,13 +1245,6 @@
       // 
       // gbLedOptional
       // 
-      this.gbLedOptional.Controls.Add(this.lblLedB);
-      this.gbLedOptional.Controls.Add(this.lblLedG);
-      this.gbLedOptional.Controls.Add(this.lblLedR);
-      this.gbLedOptional.Controls.Add(this.tbLedB);
-      this.gbLedOptional.Controls.Add(this.tbLedG);
-      this.gbLedOptional.Controls.Add(this.lblLedStaticColor);
-      this.gbLedOptional.Controls.Add(this.tbLedR);
       this.gbLedOptional.Controls.Add(this.lblLedSendDelay);
       this.gbLedOptional.Controls.Add(this.lblLedHue);
       this.gbLedOptional.Controls.Add(this.tbLedSendDelay);
@@ -935,76 +1252,22 @@
       this.gbLedOptional.Controls.Add(this.tbLedBrightness);
       this.gbLedOptional.Controls.Add(this.lblLedColorTemperature);
       this.gbLedOptional.Controls.Add(this.lblLedBrightness);
+      this.gbLedOptional.Controls.Add(this.lblLedB);
       this.gbLedOptional.Controls.Add(this.tbLedColorTemperature);
       this.gbLedOptional.Controls.Add(this.tbLedSaturation);
+      this.gbLedOptional.Controls.Add(this.lblLedG);
       this.gbLedOptional.Controls.Add(this.lnlLedSaturation);
+      this.gbLedOptional.Controls.Add(this.tbLedB);
+      this.gbLedOptional.Controls.Add(this.lblLedR);
+      this.gbLedOptional.Controls.Add(this.tbLedR);
+      this.gbLedOptional.Controls.Add(this.lblLedStaticColor);
+      this.gbLedOptional.Controls.Add(this.tbLedG);
       this.gbLedOptional.Location = new System.Drawing.Point(9, 131);
       this.gbLedOptional.Name = "gbLedOptional";
       this.gbLedOptional.Size = new System.Drawing.Size(307, 284);
       this.gbLedOptional.TabIndex = 27;
       this.gbLedOptional.TabStop = false;
       this.gbLedOptional.Text = "Optional";
-      // 
-      // lblLedB
-      // 
-      this.lblLedB.AutoSize = true;
-      this.lblLedB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblLedB.Location = new System.Drawing.Point(231, 252);
-      this.lblLedB.Name = "lblLedB";
-      this.lblLedB.Size = new System.Drawing.Size(15, 13);
-      this.lblLedB.TabIndex = 32;
-      this.lblLedB.Text = "B";
-      // 
-      // lblLedG
-      // 
-      this.lblLedG.AutoSize = true;
-      this.lblLedG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblLedG.Location = new System.Drawing.Point(163, 252);
-      this.lblLedG.Name = "lblLedG";
-      this.lblLedG.Size = new System.Drawing.Size(16, 13);
-      this.lblLedG.TabIndex = 31;
-      this.lblLedG.Text = "G";
-      // 
-      // lblLedR
-      // 
-      this.lblLedR.AutoSize = true;
-      this.lblLedR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblLedR.Location = new System.Drawing.Point(92, 252);
-      this.lblLedR.Name = "lblLedR";
-      this.lblLedR.Size = new System.Drawing.Size(16, 13);
-      this.lblLedR.TabIndex = 30;
-      this.lblLedR.Text = "R";
-      // 
-      // tbLedB
-      // 
-      this.tbLedB.Location = new System.Drawing.Point(249, 249);
-      this.tbLedB.Name = "tbLedB";
-      this.tbLedB.Size = new System.Drawing.Size(48, 20);
-      this.tbLedB.TabIndex = 1209;
-      // 
-      // tbLedG
-      // 
-      this.tbLedG.Location = new System.Drawing.Point(182, 249);
-      this.tbLedG.Name = "tbLedG";
-      this.tbLedG.Size = new System.Drawing.Size(48, 20);
-      this.tbLedG.TabIndex = 1208;
-      // 
-      // lblLedStaticColor
-      // 
-      this.lblLedStaticColor.AutoSize = true;
-      this.lblLedStaticColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblLedStaticColor.Location = new System.Drawing.Point(5, 252);
-      this.lblLedStaticColor.Name = "lblLedStaticColor";
-      this.lblLedStaticColor.Size = new System.Drawing.Size(73, 13);
-      this.lblLedStaticColor.TabIndex = 27;
-      this.lblLedStaticColor.Text = "Static Color";
-      // 
-      // tbLedR
-      // 
-      this.tbLedR.Location = new System.Drawing.Point(113, 249);
-      this.tbLedR.Name = "tbLedR";
-      this.tbLedR.Size = new System.Drawing.Size(48, 20);
-      this.tbLedR.TabIndex = 1207;
       // 
       // lblLedSendDelay
       // 
@@ -1069,6 +1332,16 @@
       this.lblLedBrightness.TabIndex = 19;
       this.lblLedBrightness.Text = "Brightness:";
       // 
+      // lblLedB
+      // 
+      this.lblLedB.AutoSize = true;
+      this.lblLedB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedB.Location = new System.Drawing.Point(225, 250);
+      this.lblLedB.Name = "lblLedB";
+      this.lblLedB.Size = new System.Drawing.Size(15, 13);
+      this.lblLedB.TabIndex = 32;
+      this.lblLedB.Text = "B";
+      // 
       // tbLedColorTemperature
       // 
       this.tbLedColorTemperature.Location = new System.Drawing.Point(134, 162);
@@ -1083,6 +1356,16 @@
       this.tbLedSaturation.Size = new System.Drawing.Size(100, 20);
       this.tbLedSaturation.TabIndex = 1204;
       // 
+      // lblLedG
+      // 
+      this.lblLedG.AutoSize = true;
+      this.lblLedG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedG.Location = new System.Drawing.Point(157, 250);
+      this.lblLedG.Name = "lblLedG";
+      this.lblLedG.Size = new System.Drawing.Size(16, 13);
+      this.lblLedG.TabIndex = 31;
+      this.lblLedG.Text = "G";
+      // 
       // lnlLedSaturation
       // 
       this.lnlLedSaturation.AutoSize = true;
@@ -1092,6 +1375,47 @@
       this.lnlLedSaturation.Size = new System.Drawing.Size(69, 13);
       this.lnlLedSaturation.TabIndex = 21;
       this.lnlLedSaturation.Text = "Saturation:";
+      // 
+      // tbLedB
+      // 
+      this.tbLedB.Location = new System.Drawing.Point(243, 247);
+      this.tbLedB.Name = "tbLedB";
+      this.tbLedB.Size = new System.Drawing.Size(48, 20);
+      this.tbLedB.TabIndex = 1209;
+      // 
+      // lblLedR
+      // 
+      this.lblLedR.AutoSize = true;
+      this.lblLedR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedR.Location = new System.Drawing.Point(86, 250);
+      this.lblLedR.Name = "lblLedR";
+      this.lblLedR.Size = new System.Drawing.Size(16, 13);
+      this.lblLedR.TabIndex = 30;
+      this.lblLedR.Text = "R";
+      // 
+      // tbLedR
+      // 
+      this.tbLedR.Location = new System.Drawing.Point(107, 247);
+      this.tbLedR.Name = "tbLedR";
+      this.tbLedR.Size = new System.Drawing.Size(48, 20);
+      this.tbLedR.TabIndex = 1207;
+      // 
+      // lblLedStaticColor
+      // 
+      this.lblLedStaticColor.AutoSize = true;
+      this.lblLedStaticColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblLedStaticColor.Location = new System.Drawing.Point(7, 250);
+      this.lblLedStaticColor.Name = "lblLedStaticColor";
+      this.lblLedStaticColor.Size = new System.Drawing.Size(73, 13);
+      this.lblLedStaticColor.TabIndex = 27;
+      this.lblLedStaticColor.Text = "Static Color";
+      // 
+      // tbLedG
+      // 
+      this.tbLedG.Location = new System.Drawing.Point(176, 247);
+      this.tbLedG.Name = "tbLedG";
+      this.tbLedG.Size = new System.Drawing.Size(48, 20);
+      this.tbLedG.TabIndex = 1208;
       // 
       // btnAddLed
       // 
@@ -1146,7 +1470,7 @@
       this.lvLedDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lvLedDevices.Location = new System.Drawing.Point(347, 19);
       this.lvLedDevices.Name = "lvLedDevices";
-      this.lvLedDevices.Size = new System.Drawing.Size(720, 536);
+      this.lvLedDevices.Size = new System.Drawing.Size(745, 348);
       this.lvLedDevices.TabIndex = 11;
       this.lvLedDevices.UseCompatibleStateImageBehavior = false;
       this.lvLedDevices.View = System.Windows.Forms.View.Details;
@@ -1771,17 +2095,6 @@
       this.toolStripMenuItemClose.Text = "Exit";
       this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
       // 
-      // cbEnableIndividualLightSettings
-      // 
-      this.cbEnableIndividualLightSettings.AutoSize = true;
-      this.cbEnableIndividualLightSettings.Location = new System.Drawing.Point(20, 349);
-      this.cbEnableIndividualLightSettings.Name = "cbEnableIndividualLightSettings";
-      this.cbEnableIndividualLightSettings.Size = new System.Drawing.Size(291, 17);
-      this.cbEnableIndividualLightSettings.TabIndex = 53;
-      this.cbEnableIndividualLightSettings.Text = "Enable individual Light settings (might cause sync errors)";
-      this.cbEnableIndividualLightSettings.UseVisualStyleBackColor = true;
-      this.cbEnableIndividualLightSettings.CheckedChanged += new System.EventHandler(this.cbEnableIndividualLightSettings_CheckedChanged);
-      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1808,6 +2121,9 @@
       this.gbHueSettings.ResumeLayout(false);
       this.gbHueSettings.PerformLayout();
       this.tabPageLeds.ResumeLayout(false);
+      this.tabPageLeds.PerformLayout();
+      this.grpPredefinedStaticColors.ResumeLayout(false);
+      this.grpLedLocations.ResumeLayout(false);
       this.gbManageLeds.ResumeLayout(false);
       this.gbManageLeds.PerformLayout();
       this.gbLedOptional.ResumeLayout(false);
@@ -1923,7 +2239,6 @@
         private System.Windows.Forms.Label lblHueSceneID;
         private System.Windows.Forms.Button btnHueSetScene;
         private System.Windows.Forms.TextBox tbHueSceneName;
-        private System.Windows.Forms.TextBox tbLedLocation;
         private System.Windows.Forms.Label lblLedLocation;
         private System.Windows.Forms.ColumnHeader chLedLocation;
         private System.Windows.Forms.Label lblLedHue;
@@ -1982,6 +2297,36 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox cbEnableIndividualLightSettings;
+        private System.Windows.Forms.Button btnLedStaticColorDOWN;
+        private System.Windows.Forms.Button btnLedStaticColorUP;
+        private System.Windows.Forms.Button btnLedLocationDOWN;
+        private System.Windows.Forms.Button btnLedLocationUP;
+        private System.Windows.Forms.GroupBox grpPredefinedStaticColors;
+        private System.Windows.Forms.ListView lvPredefinedStaticColors;
+        private System.Windows.Forms.ColumnHeader chPredefinedStaticColorName;
+        private System.Windows.Forms.ColumnHeader chPredefinedStaticColorRGB;
+        private System.Windows.Forms.GroupBox grpLedLocations;
+        private System.Windows.Forms.ListView lvLedLocations;
+        private System.Windows.Forms.ColumnHeader chLedLocationName;
+        private System.Windows.Forms.ColumnHeader chLedLocationPriority;
+        private System.Windows.Forms.Label lblAddLedPriority;
+        private System.Windows.Forms.Label lblAddLedLocation;
+        private System.Windows.Forms.TextBox tbLedLocationPriority;
+        private System.Windows.Forms.TextBox tbLedLocation;
+        private System.Windows.Forms.Button btnAddPredefinedStaticColor;
+        private System.Windows.Forms.Button btnAddLedLocation;
+        private System.Windows.Forms.Label lblPredefinedStaticColorName;
+        private System.Windows.Forms.TextBox tbPredefinedStaticColorName;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.TextBox tbPredefinedColorB;
+        private System.Windows.Forms.TextBox tbPredefinedColorG;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.TextBox tbPredefinedColorR;
+        private System.Windows.Forms.ComboBox cbLedLocation;
+        private System.Windows.Forms.Button btnRemoveLedPredefinedStaticColor;
+        private System.Windows.Forms.Button btnRemoveLedLocation;
     }
 }
 

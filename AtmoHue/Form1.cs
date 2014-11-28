@@ -56,6 +56,18 @@ namespace AtmoHue
       public string staticColor { get; set; }
     }
 
+    public class LEDLocation
+    {
+      public string Location { get; set; }
+      public string Priority { get; set; }
+    }
+
+    public class LEDPredefinedStaticColors
+    {
+      public string ColorName { get; set; }
+      public string RGBvalue { get; set; }
+    }
+
     private enum APIcommandType
     {
       Color,
@@ -81,6 +93,11 @@ namespace AtmoHue
     public Boolean hueRotatingColors = false;
     HueClient client = new HueClient("127.0.0.1");
     public List<LEDDevice> ledDevices = new List<LEDDevice>();
+    public List<LEDDevice> ledDevicesGroupFilter = new List<LEDDevice>();
+    public List<LEDDevice> ledDevicesGroupStaticColors = new List<LEDDevice>();
+
+    public List<LEDLocation> ledLocations = new List<LEDLocation>();
+    public List<LEDPredefinedStaticColors> ledPredefinedStaticColors = new List<LEDPredefinedStaticColors>();
 
     public List<string> commandCache = new List<string>();
     public Boolean colorCommand = false;
@@ -128,6 +145,8 @@ namespace AtmoHue
     public static string remoteAPIport = "20123";
     public static string remoteAPISendDelay = "300";
     public static Boolean LogRemoteApiCalls = false;
+    private Boolean groupFilterActive = false;
+
 
     public Form1()
     {
@@ -167,6 +186,7 @@ namespace AtmoHue
           SSDPBridgeLocator();
         }
       }
+
       //Create some default combobox values
       cbHueBrightness.Items.Clear();
       int maxBrightness = 500;
@@ -177,6 +197,7 @@ namespace AtmoHue
         cbHueBrightness.Items.Add(counter);
         counter++;
       }
+
       //Create some default combobox values
       setDefaultCombBoxValues(cbHueBrightness, 0, 254);
       setDefaultCombBoxValues(cbHueSaturation, 0, 254);
@@ -474,9 +495,62 @@ namespace AtmoHue
                   ld.hue = hue;
                   ld.staticColor = staticColors;
                   ledDevices.Add(ld);
+                  ledDevicesGroupFilter.Add(ld);
 
                   string[] subItems = { type, location, sendDelay, brightness, saturation, colorTemperature, hue, staticColors };
                   lvLedDevices.Items.Add(id).SubItems.AddRange(subItems);
+                }
+              }
+
+              // LED Locations
+              string LedLocation = "";
+              string LedPriority = "";
+
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "LedLocation"))
+              {
+                reader.ReadToDescendant("Location");
+                LedLocation = reader.ReadString();
+                reader.ReadToFollowing("Priority");
+                LedPriority = reader.ReadString();
+
+                //Add LED ID to devices list
+                if (string.IsNullOrEmpty(LedLocation.Trim()) == false)
+                {
+
+                  LEDLocation ll = new LEDLocation();
+                  ll.Location = LedLocation;
+                  ll.Priority = LedPriority;
+
+                  ledLocations.Add(ll);
+
+                  string[] subItems = { LedPriority };
+                  lvLedLocations.Items.Add(LedLocation).SubItems.AddRange(subItems);
+                }
+              }
+
+              // LED predefined static colors
+              string LedPredefinedColorName = "";
+              string LedPredefinedColorRGB = "";
+
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "LedStaticColor"))
+              {
+                reader.ReadToDescendant("Name");
+                LedPredefinedColorName = reader.ReadString();
+                reader.ReadToFollowing("StaticColor");
+                LedPredefinedColorRGB = reader.ReadString();
+
+                //Add LED ID to devices list
+                if (string.IsNullOrEmpty(LedPredefinedColorName.Trim()) == false)
+                {
+
+                  LEDPredefinedStaticColors lpsc = new LEDPredefinedStaticColors();
+                  lpsc.ColorName = LedPredefinedColorName;
+                  lpsc.RGBvalue = LedPredefinedColorRGB;
+
+                  ledPredefinedStaticColors.Add(lpsc);
+
+                  string[] subItems = { LedPredefinedColorRGB };
+                  lvPredefinedStaticColors.Items.Add(LedPredefinedColorName).SubItems.AddRange(subItems);
                 }
               }
 
@@ -644,6 +718,46 @@ namespace AtmoHue
                 writer.WriteElementString("ColorTemperature", device.SubItems[6].Text);
                 writer.WriteElementString("Hue", device.SubItems[7].Text);
                 writer.WriteElementString("StaticColor", device.SubItems[8].Text);
+              }
+              catch { };
+
+              writer.WriteEndElement();
+            }
+          }
+          writer.WriteEndElement();
+
+
+          writer.WriteStartElement("LedLocations");
+
+          foreach (ListViewItem location in lvLedLocations.Items)
+          {
+            if (string.IsNullOrEmpty(location.Text) == false)
+            {
+              writer.WriteStartElement("LedLocation");
+              try
+              {
+                writer.WriteElementString("Location", location.Text);
+                writer.WriteElementString("Priority", location.SubItems[1].Text);
+              }
+              catch { };
+
+              writer.WriteEndElement();
+            }
+          }
+          writer.WriteEndElement();
+
+
+          writer.WriteStartElement("LedPredefinedStaticColors");
+
+          foreach (ListViewItem staticColor in lvPredefinedStaticColors.Items)
+          {
+            if (string.IsNullOrEmpty(staticColor.Text) == false)
+            {
+              writer.WriteStartElement("LedStaticColor");
+              try
+              {
+                writer.WriteElementString("Name", staticColor.Text);
+                writer.WriteElementString("StaticColor", staticColor.SubItems[1].Text);
               }
               catch { };
 
@@ -827,11 +941,11 @@ namespace AtmoHue
                 Thread.Sleep(1000);
                 if (commandSender.ToLower() == "atmolight")
                 {
-                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0);
+                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, false);
                 }
                 if (commandSender.ToLower() == "huehelper")
                 {
-                  hueSetColor(inputColor, Form1.sources.HUEHELPER, 0);
+                  hueSetColor(inputColor, Form1.sources.HUEHELPER, 0, false);
                 }
 
                 Thread.Sleep(1000);
@@ -842,11 +956,11 @@ namespace AtmoHue
               {
                 if (commandSender.ToLower() == "atmolight")
                 {
-                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0);
+                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, false);
                 }
                 if (commandSender.ToLower() == "huehelper")
                 {
-                  hueSetColor(inputColor, Form1.sources.HUEHELPER, 0);
+                  hueSetColor(inputColor, Form1.sources.HUEHELPER, 0, false);
                 }
               }
 
@@ -868,10 +982,132 @@ namespace AtmoHue
               TurnLightsOFF();
             }
           }
+
+          //Command type GROUP
+          if (commandType == APIcommandType.Group.ToString())
+          {
+            string groupCommand = apiMessageSplit[2];
+            Color inputColor = Color.Black;
+
+            if (groupCommand == "SetStaticColor")
+            {
+              string groupName =  apiMessageSplit[3];
+              string colorName = apiMessageSplit[4];
+ 
+              if (string.IsNullOrEmpty(colorName) == false)
+              {
+                if (colorName == "Off" || colorName == "Uitschakelen")
+                {
+                  inputColor = Color.Black;
+                }
+                else
+                {
+                  foreach (LEDPredefinedStaticColors staticColor in ledPredefinedStaticColors)
+                  {
+                    if (staticColor.ColorName == colorName)
+                    {
+                      string[] RGBcolor = staticColor.RGBvalue.Split(',');
+                      int ColorRed = int.Parse(RGBcolor[0]);
+                      int ColorGreen = int.Parse(RGBcolor[1]);
+                      int colorBlue = int.Parse(RGBcolor[2]);
+                      inputColor = Color.FromArgb(ColorRed, ColorGreen, colorBlue);
+                    }
+                  }
+                }
+              }
+
+              if (groupName == "All" || groupName == "Alle")
+              {
+                ledDevicesGroupStaticColors.Clear();
+
+                foreach (LEDDevice ledDevice in ledDevices)
+                {
+                  LEDDevice ld = new LEDDevice();
+                  ld.ID = ledDevice.ID;
+                  ld.location = ledDevice.location;
+                  ld.sendDelay = ledDevice.sendDelay;
+                  ld.brightness = ledDevice.brightness;
+                  ld.saturation = ledDevice.saturation;
+                  ld.colorTemperature = ledDevice.colorTemperature;
+                  ld.hue = ledDevice.hue;
+                  ld.staticColor = ledDevice.staticColor;
+                  ledDevicesGroupStaticColors.Add(ld);
+                }
+
+                Logger(string.Format("[ {0} ], Group command {1}, Setting Color {2} to {3}", commandSender, groupCommand, inputColor.ToString(),"ALL GROUPS"));
+                hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, true);
+              }
+              else
+              {
+                ledDevicesGroupStaticColors.Clear();
+                if (string.IsNullOrEmpty(groupName) == false)
+                {
+                  foreach (LEDDevice ledDevice in ledDevices)
+                  {
+                    if (ledDevice.location == groupName)
+                    {
+                      LEDDevice ld = new LEDDevice();
+                      ld.ID = ledDevice.ID;
+                      ld.location = ledDevice.location;
+                      ld.sendDelay = ledDevice.sendDelay;
+                      ld.brightness = ledDevice.brightness;
+                      ld.saturation = ledDevice.saturation;
+                      ld.colorTemperature = ledDevice.colorTemperature;
+                      ld.hue = ledDevice.hue;
+                      ld.staticColor = ledDevice.staticColor;
+                      ledDevicesGroupStaticColors.Add(ld);
+                    }
+                  }
+                  Logger(string.Format("[ {0} ], Group command {1}, Setting Color {2} to {3}", commandSender, groupCommand, inputColor.ToString(), groupName));
+                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, true);
+                }
+              }
+            }
+            if (groupCommand == "OnlyActivate")
+            {
+              ledDevicesGroupFilter.Clear();
+              
+              //Clear all led states
+              groupFilterActive = true;
+              string groupName = apiMessageSplit[3];
+
+              if (string.IsNullOrEmpty(groupName) == false)
+              {
+                if (groupName == "All" || groupName == "Alle")
+                {
+                  Logger(string.Format("[ {0} ], Group command {1}, Setting active group to {2}", commandSender, groupCommand, groupName));
+                  groupFilterActive = false;
+                }
+                else
+                {
+                  foreach (LEDDevice ledDevice in ledDevices)
+                  {
+                    if (ledDevice.location == groupName)
+                    {
+                      LEDDevice ld = new LEDDevice();
+                      ld.ID = ledDevice.ID;
+                      ld.location = ledDevice.location;
+                      ld.sendDelay = ledDevice.sendDelay;
+                      ld.brightness = ledDevice.brightness;
+                      ld.saturation = ledDevice.saturation;
+                      ld.colorTemperature = ledDevice.colorTemperature;
+                      ld.hue = ledDevice.hue;
+                      ld.staticColor = ledDevice.staticColor;
+                      ledDevicesGroupFilter.Add(ld);
+                    }
+                  }
+                  Logger(string.Format("[ {0} ], Group command {1}, Setting active group to {2}", commandSender, groupCommand, groupName));
+                  groupFilterActive = true;
+                }
+              }
+            }
+          }
+
         }
         catch (Exception e)
         {
-          //Logger(string.Format("[ {0} ] {1}", "UNKNOWN", e.Message));
+          Logger(string.Format("[ {0} ] {1}", "UNKNOWN", e.Message));
+          Logger(string.Format("[ {0} ] {1}", "UNKNOWN", e.ToString()));
         }
       }
 
@@ -1193,13 +1429,12 @@ namespace AtmoHue
       return p1.X * p2.Y - p1.Y * p2.X;
     }*/
 
-    public async Task hueSetColor(Color ColorInput, sources source, int delay)
+    public async Task hueSetColor(Color ColorInput, sources source, int delay, Boolean UsingManualGroupFilter)
     {
       try
       {
 
         //Reset wait flag
-
         waitTimer = false;
         if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
         {
@@ -1233,10 +1468,24 @@ namespace AtmoHue
         if (ledDevices.Count > 0)
         {
 
+           List<LEDDevice> ledDevicesIndividualWithGroupFilter = new List<LEDDevice>();
+          if (groupFilterActive && UsingManualGroupFilter == false)
+          {
+            ledDevicesIndividualWithGroupFilter = ledDevicesGroupFilter;
+          }
+          else if (UsingManualGroupFilter)
+          {
+            ledDevicesIndividualWithGroupFilter = ledDevicesGroupStaticColors;
+          }
+          else if (UsingManualGroupFilter == false && groupFilterActive == false)
+          {
+            ledDevicesIndividualWithGroupFilter = ledDevices;
+          }
+
           if (EnableIndividualLightSettings)
           {
             List<string> lights = new List<string>();
-            foreach (LEDDevice ld in ledDevices)
+            foreach (LEDDevice ld in ledDevicesIndividualWithGroupFilter)
             {
               waitTimer = true;
               lights.Add(ld.ID);
@@ -1412,12 +1661,34 @@ namespace AtmoHue
             userEditedSettings = false;
 
             List<string> lights = new List<string>();
-            foreach (LEDDevice ld in ledDevices)
+
+            if (groupFilterActive && UsingManualGroupFilter == false)
             {
-              lights.Add(ld.ID);
+              foreach (LEDDevice ld in ledDevicesGroupFilter)
+              {
+                lights.Add(ld.ID);
+              }
             }
+            else if (UsingManualGroupFilter)
+            {
+              foreach (LEDDevice ld in ledDevicesGroupStaticColors)
+              {
+                lights.Add(ld.ID);
+              }
+            }
+            else if (UsingManualGroupFilter == false && groupFilterActive == false)
+            {
+              foreach (LEDDevice ld in ledDevices)
+              {
+                lights.Add(ld.ID);
+              }
+            }
+
             IEnumerable<string> lightList = lights;
-            client.SendCommandAsync(command, lightList);
+            if (lightList.Count() > 0)
+            {
+              client.SendCommandAsync(command, lightList);
+            }
             command.On = false;
           }
           if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
@@ -1478,11 +1749,11 @@ namespace AtmoHue
 
       if (string.IsNullOrEmpty(atmowinStaticColor) == false)
       {
-        hueSetColor(Color.Black, sources.LOCAL, 0);
+        hueSetColor(Color.Black, sources.LOCAL, 0, false);
       }
       else
       {
-        hueSetColor(Color.Black, sources.LOCAL, 0);
+        hueSetColor(Color.Black, sources.LOCAL, 0, false);
       }
     }
 
@@ -1519,7 +1790,7 @@ namespace AtmoHue
             if (colorRed == "0" && colorGreen == "0" && colorBlue == "0" && string.IsNullOrEmpty(atmowinStaticColor) == false)
             {
               Logger("Atmowin disconnected, sending preset static color");
-              hueSetColor(Color.Black, sources.LOCAL, 0);
+              hueSetColor(Color.Black, sources.LOCAL, 0, false);
             }
             else
             {
@@ -1529,7 +1800,7 @@ namespace AtmoHue
               //Send color
               if (myColor != previousColor)
               {
-                hueSetColor(myColor, sources.LOCAL, 0);
+                hueSetColor(myColor, sources.LOCAL, 0, false);
               }
               previousColor = myColor;
 
@@ -1617,11 +1888,11 @@ namespace AtmoHue
         }
         while (hueRotatingColors)
         {
-          hueSetColor(Color.Red, sources.LOCAL, 0);
+          hueSetColor(Color.Red, sources.LOCAL, 0, false);
           Thread.Sleep(hueRotateDelay);
-          hueSetColor(Color.Green, sources.LOCAL, 0);
+          hueSetColor(Color.Green, sources.LOCAL, 0, false);
           Thread.Sleep(hueRotateDelay);
-          hueSetColor(Color.Blue, sources.LOCAL, 0);
+          hueSetColor(Color.Blue, sources.LOCAL, 0, false);
           Thread.Sleep(hueRotateDelay);
         }
       }
@@ -1636,27 +1907,24 @@ namespace AtmoHue
 
     private void btnTestRed_Click(object sender, EventArgs e)
     {
-
-
-      hueSetColor(Color.Red, sources.LOCAL, 0);
+      hueSetColor(Color.Red, sources.LOCAL, 0, false);
     }
 
     private void btnTestGreen_Click(object sender, EventArgs e)
     {
-
-      hueSetColor(Color.Green, sources.LOCAL, 0);
+      hueSetColor(Color.Green, sources.LOCAL, 0, false);
     }
 
     private void btnTestBlue_Click(object sender, EventArgs e)
     {
 
-      hueSetColor(Color.Blue, sources.LOCAL, 0);
+      hueSetColor(Color.Blue, sources.LOCAL, 0, false);
     }
 
     private void btnHueColorClear_Click(object sender, EventArgs e)
     {
 
-      hueSetColor(Color.Black, sources.LOCAL, 0);
+      hueSetColor(Color.Black, sources.LOCAL, 0, false);
     }
 
     private void btnHueSendCustomColor_Click(object sender, EventArgs e)
@@ -1674,7 +1942,7 @@ namespace AtmoHue
         Logger("Incorrect color values for test custom colors used, R/G/B must be between 0 and 255");
         MessageBox.Show("Incorrect color values for test custom colors used, R/G/B must be between 0 and 255");
       }
-      hueSetColor(customColor, sources.LOCAL, 0);
+      hueSetColor(customColor, sources.LOCAL, 0, false);
     }
 
     private void btnHueColorRotateTestStart_Click(object sender, EventArgs e)
@@ -1688,7 +1956,7 @@ namespace AtmoHue
     private void btnHueColorRotateTestStop_Click(object sender, EventArgs e)
     {
       hueRotatingColors = false;
-      hueSetColor(Color.Black, sources.LOCAL, 0);
+      hueSetColor(Color.Black, sources.LOCAL, 0, false);
       colorisON = false;
     }
 
@@ -1712,7 +1980,7 @@ namespace AtmoHue
         {
           staticColors = string.Format("{0},{1},{2}", tbLedR.Text, tbLedG.Text, tbLedB.Text);
         }
-        string[] subItems = { cbLedType.Text, tbLedLocation.Text, tbLedSendDelay.Text, tbLedBrightness.Text, tbLedSaturation.Text, tbLedColorTemperature.Text, tbLedHue.Text, staticColors };
+        string[] subItems = { cbLedType.Text, cbLedLocation.Text, tbLedSendDelay.Text, tbLedBrightness.Text, tbLedSaturation.Text, tbLedColorTemperature.Text, tbLedHue.Text, staticColors };
 
         lvLedDevices.Items.Add(id).SubItems.AddRange(subItems);
 
@@ -1720,7 +1988,7 @@ namespace AtmoHue
 
         tbLedID.Text = "";
         cbLedType.Text = "";
-        tbLedLocation.Text = "";
+        cbLedLocation.Text = "";
         tbLedID.Focus();
       }
     }
@@ -2108,7 +2376,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Red,sources.LOCAL,0);
+        hueSetColor(Color.Red, sources.LOCAL, 0, false);
       }
     }
 
@@ -2117,7 +2385,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Red, sources.LOCAL, 0);
+        hueSetColor(Color.Red, sources.LOCAL, 0, false);
       }
 
     }
@@ -2127,7 +2395,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Red, sources.LOCAL, 0);
+        hueSetColor(Color.Red, sources.LOCAL, 0, false);
       }
 
     }
@@ -2137,7 +2405,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Green, sources.LOCAL, 0);
+        hueSetColor(Color.Green, sources.LOCAL, 0, false);
       }
     }
 
@@ -2146,7 +2414,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Green, sources.LOCAL, 0);
+        hueSetColor(Color.Green, sources.LOCAL, 0, false);
       }
     }
 
@@ -2155,7 +2423,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Green, sources.LOCAL, 0);
+        hueSetColor(Color.Green, sources.LOCAL, 0, false);
       }
     }
 
@@ -2164,7 +2432,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Blue, sources.LOCAL, 0);
+        hueSetColor(Color.Blue, sources.LOCAL, 0, false);
       }
     }
 
@@ -2173,7 +2441,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Blue, sources.LOCAL, 0);
+        hueSetColor(Color.Blue, sources.LOCAL, 0, false);
       }
     }
 
@@ -2182,7 +2450,7 @@ namespace AtmoHue
       refreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Blue, sources.LOCAL, 0);
+        hueSetColor(Color.Blue, sources.LOCAL, 0, false);
       }
     }
     private void refreshColorCalibrations()
@@ -2209,6 +2477,93 @@ namespace AtmoHue
         EnableIndividualLightSettings = false;
       }
 
+    }
+
+    private void btnAddLedLocation_Click(object sender, EventArgs e)
+    {
+      if (string.IsNullOrEmpty(tbLedLocation.Text))
+      {
+        MessageBox.Show("A valid led locaton is required");
+        tbLedLocation.Focus();
+
+      }
+      else
+      {
+        string[] subItems = { tbLedLocationPriority.Text };
+        lvLedLocations.Items.Add(tbLedLocation.Text).SubItems.AddRange(subItems);
+
+        // Refresh combo box selection options
+        cbLedLocation.Items.Clear();
+        foreach (ListViewItem location in lvLedLocations.Items)
+        {
+          cbLedLocation.Items.Add(location.Text);
+        }
+      }
+      tbLedLocation.Text = "";
+      tbLedLocationPriority.Text = "";
+      tbLedLocation.Focus();
+    }
+
+    private void btnAddPredefinedStaticColor_Click(object sender, EventArgs e)
+    {
+      if (string.IsNullOrEmpty(tbPredefinedStaticColorName.Text))
+      {
+        MessageBox.Show("A valid led locaton is required");
+        tbLedLocation.Focus();
+
+      }
+      else
+      {
+        string predefinedColor = tbPredefinedColorR.Text + "," + tbPredefinedColorG.Text + "," + tbPredefinedColorB.Text;
+        string[] subItems = { predefinedColor };
+        lvPredefinedStaticColors.Items.Add(tbPredefinedStaticColorName.Text).SubItems.AddRange(subItems);
+      }
+
+      tbPredefinedStaticColorName.Text = "";
+      tbPredefinedColorR.Text = "";
+      tbPredefinedColorG.Text = "";
+      tbPredefinedColorB.Text = "";
+      tbPredefinedStaticColorName.Focus();
+
+    }
+
+    private void btnRemoveLedLocation_Click(object sender, EventArgs e)
+    {
+      lvLedLocations.Items.Cast<ListViewItem>().Where(T => T.Selected)
+      .Select(T => T.Index).ToList().ForEach(T => lvLedLocations.Items.RemoveAt(T));
+
+      // Refresh combo box selection options
+      cbLedLocation.Items.Clear();
+      foreach (ListViewItem location in lvLedLocations.Items)
+      {
+        cbLedLocation.Items.Add(location.Text);
+      }
+    }
+
+    private void btnRemoveLedPredefinedStaticColor_Click(object sender, EventArgs e)
+    {
+      lvPredefinedStaticColors.Items.Cast<ListViewItem>().Where(T => T.Selected)
+      .Select(T => T.Index).ToList().ForEach(T => lvPredefinedStaticColors.Items.RemoveAt(T));
+    }
+
+    private void btnLedLocationUP_Click(object sender, EventArgs e)
+    {
+      MoveListViewItems(lvLedLocations, MoveDirection.Up);
+    }
+
+    private void btnLedLocationDOWN_Click(object sender, EventArgs e)
+    {
+      MoveListViewItems(lvLedLocations, MoveDirection.Down);
+    }
+
+    private void btnLedStaticColorUP_Click(object sender, EventArgs e)
+    {
+      MoveListViewItems(lvPredefinedStaticColors, MoveDirection.Up);
+    }
+
+    private void btnLedStaticColorDOWN_Click(object sender, EventArgs e)
+    {
+      MoveListViewItems(lvPredefinedStaticColors, MoveDirection.Down);
     }
   }
 }
