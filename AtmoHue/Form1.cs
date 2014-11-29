@@ -207,6 +207,8 @@ namespace AtmoHue
       setDefaultCombBoxValues(cbTestCustomColorR, 0, 255);
       setDefaultCombBoxValues(cbTestCustomColorG, 0, 254);
       setDefaultCombBoxValues(cbTestCustomColorB, 0, 254);
+      setDefaultCombBoxValues(cbTestHueBrightness, 0, 254);
+
 
       if (client.IsInitialized == false && string.IsNullOrEmpty(hueBridgeIP) == false)
       {
@@ -275,9 +277,11 @@ namespace AtmoHue
     {
       try
       {
-        //Clear devices listview on startup to prevent duplicates
-
+        //Clear listviews comboxes on startup to prevent duplicates
         lvLedDevices.Items.Clear();
+        lvLedLocations.Items.Clear();
+        lvPredefinedStaticColors.Items.Clear();
+        cbLedLocation.Items.Clear();
 
         if (File.Exists("settings.xml"))
         {
@@ -525,6 +529,9 @@ namespace AtmoHue
 
                   string[] subItems = { LedPriority };
                   lvLedLocations.Items.Add(LedLocation).SubItems.AddRange(subItems);
+
+                  //Add item to combobox
+                  cbLedLocation.Items.Add(LedLocation);
                 }
               }
 
@@ -1429,6 +1436,44 @@ namespace AtmoHue
       return p1.X * p2.Y - p1.Y * p2.X;
     }*/
 
+    public async Task HueSetBrightness(byte brightness)
+    {
+      //If client isn't connected we try to reconnect, for example when network disconnects or on power events(suspend/resume).
+      if (client.IsInitialized == false && string.IsNullOrEmpty(hueBridgeIP) == false)
+      {
+        client = new HueClient(hueBridgeIP);
+        client.RegisterAsync(hueAppName, hueAppKey);
+        try
+        {
+          client.Initialize(hueAppKey);
+          Logger("HUE has been intialized on COLOR CHANGE");
+        }
+        catch (Exception et)
+        {
+          if (cbEnableDebuglog.Checked == true)
+          {
+            Logger(et.ToString());
+          }
+        }
+      }
+
+      LightCommand command = new LightCommand();
+      command.On = true;
+      command.Brightness = brightness;
+
+      List<string> lights = new List<string>();
+      foreach (LEDDevice ld in ledDevices)
+      {
+        lights.Add(ld.ID);
+      }
+
+      if (lights.Count() > 0)
+      {
+        client.SendCommandAsync(command, lights);
+        Logger(string.Format("[ {0} ] {1}", sources.LOCAL, "Completed sending brightness " + brightness.ToString() + " to Hue Bridge"));
+      }
+    }
+
     public async Task hueSetColor(Color ColorInput, sources source, int delay, Boolean UsingManualGroupFilter)
     {
       try
@@ -1581,9 +1626,12 @@ namespace AtmoHue
               }
               else
               {
-                if (string.IsNullOrEmpty(hueHue) == false || userEditedSettings)
+                if (string.IsNullOrEmpty(hueHue) == false)
                 {
-                  command.Hue = int.Parse(hueHue);
+                  if (userEditedSettings)
+                  {
+                    command.Hue = int.Parse(hueHue);
+                  }
                 }
               }
 
@@ -1653,9 +1701,12 @@ namespace AtmoHue
             }
 
             //Hue
-            if (string.IsNullOrEmpty(hueHue) == false || userEditedSettings)
+            if (string.IsNullOrEmpty(hueHue) == false)
             {
-              command.Hue = int.Parse(hueHue);
+              if (userEditedSettings)
+              {
+                command.Hue = int.Parse(hueHue);
+              }
             }
 
             userEditedSettings = false;
@@ -1976,10 +2027,11 @@ namespace AtmoHue
       {
         string id = tbLedID.Text;
         string staticColors = "";
-        if (string.IsNullOrEmpty(tbLedR.Text) == false && string.IsNullOrEmpty(tbLedG.Text) && string.IsNullOrEmpty(tbLedB.Text))
+        if (string.IsNullOrEmpty(tbLedR.Text) == false && string.IsNullOrEmpty(tbLedG.Text) == false && string.IsNullOrEmpty(tbLedB.Text) == false)
         {
           staticColors = string.Format("{0},{1},{2}", tbLedR.Text, tbLedG.Text, tbLedB.Text);
         }
+
         string[] subItems = { cbLedType.Text, cbLedLocation.Text, tbLedSendDelay.Text, tbLedBrightness.Text, tbLedSaturation.Text, tbLedColorTemperature.Text, tbLedHue.Text, staticColors };
 
         lvLedDevices.Items.Add(id).SubItems.AddRange(subItems);
@@ -2485,7 +2537,6 @@ namespace AtmoHue
       {
         MessageBox.Show("A valid led locaton is required");
         tbLedLocation.Focus();
-
       }
       else
       {
@@ -2498,33 +2549,32 @@ namespace AtmoHue
         {
           cbLedLocation.Items.Add(location.Text);
         }
+
+        tbLedLocation.Text = "";
+        tbLedLocationPriority.Text = "";
+        tbLedLocation.Focus();
       }
-      tbLedLocation.Text = "";
-      tbLedLocationPriority.Text = "";
-      tbLedLocation.Focus();
+
     }
 
     private void btnAddPredefinedStaticColor_Click(object sender, EventArgs e)
     {
       if (string.IsNullOrEmpty(tbPredefinedStaticColorName.Text))
       {
-        MessageBox.Show("A valid led locaton is required");
+        MessageBox.Show("A valid static color name is required");
         tbLedLocation.Focus();
-
       }
       else
       {
         string predefinedColor = tbPredefinedColorR.Text + "," + tbPredefinedColorG.Text + "," + tbPredefinedColorB.Text;
         string[] subItems = { predefinedColor };
         lvPredefinedStaticColors.Items.Add(tbPredefinedStaticColorName.Text).SubItems.AddRange(subItems);
+        tbPredefinedStaticColorName.Text = "";
+        tbPredefinedColorR.Text = "";
+        tbPredefinedColorG.Text = "";
+        tbPredefinedColorB.Text = "";
+        tbPredefinedStaticColorName.Focus();
       }
-
-      tbPredefinedStaticColorName.Text = "";
-      tbPredefinedColorR.Text = "";
-      tbPredefinedColorG.Text = "";
-      tbPredefinedColorB.Text = "";
-      tbPredefinedStaticColorName.Focus();
-
     }
 
     private void btnRemoveLedLocation_Click(object sender, EventArgs e)
@@ -2564,6 +2614,31 @@ namespace AtmoHue
     private void btnLedStaticColorDOWN_Click(object sender, EventArgs e)
     {
       MoveListViewItems(lvPredefinedStaticColors, MoveDirection.Down);
+    }
+
+    private void btnTestHueBrightness_Click(object sender, EventArgs e)
+    {
+      int min = 0;
+      int max = 255;
+      if (validatorInt(cbTestHueBrightness.Text, min, max, true) == false)
+      {
+        MessageBox.Show("RGB color value must be between 0 and 500");
+      }
+      else
+      {
+        try
+        {
+          byte brightness = byte.Parse(cbTestHueBrightness.Text);
+          HueSetBrightness(brightness);
+
+        }
+        catch (Exception et)
+        {
+          MessageBox.Show("Error while setting brightness");
+          MessageBox.Show(et.Message);
+        }
+      }
+
     }
   }
 }
