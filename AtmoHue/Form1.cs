@@ -74,6 +74,7 @@ namespace AtmoHue
       Group,
       Power,
       Room,
+      Theater
     }
 
     public class HueXYColor
@@ -125,7 +126,6 @@ namespace AtmoHue
     public string calibrateXblue = "";
     public string calibrateYblue = "";
     public string calibrateZblue = "";
-
 
     // Various
     public Boolean MinimizeOnStartup = false;
@@ -675,6 +675,8 @@ namespace AtmoHue
     {
       try
       {
+        Properties.Settings.Default.Save();
+
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
         settings.IndentChars = "  ";
@@ -704,7 +706,7 @@ namespace AtmoHue
           writer.WriteElementString("RemoteAPISenDelay", tbRemoteAPIsendDelay.Text);
           writer.WriteElementString("HuePowerHandling", cbHuePowerHandling.SelectedIndex.ToString());
           writer.WriteElementString("EnableIndividualLightSettings", cbEnableIndividualLightSettings.Checked.ToString());
-          
+
           writer.WriteEndElement();
 
           writer.WriteStartElement("LedDevices");
@@ -912,11 +914,11 @@ namespace AtmoHue
         string apiCommandMessage = encoder.GetString(message, 0, bytesRead);
         try
         {
-
           //Get command type
           string[] apiMessageSplit = apiCommandMessage.Split(',');
           string commandSender = apiMessageSplit[0];
           string commandType = apiMessageSplit[1];
+
 
           //Command type COLOR
           if (commandType == APIcommandType.Color.ToString())
@@ -955,6 +957,7 @@ namespace AtmoHue
                   hueSetColor(inputColor, Form1.sources.HUEHELPER, 0, false);
                 }
 
+
                 Thread.Sleep(1000);
               }
 
@@ -975,6 +978,7 @@ namespace AtmoHue
               swRemoteApi.Restart();
             }
           }
+
           //Command type POWER
           if (commandType == APIcommandType.Power.ToString())
           {
@@ -987,6 +991,24 @@ namespace AtmoHue
             else if (powerCommand == "OFF")
             {
               TurnLightsOFF();
+            }
+          }
+          
+          //Command type THEATER
+          if (commandType == APIcommandType.Theater.ToString())
+          {
+            string theaterCommand = apiMessageSplit[2];
+            Logger(string.Format("[ {0} ] COMMAND: {1}", commandSender, theaterCommand));
+
+            if (theaterCommand == "DISABLE")
+            {
+                Logger("[ THEATER MODE ] - restoring leds as playback stopped or leds disabled");
+                TurnLightsONTheater();
+            }
+            else if (theaterCommand == "ENABLE")
+            {
+              Logger("[ THEATER MODE ] - disabling leds during movie playback");
+              TurnLightsOFFTheater();
             }
           }
 
@@ -1042,6 +1064,7 @@ namespace AtmoHue
                 }
 
                 Logger(string.Format("[ {0} ], Group command {1}, Setting Color {2} to {3}", commandSender, groupCommand, inputColor.ToString(),"ALL GROUPS"));
+
                 hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, true);
               }
               else
@@ -1478,7 +1501,6 @@ namespace AtmoHue
     {
       try
       {
-
         //Reset wait flag
         waitTimer = false;
         if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
@@ -1512,7 +1534,6 @@ namespace AtmoHue
         //Send command to Hue and split up commands for every light
         if (ledDevices.Count > 0)
         {
-
            List<LEDDevice> ledDevicesIndividualWithGroupFilter = new List<LEDDevice>();
           if (groupFilterActive && UsingManualGroupFilter == false)
           {
@@ -1755,7 +1776,7 @@ namespace AtmoHue
       }
       catch (Exception et)
       {
-        MessageBox.Show(et.ToString());
+        //MessageBox.Show(et.ToString());
         if (cbEnableDebuglog.Checked == true)
         {
           Logger(et.ToString());
@@ -1958,23 +1979,25 @@ namespace AtmoHue
 
     private void btnTestRed_Click(object sender, EventArgs e)
     {
+      TurnLightsON();
       hueSetColor(Color.Red, sources.LOCAL, 0, false);
     }
 
     private void btnTestGreen_Click(object sender, EventArgs e)
     {
+      TurnLightsON();
       hueSetColor(Color.Green, sources.LOCAL, 0, false);
     }
 
     private void btnTestBlue_Click(object sender, EventArgs e)
     {
-
+      TurnLightsON();
       hueSetColor(Color.Blue, sources.LOCAL, 0, false);
     }
 
     private void btnHueColorClear_Click(object sender, EventArgs e)
     {
-
+      TurnLightsON();
       hueSetColor(Color.Black, sources.LOCAL, 0, false);
     }
 
@@ -2364,6 +2387,7 @@ namespace AtmoHue
         Logger(e.Message);
       }
     }
+
     public void TurnLightsON()
     {
       try
@@ -2372,6 +2396,7 @@ namespace AtmoHue
         {
           client.Initialize(hueAppKey);
         }
+
         colorisON = true;
         LightCommand command = new LightCommand();
         command.On = true;
@@ -2392,14 +2417,76 @@ namespace AtmoHue
 
         client.SendCommandAsync(command, lightList);
         command.On = false;
-        Logger("[ STANDBY ] - Resumed AtmoHue and set initial color command (TurnOn) with brightness " + hueBrightness);
+        Logger("[ STANDBY / THEATER ] - Resumed AtmoHue and set initial color command (TurnOn) with brightness " + hueBrightness);
       }
       catch (Exception e)
       {
-        Logger("[ STANDBY ] - Error while turning on Hue on resume");
+        Logger("[ STANDBY / THEATER ] - Error while turning on Hue on resume");
         Logger(e.Message);
       }
     }
+    public void TurnLightsONTheater()
+    {
+      try
+      {
+        if (client.IsInitialized == false)
+        {
+          client.Initialize(hueAppKey);
+        }
+
+        colorisON = true;
+        LightCommand command = new LightCommand();
+        command.On = true;
+
+        command.TurnOn();
+
+        List<string> lights = new List<string>();
+        foreach (LEDDevice ld in ledDevices)
+        {
+          lights.Add(ld.ID);
+        }
+
+        IEnumerable<string> lightList = lights;
+
+        client.SendCommandAsync(command, lightList);
+        command.On = false;
+        Logger("[ THEATER MODE ] - Turned back on lights.");
+      }
+      catch (Exception e)
+      {
+        Logger("[ THEATER MODE ] - Error while turning on Hue on after Theater mode");
+        Logger(e.Message);
+      }
+    }
+    public void TurnLightsOFFTheater()
+    {
+      try
+      {
+        colorisON = false;
+        LightCommand command = new LightCommand();
+        command.On = true;
+        command.TurnOff();
+
+        List<string> lights = new List<string>();
+        foreach (LEDDevice ld in ledDevices)
+        {
+          lights.Add(ld.ID);
+        }
+
+        IEnumerable<string> lightList = lights;
+
+        client.SendCommandAsync(command, lightList);
+        command.On = false;
+        Logger("[ THEATER MODE ] - Turning off lights during movie playback.");
+
+      }
+      catch (Exception e)
+      {
+        Logger("[ THEATER MODE ] - Error while turning off Hue lights during Theater mode");
+        Logger(e.Message);
+      }
+    }
+
     #endregion
 
     private void btnGetLedIDs_Click(object sender, EventArgs e)
@@ -2639,6 +2726,15 @@ namespace AtmoHue
         }
       }
 
+    }
+    private void cbHueEnableTheaterMode_Validating(object sender, CancelEventArgs e)
+    {
+      refreshSettings();
+    }
+
+    private void cbHueTheaterModeRestoreColor_Validating(object sender, CancelEventArgs e)
+    {
+      refreshSettings();
     }
   }
 }

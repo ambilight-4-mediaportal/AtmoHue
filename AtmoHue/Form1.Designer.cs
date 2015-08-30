@@ -46,7 +46,6 @@
       this.btnHueColorRotateTestStart = new System.Windows.Forms.Button();
       this.label6 = new System.Windows.Forms.Label();
       this.btnHueColorRotateTestStop = new System.Windows.Forms.Button();
-      this.cbEnableDebuglog = new System.Windows.Forms.CheckBox();
       this.lblAtmoinPresetColor = new System.Windows.Forms.Label();
       this.tbAtmowinStaticColor = new System.Windows.Forms.TextBox();
       this.btnStopAtmowinHue = new System.Windows.Forms.Button();
@@ -89,6 +88,7 @@
       this.tbHueAppKey = new System.Windows.Forms.TextBox();
       this.tbHueAppName = new System.Windows.Forms.TextBox();
       this.tbHueBridgeIP = new System.Windows.Forms.TextBox();
+      this.cbEnableDebuglog = new System.Windows.Forms.CheckBox();
       this.tabPageLeds = new System.Windows.Forms.TabPage();
       this.btnRemoveLedPredefinedStaticColor = new System.Windows.Forms.Button();
       this.btnRemoveLedLocation = new System.Windows.Forms.Button();
@@ -160,6 +160,9 @@
       this.chLedStaticColor = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.tabPageTesting = new System.Windows.Forms.TabPage();
       this.gbColorTests = new System.Windows.Forms.GroupBox();
+      this.lblTestHueBrightness = new System.Windows.Forms.Label();
+      this.btnTestHueBrightness = new System.Windows.Forms.Button();
+      this.cbTestHueBrightness = new System.Windows.Forms.ComboBox();
       this.label2 = new System.Windows.Forms.Label();
       this.cbTestCustomColorB = new System.Windows.Forms.ComboBox();
       this.tbRotateTestDelay = new System.Windows.Forms.TextBox();
@@ -214,9 +217,6 @@
       this.toolStripMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
-      this.cbTestHueBrightness = new System.Windows.Forms.ComboBox();
-      this.btnTestHueBrightness = new System.Windows.Forms.Button();
-      this.lblTestHueBrightness = new System.Windows.Forms.Label();
       this.gbBridgeTools.SuspendLayout();
       this.grpAtmowin.SuspendLayout();
       this.grpRemoteAPI.SuspendLayout();
@@ -396,16 +396,6 @@
       this.btnHueColorRotateTestStop.UseVisualStyleBackColor = true;
       this.btnHueColorRotateTestStop.Click += new System.EventHandler(this.btnHueColorRotateTestStop_Click);
       // 
-      // cbEnableDebuglog
-      // 
-      this.cbEnableDebuglog.AutoSize = true;
-      this.cbEnableDebuglog.Location = new System.Drawing.Point(145, 401);
-      this.cbEnableDebuglog.Name = "cbEnableDebuglog";
-      this.cbEnableDebuglog.Size = new System.Drawing.Size(109, 17);
-      this.cbEnableDebuglog.TabIndex = 38;
-      this.cbEnableDebuglog.Text = "Enable debug log";
-      this.cbEnableDebuglog.UseVisualStyleBackColor = true;
-      // 
       // lblAtmoinPresetColor
       // 
       this.lblAtmoinPresetColor.AutoSize = true;
@@ -506,6 +496,8 @@
       // cbLogRemoteApiCalls
       // 
       this.cbLogRemoteApiCalls.AutoSize = true;
+      this.cbLogRemoteApiCalls.Checked = global::AtmoHue.Properties.Settings.Default.logRemoteApiCalls;
+      this.cbLogRemoteApiCalls.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "logRemoteApiCalls", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
       this.cbLogRemoteApiCalls.Location = new System.Drawing.Point(14, 401);
       this.cbLogRemoteApiCalls.Name = "cbLogRemoteApiCalls";
       this.cbLogRemoteApiCalls.Size = new System.Drawing.Size(123, 17);
@@ -869,6 +861,18 @@
       this.tbHueBridgeIP.Size = new System.Drawing.Size(100, 20);
       this.tbHueBridgeIP.TabIndex = 1;
       this.tbHueBridgeIP.Validating += new System.ComponentModel.CancelEventHandler(this.tbHueBridgeIP_Validating);
+      // 
+      // cbEnableDebuglog
+      // 
+      this.cbEnableDebuglog.AutoSize = true;
+      this.cbEnableDebuglog.Checked = global::AtmoHue.Properties.Settings.Default.debugModeEnabled;
+      this.cbEnableDebuglog.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AtmoHue.Properties.Settings.Default, "debugModeEnabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+      this.cbEnableDebuglog.Location = new System.Drawing.Point(145, 401);
+      this.cbEnableDebuglog.Name = "cbEnableDebuglog";
+      this.cbEnableDebuglog.Size = new System.Drawing.Size(109, 17);
+      this.cbEnableDebuglog.TabIndex = 38;
+      this.cbEnableDebuglog.Text = "Enable debug log";
+      this.cbEnableDebuglog.UseVisualStyleBackColor = true;
       // 
       // tabPageLeds
       // 
@@ -1567,6 +1571,34 @@
       this.gbColorTests.TabStop = false;
       this.gbColorTests.Text = "Color tests";
       // 
+      // lblTestHueBrightness
+      // 
+      this.lblTestHueBrightness.AutoSize = true;
+      this.lblTestHueBrightness.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblTestHueBrightness.Location = new System.Drawing.Point(23, 220);
+      this.lblTestHueBrightness.Name = "lblTestHueBrightness";
+      this.lblTestHueBrightness.Size = new System.Drawing.Size(97, 13);
+      this.lblTestHueBrightness.TabIndex = 513;
+      this.lblTestHueBrightness.Text = "Hue Brightness:";
+      // 
+      // btnTestHueBrightness
+      // 
+      this.btnTestHueBrightness.Location = new System.Drawing.Point(285, 217);
+      this.btnTestHueBrightness.Name = "btnTestHueBrightness";
+      this.btnTestHueBrightness.Size = new System.Drawing.Size(75, 23);
+      this.btnTestHueBrightness.TabIndex = 512;
+      this.btnTestHueBrightness.Text = "Test";
+      this.btnTestHueBrightness.UseVisualStyleBackColor = true;
+      this.btnTestHueBrightness.Click += new System.EventHandler(this.btnTestHueBrightness_Click);
+      // 
+      // cbTestHueBrightness
+      // 
+      this.cbTestHueBrightness.FormattingEnabled = true;
+      this.cbTestHueBrightness.Location = new System.Drawing.Point(179, 217);
+      this.cbTestHueBrightness.Name = "cbTestHueBrightness";
+      this.cbTestHueBrightness.Size = new System.Drawing.Size(100, 21);
+      this.cbTestHueBrightness.TabIndex = 511;
+      // 
       // label2
       // 
       this.label2.AutoSize = true;
@@ -2104,34 +2136,6 @@
       this.toolStripMenuItemClose.Size = new System.Drawing.Size(103, 22);
       this.toolStripMenuItemClose.Text = "Exit";
       this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
-      // 
-      // cbTestHueBrightness
-      // 
-      this.cbTestHueBrightness.FormattingEnabled = true;
-      this.cbTestHueBrightness.Location = new System.Drawing.Point(179, 217);
-      this.cbTestHueBrightness.Name = "cbTestHueBrightness";
-      this.cbTestHueBrightness.Size = new System.Drawing.Size(100, 21);
-      this.cbTestHueBrightness.TabIndex = 511;
-      // 
-      // btnTestHueBrightness
-      // 
-      this.btnTestHueBrightness.Location = new System.Drawing.Point(285, 217);
-      this.btnTestHueBrightness.Name = "btnTestHueBrightness";
-      this.btnTestHueBrightness.Size = new System.Drawing.Size(75, 23);
-      this.btnTestHueBrightness.TabIndex = 512;
-      this.btnTestHueBrightness.Text = "Test";
-      this.btnTestHueBrightness.UseVisualStyleBackColor = true;
-      this.btnTestHueBrightness.Click += new System.EventHandler(this.btnTestHueBrightness_Click);
-      // 
-      // lblTestHueBrightness
-      // 
-      this.lblTestHueBrightness.AutoSize = true;
-      this.lblTestHueBrightness.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lblTestHueBrightness.Location = new System.Drawing.Point(23, 220);
-      this.lblTestHueBrightness.Name = "lblTestHueBrightness";
-      this.lblTestHueBrightness.Size = new System.Drawing.Size(97, 13);
-      this.lblTestHueBrightness.TabIndex = 513;
-      this.lblTestHueBrightness.Text = "Hue Brightness:";
       // 
       // Form1
       // 
