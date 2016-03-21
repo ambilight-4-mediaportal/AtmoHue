@@ -92,7 +92,7 @@ namespace AtmoHue
 
     // HUE
     public Boolean hueRotatingColors = false;
-    ILocalHueClient client = new LocalHueClient("127.0.0.1");
+    ILocalHueClient client;
     public Boolean isConnected = false;
 
     public List<LEDDevice> ledDevices = new List<LEDDevice>();
@@ -259,7 +259,12 @@ namespace AtmoHue
 
     public async Task<bool> isInitialized()
     {
-      isConnected = await client.CheckConnection();
+      bool isConnected = false;
+
+      if(client != null)
+      {
+        isConnected = await client.CheckConnection();
+      }
 
       if (isConnected)
       {
@@ -267,8 +272,9 @@ namespace AtmoHue
       }
       else
       {
-        //lblConnectionStatus.Text = "Status: Disconnected";
+        lblConnectionStatus.Text = "Status: Disconnected";
       }
+
 
       return isConnected;
     }
