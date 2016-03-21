@@ -93,7 +93,7 @@ namespace AtmoHue
     // HUE
     public Boolean hueRotatingColors = false;
     ILocalHueClient client;
-    public Boolean isConnected = false;
+    public Boolean isConnectedToBridge = false;
 
     public List<LEDDevice> ledDevices = new List<LEDDevice>();
     public List<LEDDevice> ledDevicesGroupFilter = new List<LEDDevice>();
@@ -211,26 +211,8 @@ namespace AtmoHue
       setDefaultCombBoxValues(cbTestCustomColorB, 0, 254);
       setDefaultCombBoxValues(cbTestHueBrightness, 0, 254);
 
-      isInitialized();
-      if (!isConnected)
-      {
-        client = new LocalHueClient(hueBridgeIP);
-        //client.RegisterAsync(hueAppName, hueAppKey);
-        try
-        {
-          client.Initialize(hueAppKey);
-          Logger("HUE has been intialized on STARTUP");
-        }
-        catch (Exception et)
-        {
-          if (cbEnableDebuglog.Checked == true)
-          {
-            Logger(et.ToString());
-          }
-        }
-      }
-
-      isInitialized();
+      reInitialize("");
+      isInitialized(true);
 
       // Monitor power state
       monitorPowerState();
@@ -257,7 +239,7 @@ namespace AtmoHue
       return runtime;
     }
 
-    public async Task<bool> isInitialized()
+    public async Task<bool> isInitialized(bool updateLabels)
     {
       bool isConnected = false;
 
@@ -266,17 +248,47 @@ namespace AtmoHue
         isConnected = await client.CheckConnection();
       }
 
-      if (isConnected)
+      if (updateLabels)
       {
-        lblConnectionStatus.Text = "Status: Connected";
+        if (isConnected)
+        {
+          Logger("Hue bridge has been intialized");
+          Logger("Connection to bridge was successful");
+          lblConnectionStatus.Text = "Status: Connected";
+        }
+        else
+        {
+          Logger("Hue bridge failed to intialize");
+          Logger("Connection to bridge was successful");
+          lblConnectionStatus.Text = "Status: Disconnected";
+        }
       }
       else
-      {
-        lblConnectionStatus.Text = "Status: Disconnected";
-      }
-
+      isConnectedToBridge = isConnected;
 
       return isConnected;
+    }
+
+    private void reInitialize(string logMessage)
+    {
+      client = new LocalHueClient(hueBridgeIP);
+
+      try
+      {
+        client.Initialize(hueAppKey);
+
+        if(!string.IsNullOrEmpty(logMessage))
+        {
+          Logger(logMessage);
+        }
+      }
+      catch (Exception et)
+      {
+        if (cbEnableDebuglog.Checked)
+        {
+          Logger(et.ToString());
+        }
+      }
     }
     private void setDefaultCombBoxValues(ComboBox cb, int min, int max)
     {
@@ -1203,7 +1215,6 @@ namespace AtmoHue
         try
         {
           client.Initialize(hueAppKey);
-          Logger("HUE has been intialized on STARTUP");
         }
         catch (Exception et)
         {
@@ -1214,8 +1225,8 @@ namespace AtmoHue
         }
       }
 
-      //Set connection label
-      isInitialized();
+      //Check connection
+      isInitialized(true);
     }
     public async Task SSDPBridgeLocator()
     {
@@ -1243,7 +1254,6 @@ namespace AtmoHue
         try
         {
           client.Initialize(hueAppKey);
-          Logger("HUE has been intialized on STARTUP");
         }
         catch (Exception et)
         {
@@ -1254,8 +1264,8 @@ namespace AtmoHue
         }
       }
 
-      //Set connection label
-      isInitialized();
+      //Check connection
+      isInitialized(true);
     }
     public double[] getRGBtoXY(Color c, DeviceType device)
     {
@@ -1468,16 +1478,13 @@ namespace AtmoHue
     public async Task HueSetBrightness(byte brightness)
     {
       //If client isn't connected we try to reconnect, for example when network disconnects or on power events(suspend/resume).
-      isInitialized();
+      isInitialized(false);
 
-      if (isConnected == false && string.IsNullOrEmpty(hueBridgeIP) == false)
+      if (isConnectedToBridge == false && string.IsNullOrEmpty(hueBridgeIP) == false)
       {
-        client = new LocalHueClient(hueBridgeIP);
-        //await client.RegisterAsync(hueAppName, hueAppKey);
         try
         {
-          client.Initialize(hueAppKey);
-          Logger("HUE has been intialized on COLOR CHANGE");
+          reInitialize("HUE has been intialized on SET BRIGHTNESS");
         }
         catch (Exception et)
         {
@@ -1521,24 +1528,11 @@ namespace AtmoHue
         }
 
         //If client isn't connected we try to reconnect, for example when network disconnects or on power events(suspend/resume).
-        isInitialized();
+        isInitialized(false);
 
-        if (isConnected == false && string.IsNullOrEmpty(hueBridgeIP) == false)
+        if (isConnectedToBridge == false && string.IsNullOrEmpty(hueBridgeIP) == false)
         {
-          client = new LocalHueClient(hueBridgeIP);
-          //await client.RegisterAsync(hueAppName, hueAppKey);
-          try
-          {
-            client.Initialize(hueAppKey);
-            Logger("HUE has been intialized on COLOR CHANGE");
-          }
-          catch (Exception et)
-          {
-            if (cbEnableDebuglog.Checked == true)
-            {
-              Logger(et.ToString());
-            }
-          }
+          reInitialize("HUE has been intialized on COLOR CHANGE");
         }
 
         //Send command to Hue and split up commands for every light
@@ -1954,22 +1948,13 @@ namespace AtmoHue
     {
       try
       {
-        isInitialized();
+        isInitialized(false);
 
-        if (!isConnected)
+        if (!isConnectedToBridge)
         {
-          client = new LocalHueClient(hueBridgeIP);
-          //client.RegisterAsync(hueAppName, hueAppKey);
-          try
-          {
-            client.Initialize(hueAppKey);
-            Logger("HUE has been intialized on COLOR CHANGE");
-          }
-          catch (Exception et)
-          {
-            Logger(et.ToString());
-          }
+          reInitialize("HUE has been intialized on COLOR CHANGE");
         }
+
         while (hueRotatingColors)
         {
           hueSetColor(Color.Red, sources.LOCAL, 0, false);
@@ -2405,11 +2390,11 @@ namespace AtmoHue
     {
       try
       {
-        isInitialized();
+        isInitialized(false);
 
-        if (isConnected == false)
+        if (!isConnectedToBridge)
         {
-          client.Initialize(hueAppKey);
+          reInitialize("HUE has been intialized on LIGHTS ON");
         }
 
         colorisON = true;
@@ -2444,11 +2429,11 @@ namespace AtmoHue
     {
       try
       {
-        isInitialized();
+        isInitialized(false);
 
-        if (isConnected == false)
+        if (!isConnectedToBridge)
         {
-          client.Initialize(hueAppKey);
+          reInitialize("HUE has been intialized on LIGHTS ON THEATER");
         }
 
         colorisON = true;
@@ -2508,16 +2493,15 @@ namespace AtmoHue
 
     private void btnGetLedIDs_Click(object sender, EventArgs e)
     {
-      isInitialized();
+      isInitialized(false);
 
-      if (isConnected)
+      if (!isConnectedToBridge)
       {
-        getLights();
-        MessageBox.Show("Please check log window for listing of located light IDs");
+        reInitialize("HUE has been intialized on getLights");
       }
       else
       {
-        MessageBox.Show("Not connected to Hue Bridge");
+        getLights();
       }
     }
     private async Task getLights()
