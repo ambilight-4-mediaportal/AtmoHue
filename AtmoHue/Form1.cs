@@ -1,153 +1,110 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
+using AtmoHue.Properties;
+using Microsoft.Win32;
 using Q42.HueApi;
 using Q42.HueApi.Interfaces;
-using Microsoft.Win32;
-
-using System.Windows.Forms;
+using Q42.HueApi.Models;
 using Q42.HueApi.NET;
 
 namespace AtmoHue
 {
   public partial class Form1 : Form
   {
-    delegate void UniversalVoidDelegate();
-
-    public enum sources
-    {
-      ATMOLIGHT,
-      HUEHELPER,
-      LOCAL
-    }
     public enum DeviceType
     {
-      bloom,
-      bulb,
-      iris,
-      strips,
-      unknown
+      Bloom,
+      Bulb,
+      Iris,
+      Strips,
+      Unknown
     }
 
-    public class LEDDevice
+    public enum Sources
     {
-      public string ID { get; set; }
-      public string type { get; set; }
-      public string location { get; set; }
-      public string sendDelay { get; set; }
-      public string brightness { get; set; }
-      public string saturation { get; set; }
-      public string colorTemperature { get; set; }
-      public string hue { get; set; }
-      public string staticColor { get; set; }
+      Atmolight,
+      Huehelper,
+      Local
     }
 
-    public class LEDLocation
-    {
-      public string Location { get; set; }
-      public string Priority { get; set; }
-    }
+    public static string RemoteApIip = "127.0.0.1";
+    public static string RemoteApIport = "20123";
+    public static string RemoteApiSendDelay = "300";
+    public static bool LogRemoteApiCalls;
+    public string AtmowinLocation = "";
+    public string AtmowinScanInterval = "";
+    public string AtmowinStaticColor = "";
+    public string CalibrateXblue = "";
+    public string CalibrateXgreen = "";
+    public string CalibrateXred = "";
+    public string CalibrateYblue = "";
+    public string CalibrateYgreen = "";
+    public string CalibrateYred = "";
+    public string CalibrateZblue = "";
+    public string CalibrateZgreen = "";
+    public string CalibrateZred = "";
+    private ILocalHueClient _client;
+    public bool ColorCommand = false;
+    public bool ColorisOn;
 
-    public class LEDPredefinedStaticColors
-    {
-      public string ColorName { get; set; }
-      public string RGBvalue { get; set; }
-    }
-
-    private enum APIcommandType
-    {
-      Color,
-      Group,
-      Power,
-      Room,
-      Theater
-    }
-
-    public class HueXYColor
-    {
-      public float X;
-      public float Y;
-      public float Brightness;
-    } 
-
-    // Atmowin
-    public Boolean scanAtmowin = false;
-    public string atmowinLocation = "";
-    public string atmowinStaticColor = "";
-    public string atmowinScanInterval = "";
+    public List<string> CommandCache = new List<string>();
+    public bool EnableIndividualLightSettings;
+    private bool _groupFilterActive;
+    public string HueAppKey = "AmtoHueAppKey";
+    public string HueAppName = "AtmoHue";
+    public bool HueAutoconnectBridge;
+    public string HueBridgeIp = "127.0.0.1";
+    public string HueBrightness = "100";
+    public string HueColorTemperature = "";
+    public string HueHue = "";
+    public string HueOutputDevices = "";
+    public int HuePowerHandling;
+    public bool HueRemoteApIenabled;
+    public int HueRotateDelay = 1000;
 
     // HUE
-    public Boolean hueRotatingColors = false;
-    ILocalHueClient client;
-    public Boolean isConnectedToBridge = false;
+    public bool HueRotatingColors;
+    public bool HueRunningWindows8;
+    public string HueSaturation = "100";
+    public bool HueSetBrightnessStartup;
+    public string HueTransitiontime = "100";
+    public bool IsConnectedToBridge;
 
-    public List<LEDDevice> ledDevices = new List<LEDDevice>();
-    public List<LEDDevice> ledDevicesGroupFilter = new List<LEDDevice>();
-    public List<LEDDevice> ledDevicesGroupStaticColors = new List<LEDDevice>();
+    public List<LedDevice> LedDevices = new List<LedDevice>();
+    public List<LedDevice> LedDevicesGroupFilter = new List<LedDevice>();
+    public List<LedDevice> LedDevicesGroupStaticColors = new List<LedDevice>();
 
-    public List<LEDLocation> ledLocations = new List<LEDLocation>();
-    public List<LEDPredefinedStaticColors> ledPredefinedStaticColors = new List<LEDPredefinedStaticColors>();
-
-    public List<string> commandCache = new List<string>();
-    public Boolean colorCommand = false;
-    public Boolean colorisON = false;
-    public int hueRotateDelay = 1000;
-    public string hueBridgeIP = "127.0.0.1";
-    public string hueAppName = "AtmoHue";
-    public string hueAppKey = "AmtoHueAppKey";
-    public string hueBrightness = "100";
-    public string hueSaturation = "100";
-    public string hueTransitiontime = "100";
-    public string hueColorTemperature = "";
-    public string hueHue = "";
-    public string hueOutputDevices = "";
-    public Boolean hueRunningWindows8 = false;
-    public Boolean hueAutoconnectBridge = false;
-    public Boolean HueRemoteAPIenabled = false;
-    public Boolean HueSetBrightnessStartup = false;
-    public string calibrateXred = "";
-    public string calibrateYred = "";
-    public string calibrateZred = "";
-    public string calibrateXgreen = "";
-    public string calibrateYgreen = "";
-    public string calibrateZgreen = "";
-    public string calibrateXblue = "";
-    public string calibrateYblue = "";
-    public string calibrateZblue = "";
+    public List<LedLocation> LedLocations = new List<LedLocation>();
+    public List<LEDPredefinedStaticColors> LedPredefinedStaticColors = new List<LEDPredefinedStaticColors>();
+    private Thread _listenThread;
 
     // Various
-    public Boolean MinimizeOnStartup = false;
-    public Boolean MinimizeToTray = false;
-    public int HuePowerHandling = 0;
-    public Boolean userEditedSettings = false;
-    public Boolean EnableIndividualLightSettings = false;
+    public bool MinimizeOnStartup;
+    public bool MinimizeToTray;
 
-    public Boolean waitTimer = false;
+    // Atmowin
+    public bool ScanAtmowin;
+    private readonly Stopwatch _swRemoteApi = new Stopwatch();
 
 
     // API
-    private TcpListener tcpListener;
-    private Thread listenThread;
-    private Stopwatch swRemoteApi = new Stopwatch();
-    public static string remoteAPIip = "127.0.0.1";
-    public static string remoteAPIport = "20123";
-    public static string remoteAPISendDelay = "300";
-    public static Boolean LogRemoteApiCalls = false;
-    private Boolean groupFilterActive = false;
+    private TcpListener _tcpListener;
+    public bool UserEditedSettings;
+
+    public bool WaitTimer;
 
 
     public Form1()
@@ -155,7 +112,7 @@ namespace AtmoHue
       InitializeComponent();
 
       //Close program if already running
-      if (isProgramRunning("AtmoHue", 0) > 1)
+      if (IsProgramRunning("AtmoHue", 0) > 1)
       {
         Environment.Exit(0);
       }
@@ -165,34 +122,34 @@ namespace AtmoHue
 
       if (MinimizeOnStartup)
       {
-        this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-        this.WindowState = FormWindowState.Minimized;
-        this.Visible = false;
-        this.ShowInTaskbar = false;
+        FormBorderStyle = FormBorderStyle.SizableToolWindow;
+        WindowState = FormWindowState.Minimized;
+        Visible = false;
+        ShowInTaskbar = false;
       }
       //Start remote server if enabled
-      if (HueRemoteAPIenabled)
+      if (HueRemoteApIenabled)
       {
-        startAPIserver();
+        StartApIserver();
       }
 
       //Find bridge on startup for TESTING
-      if (string.IsNullOrEmpty(hueBridgeIP))
+      if (string.IsNullOrEmpty(HueBridgeIp))
       {
-        if (hueRunningWindows8 == false)
+        if (HueRunningWindows8 == false)
         {
           BridgeLocator();
         }
         else
         {
-          SSDPBridgeLocator();
+          SsdpBridgeLocator();
         }
       }
 
       //Create some default combobox values
       cbHueBrightness.Items.Clear();
-      int maxBrightness = 500;
-      int counter = 0;
+      var maxBrightness = 500;
+      var counter = 0;
 
       while (counter != maxBrightness)
       {
@@ -201,34 +158,34 @@ namespace AtmoHue
       }
 
       //Create some default combobox values
-      setDefaultCombBoxValues(cbHueBrightness, 0, 254);
-      setDefaultCombBoxValues(cbHueSaturation, 0, 254);
-      setDefaultCombBoxValues(cbHueColorTemperature, 154, 500);
-      setDefaultCombBoxValues(cbHueTransitionTime, 100, 5000);
-      setDefaultCombBoxValues(cbHueHue, 0, 254);
-      setDefaultCombBoxValues(cbTestCustomColorR, 0, 255);
-      setDefaultCombBoxValues(cbTestCustomColorG, 0, 254);
-      setDefaultCombBoxValues(cbTestCustomColorB, 0, 254);
-      setDefaultCombBoxValues(cbTestHueBrightness, 0, 254);
+      SetDefaultCombBoxValues(cbHueBrightness, 0, 254);
+      SetDefaultCombBoxValues(cbHueSaturation, 0, 254);
+      SetDefaultCombBoxValues(cbHueColorTemperature, 154, 500);
+      SetDefaultCombBoxValues(cbHueTransitionTime, 100, 5000);
+      SetDefaultCombBoxValues(cbHueHue, 0, 254);
+      SetDefaultCombBoxValues(cbTestCustomColorR, 0, 255);
+      SetDefaultCombBoxValues(cbTestCustomColorG, 0, 254);
+      SetDefaultCombBoxValues(cbTestCustomColorB, 0, 254);
+      SetDefaultCombBoxValues(cbTestHueBrightness, 0, 254);
 
-      reInitialize("");
-      isInitialized(true);
+      ReInitialize("");
+      IsInitialized(true);
 
       // Monitor power state
-      monitorPowerState();
+      MonitorPowerState();
 
       //Set window title
-      this.Text = formatTitle();
+      Text = FormatTitle();
 
       //Set link label for copyright
-      LinkLabel.Link link = new LinkLabel.Link();
+      var link = new LinkLabel.Link();
       link.LinkData = "https://github.com/Q42/Q42.HueApi";
       llQ42.Links.Add(link);
     }
 
-    public static int isProgramRunning(string name, int runtime)
+    public static int IsProgramRunning(string name, int runtime)
     {
-      foreach (Process clsProcess in Process.GetProcesses())
+      foreach (var clsProcess in Process.GetProcesses())
       {
         if (clsProcess.ProcessName.ToLower().Equals(name.ToLower()))
         {
@@ -239,13 +196,13 @@ namespace AtmoHue
       return runtime;
     }
 
-    public async Task<bool> isInitialized(bool updateLabels)
+    public async Task<bool> IsInitialized(bool updateLabels)
     {
-      bool isConnected = false;
+      var isConnected = false;
 
-      if(client != null)
+      if (_client != null)
       {
-        isConnected = await client.CheckConnection();
+        isConnected = await _client.CheckConnection();
       }
 
       if (updateLabels)
@@ -263,21 +220,21 @@ namespace AtmoHue
           lblConnectionStatus.Text = "Status: Disconnected";
         }
       }
-      else
-      isConnectedToBridge = isConnected;
+
+      IsConnectedToBridge = isConnected;
 
       return isConnected;
     }
 
-    private void reInitialize(string logMessage)
+    private void ReInitialize(string logMessage)
     {
-      client = new LocalHueClient(hueBridgeIP);
+      _client = new LocalHueClient(HueBridgeIp.Replace(":80", "").Trim());
 
       try
       {
-        client.Initialize(hueAppKey);
+        _client.Initialize(HueAppKey);
 
-        if(!string.IsNullOrEmpty(logMessage))
+        if (!string.IsNullOrEmpty(logMessage))
         {
           Logger(logMessage);
         }
@@ -290,7 +247,8 @@ namespace AtmoHue
         }
       }
     }
-    private void setDefaultCombBoxValues(ComboBox cb, int min, int max)
+
+    private void SetDefaultCombBoxValues(ComboBox cb, int min, int max)
     {
       cb.Items.Clear();
 
@@ -299,9 +257,9 @@ namespace AtmoHue
         cb.Items.Add(min);
         min++;
       }
-
     }
-    private void LoadSettings(Boolean init)
+
+    private void LoadSettings(bool init)
     {
       try
       {
@@ -313,78 +271,78 @@ namespace AtmoHue
 
         if (File.Exists("settings.xml"))
         {
-          using (XmlReader reader = XmlReader.Create("settings.xml"))
+          using (var reader = XmlReader.Create("settings.xml"))
           {
             while (reader.Read())
             {
               // HUE
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueBridgeIP"))
               {
-                hueBridgeIP = reader.ReadString();
+                HueBridgeIp = reader.ReadString();
                 if (init)
                 {
-                  tbHueBridgeIP.Text = hueBridgeIP;
+                  tbHueBridgeIP.Text = HueBridgeIp.Replace(":80", string.Empty).Trim();
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueAppname"))
               {
-                hueAppName = reader.ReadString();
+                HueAppName = reader.ReadString();
                 if (init)
                 {
-                  tbHueAppName.Text = hueAppName;
+                  tbHueAppName.Text = HueAppName;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueAppKey"))
               {
-                hueAppKey = reader.ReadString();
+                HueAppKey = reader.ReadString();
                 if (init)
                 {
-                  tbHueAppKey.Text = hueAppKey;
+                  tbHueAppKey.Text = HueAppKey;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueBrightness"))
               {
-                hueBrightness = reader.ReadString();
+                HueBrightness = reader.ReadString();
                 if (init)
                 {
-                  cbHueBrightness.Text = hueBrightness;
+                  cbHueBrightness.Text = HueBrightness;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueSaturation"))
               {
-                hueSaturation = reader.ReadString();
+                HueSaturation = reader.ReadString();
                 if (init)
                 {
-                  cbHueSaturation.Text = hueSaturation;
+                  cbHueSaturation.Text = HueSaturation;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueTransitionTime"))
               {
-                hueTransitiontime = reader.ReadString();
+                HueTransitiontime = reader.ReadString();
                 if (init)
                 {
-                  cbHueTransitionTime.Text = hueTransitiontime;
+                  cbHueTransitionTime.Text = HueTransitiontime;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueColorTemperature"))
               {
-                hueColorTemperature = reader.ReadString();
+                HueColorTemperature = reader.ReadString();
                 if (init)
                 {
-                  cbHueColorTemperature.Text = hueColorTemperature;
+                  cbHueColorTemperature.Text = HueColorTemperature;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueHue"))
               {
-                hueHue = reader.ReadString();
+                HueHue = reader.ReadString();
                 if (init)
                 {
-                  cbHueHue.Text = hueHue;
+                  cbHueHue.Text = HueHue;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueSetBrightnessStartup"))
               {
-                HueSetBrightnessStartup = Boolean.Parse(reader.ReadString());
+                HueSetBrightnessStartup = bool.Parse(reader.ReadString());
                 if (init)
                 {
                   cbHueSetBrightnessStartup.Checked = HueSetBrightnessStartup;
@@ -394,19 +352,19 @@ namespace AtmoHue
 
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueRunningWindows8"))
               {
-                hueRunningWindows8 = Boolean.Parse(reader.ReadString());
+                HueRunningWindows8 = bool.Parse(reader.ReadString());
                 if (init)
                 {
-                  cbRunningWindows8.Checked = hueRunningWindows8;
+                  cbRunningWindows8.Checked = HueRunningWindows8;
                 }
               }
 
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "HueAutoConnectBridge"))
               {
-                hueAutoconnectBridge = Boolean.Parse(reader.ReadString());
+                HueAutoconnectBridge = bool.Parse(reader.ReadString());
                 if (init)
                 {
-                  cbAutoConnectBridge.Checked = hueAutoconnectBridge;
+                  cbAutoConnectBridge.Checked = HueAutoconnectBridge;
                 }
               }
 
@@ -414,41 +372,41 @@ namespace AtmoHue
               // Remote API
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPIenabled"))
               {
-                HueRemoteAPIenabled = Boolean.Parse(reader.ReadString());
+                HueRemoteApIenabled = bool.Parse(reader.ReadString());
                 if (init)
                 {
-                  cbRemoteAPIEnabled.Checked = HueRemoteAPIenabled;
+                  cbRemoteAPIEnabled.Checked = HueRemoteApIenabled;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPIIP"))
               {
-                remoteAPIip = reader.ReadString();
+                RemoteApIip = reader.ReadString();
                 if (init)
                 {
-                  tbRemoteAPIip.Text = remoteAPIip;
+                  tbRemoteAPIip.Text = RemoteApIip;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPIPort"))
               {
-                remoteAPIport = reader.ReadString();
+                RemoteApIport = reader.ReadString();
                 if (init)
                 {
-                  tbRemoteApiPort.Text = remoteAPIport;
+                  tbRemoteApiPort.Text = RemoteApIport;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "RemoteAPISenDelay"))
               {
-                remoteAPISendDelay = reader.ReadString();
+                RemoteApiSendDelay = reader.ReadString();
                 if (init)
                 {
-                  tbRemoteAPIsendDelay.Text = remoteAPISendDelay;
+                  tbRemoteAPIsendDelay.Text = RemoteApiSendDelay;
                 }
               }
 
               // Various
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "MinimizeToTray"))
               {
-                MinimizeToTray = Boolean.Parse(reader.ReadString());
+                MinimizeToTray = bool.Parse(reader.ReadString());
                 if (init)
                 {
                   cbMinimizeToTray.Checked = MinimizeToTray;
@@ -456,7 +414,7 @@ namespace AtmoHue
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "MinimizeToTrayOnStartup"))
               {
-                MinimizeOnStartup = Boolean.Parse(reader.ReadString());
+                MinimizeOnStartup = bool.Parse(reader.ReadString());
                 if (init)
                 {
                   cbMinimizeOnStartup.Checked = MinimizeOnStartup;
@@ -474,7 +432,7 @@ namespace AtmoHue
 
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "EnableIndividualLightSettings"))
               {
-                EnableIndividualLightSettings = Boolean.Parse(reader.ReadString());
+                EnableIndividualLightSettings = bool.Parse(reader.ReadString());
                 if (init)
                 {
                   cbEnableIndividualLightSettings.Checked = EnableIndividualLightSettings;
@@ -482,15 +440,15 @@ namespace AtmoHue
               }
 
               // LED devices
-              string id = "";
-              string type = "";
-              string location = "";
-              string sendDelay = "";
-              string brightness = "";
-              string saturation = "";
-              string colorTemperature = "";
-              string hue = "";
-              string staticColors = "";
+              var id = "";
+              var type = "";
+              var location = "";
+              var sendDelay = "";
+              var brightness = "";
+              var saturation = "";
+              var colorTemperature = "";
+              var hue = "";
+              var staticColors = "";
 
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "LED"))
               {
@@ -516,172 +474,173 @@ namespace AtmoHue
                 //Add LED ID to devices list
                 if (string.IsNullOrEmpty(id.Trim()) == false)
                 {
-
-                  LEDDevice ld = new LEDDevice();
-                  ld.ID = id;
+                  var ld = new LedDevice();
+                  ld.Id = id;
                   ld.location = location;
-                  ld.sendDelay = sendDelay;
-                  ld.brightness = brightness;
-                  ld.saturation = saturation;
-                  ld.colorTemperature = colorTemperature;
-                  ld.hue = hue;
-                  ld.staticColor = staticColors;
-                  ledDevices.Add(ld);
-                  ledDevicesGroupFilter.Add(ld);
+                  ld.SendDelay = sendDelay;
+                  ld.Brightness = brightness;
+                  ld.Saturation = saturation;
+                  ld.ColorTemperature = colorTemperature;
+                  ld.Hue = hue;
+                  ld.StaticColor = staticColors;
+                  LedDevices.Add(ld);
+                  LedDevicesGroupFilter.Add(ld);
 
-                  string[] subItems = { type, location, sendDelay, brightness, saturation, colorTemperature, hue, staticColors };
+                  string[] subItems =
+                  {
+                    type, location, sendDelay, brightness, saturation, colorTemperature, hue,
+                    staticColors
+                  };
                   lvLedDevices.Items.Add(id).SubItems.AddRange(subItems);
                 }
               }
 
               // LED Locations
-              string LedLocation = "";
-              string LedPriority = "";
+              var ledLocation = "";
+              var ledPriority = "";
 
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "LedLocation"))
               {
                 reader.ReadToDescendant("Location");
-                LedLocation = reader.ReadString();
+                ledLocation = reader.ReadString();
                 reader.ReadToFollowing("Priority");
-                LedPriority = reader.ReadString();
+                ledPriority = reader.ReadString();
 
                 //Add LED ID to devices list
-                if (string.IsNullOrEmpty(LedLocation.Trim()) == false)
+                if (string.IsNullOrEmpty(ledLocation.Trim()) == false)
                 {
+                  var ll = new LedLocation();
+                  ll.Location = ledLocation;
+                  ll.Priority = ledPriority;
 
-                  LEDLocation ll = new LEDLocation();
-                  ll.Location = LedLocation;
-                  ll.Priority = LedPriority;
+                  LedLocations.Add(ll);
 
-                  ledLocations.Add(ll);
-
-                  string[] subItems = { LedPriority };
-                  lvLedLocations.Items.Add(LedLocation).SubItems.AddRange(subItems);
+                  string[] subItems = {ledPriority};
+                  lvLedLocations.Items.Add(ledLocation).SubItems.AddRange(subItems);
 
                   //Add item to combobox
-                  cbLedLocation.Items.Add(LedLocation);
+                  cbLedLocation.Items.Add(ledLocation);
                 }
               }
 
               // LED predefined static colors
-              string LedPredefinedColorName = "";
-              string LedPredefinedColorRGB = "";
+              var ledPredefinedColorName = "";
+              var ledPredefinedColorRgb = "";
 
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "LedStaticColor"))
               {
                 reader.ReadToDescendant("Name");
-                LedPredefinedColorName = reader.ReadString();
+                ledPredefinedColorName = reader.ReadString();
                 reader.ReadToFollowing("StaticColor");
-                LedPredefinedColorRGB = reader.ReadString();
+                ledPredefinedColorRgb = reader.ReadString();
 
                 //Add LED ID to devices list
-                if (string.IsNullOrEmpty(LedPredefinedColorName.Trim()) == false)
+                if (string.IsNullOrEmpty(ledPredefinedColorName.Trim()) == false)
                 {
+                  var lpsc = new LEDPredefinedStaticColors();
+                  lpsc.ColorName = ledPredefinedColorName;
+                  lpsc.RgBvalue = ledPredefinedColorRgb;
 
-                  LEDPredefinedStaticColors lpsc = new LEDPredefinedStaticColors();
-                  lpsc.ColorName = LedPredefinedColorName;
-                  lpsc.RGBvalue = LedPredefinedColorRGB;
+                  LedPredefinedStaticColors.Add(lpsc);
 
-                  ledPredefinedStaticColors.Add(lpsc);
-
-                  string[] subItems = { LedPredefinedColorRGB };
-                  lvPredefinedStaticColors.Items.Add(LedPredefinedColorName).SubItems.AddRange(subItems);
+                  string[] subItems = {ledPredefinedColorRgb};
+                  lvPredefinedStaticColors.Items.Add(ledPredefinedColorName).SubItems.AddRange(subItems);
                 }
               }
 
               // Atmowin
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "AtmowinLocation"))
               {
-                atmowinLocation = reader.ReadString();
+                AtmowinLocation = reader.ReadString();
                 if (init)
                 {
-                  tbAtmowinLocation.Text = atmowinLocation;
+                  tbAtmowinLocation.Text = AtmowinLocation;
                 }
               }
               if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "AtmoWinScanInterval"))
               {
-                atmowinScanInterval = reader.ReadString();
+                AtmowinScanInterval = reader.ReadString();
                 if (init)
                 {
-                  tbAtmowinScanInterval.Text = atmowinScanInterval;
+                  tbAtmowinScanInterval.Text = AtmowinScanInterval;
                 }
               }
 
               //Color calibrations
 
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XRed"))
-                {
-                  calibrateXred = reader.ReadString();
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XRed"))
+              {
+                CalibrateXred = reader.ReadString();
 
-                  if (init)
-                  {
-                    tbXRed.Text = calibrateXred;
-                  }
-                }
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YRed"))
+                if (init)
                 {
-                  calibrateYred = reader.ReadString();
-                  if (init)
-                  {
-                    tbYRed.Text = calibrateYred;
-                  }
+                  tbXRed.Text = CalibrateXred;
                 }
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZRed"))
+              }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YRed"))
+              {
+                CalibrateYred = reader.ReadString();
+                if (init)
                 {
-                  calibrateZred = reader.ReadString();
-                  if (init)
-                  {
-                    tbZRed.Text = calibrateZred;
-                  }
+                  tbYRed.Text = CalibrateYred;
                 }
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XGreen"))
+              }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZRed"))
+              {
+                CalibrateZred = reader.ReadString();
+                if (init)
                 {
-                  calibrateXgreen = reader.ReadString();
-                  if (init)
-                  {
-                    tbXGreen.Text = calibrateXgreen;
-                  }
+                  tbZRed.Text = CalibrateZred;
                 }
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YGreen"))
+              }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XGreen"))
+              {
+                CalibrateXgreen = reader.ReadString();
+                if (init)
                 {
-                  calibrateYgreen = reader.ReadString();
-                  if (init)
-                  {
-                    tbYGreen.Text = calibrateYgreen;
-                  }
+                  tbXGreen.Text = CalibrateXgreen;
                 }
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZGreen"))
+              }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YGreen"))
+              {
+                CalibrateYgreen = reader.ReadString();
+                if (init)
                 {
-                  calibrateZgreen = reader.ReadString();
-                  if (init)
-                  {
-                    tbZGreen.Text = calibrateZgreen;
-                  }
+                  tbYGreen.Text = CalibrateYgreen;
                 }
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XBlue"))
+              }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZGreen"))
+              {
+                CalibrateZgreen = reader.ReadString();
+                if (init)
                 {
-                  calibrateXblue = reader.ReadString();
-                  if (init)
-                  {
-                    tbXBlue.Text = calibrateXblue;
-                  }
+                  tbZGreen.Text = CalibrateZgreen;
                 }
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YBlue"))
+              }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "XBlue"))
+              {
+                CalibrateXblue = reader.ReadString();
+                if (init)
                 {
-                  calibrateYblue = reader.ReadString();
-                  if (init)
-                  {
-                    tbYBlue.Text = calibrateYblue;
-                  }
+                  tbXBlue.Text = CalibrateXblue;
                 }
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZBlue"))
+              }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "YBlue"))
+              {
+                CalibrateYblue = reader.ReadString();
+                if (init)
                 {
-                  calibrateZblue = reader.ReadString();
-                  if (init)
-                  {
-                    tbZBlue.Text = calibrateZblue;
-                  }
+                  tbYBlue.Text = CalibrateYblue;
                 }
+              }
+              if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "ZBlue"))
+              {
+                CalibrateZblue = reader.ReadString();
+                if (init)
+                {
+                  tbZBlue.Text = CalibrateZblue;
+                }
+              }
             }
           }
         }
@@ -692,25 +651,21 @@ namespace AtmoHue
         {
           //If checkboxes are being set during first init it might cause a file level lock which is normal
         }
-        else
-        {
-          //Logger("Error while loading XML configuration");
-          //Logger(e.Message);
-        }
       }
     }
-    private void SaveSettings(Boolean init)
+
+    private void SaveSettings(bool init)
     {
       try
       {
-        Properties.Settings.Default.Save();
+        Settings.Default.Save();
 
-        XmlWriterSettings settings = new XmlWriterSettings();
+        var settings = new XmlWriterSettings();
         settings.Indent = true;
         settings.IndentChars = "  ";
         settings.NewLineOnAttributes = true;
 
-        using (XmlWriter writer = XmlWriter.Create("settings.xml", settings))
+        using (var writer = XmlWriter.Create("settings.xml", settings))
         {
           writer.WriteStartDocument();
           writer.WriteStartElement("Settings");
@@ -756,7 +711,10 @@ namespace AtmoHue
                 writer.WriteElementString("Hue", device.SubItems[7].Text);
                 writer.WriteElementString("StaticColor", device.SubItems[8].Text);
               }
-              catch { };
+              catch
+              {
+              }
+              ;
 
               writer.WriteEndElement();
             }
@@ -776,7 +734,10 @@ namespace AtmoHue
                 writer.WriteElementString("Location", location.Text);
                 writer.WriteElementString("Priority", location.SubItems[1].Text);
               }
-              catch { };
+              catch
+              {
+              }
+              ;
 
               writer.WriteEndElement();
             }
@@ -796,7 +757,10 @@ namespace AtmoHue
                 writer.WriteElementString("Name", staticColor.Text);
                 writer.WriteElementString("StaticColor", staticColor.SubItems[1].Text);
               }
-              catch { };
+              catch
+              {
+              }
+              ;
 
               writer.WriteEndElement();
             }
@@ -832,37 +796,35 @@ namespace AtmoHue
         {
           //If checkboxes are being set during first init it might cause a file level lock which is normal
         }
-        else
-        {
-          //Logger("Error while saving XML setings.");
-          //Logger(et.Message);
-        }
       }
     }
-    private void refreshSettings()
+
+    private void RefreshSettings()
     {
-      userEditedSettings = true;
+      UserEditedSettings = true;
       SaveSettings(false);
       LoadSettings(true);
     }
 
-    public static string formatTitle()
+    public static string FormatTitle()
     {
-      string title = AssemblyInfo.AssemblyInfoLookUp.Title;
-      string version = AssemblyInfo.AssemblyInfoLookUp.VersionFull.ToString();
-      string copyright = AssemblyInfo.AssemblyInfoLookUp.Copyright;
+      var title = AssemblyInfo.AssemblyInfoLookUp.Title;
+      var version = AssemblyInfo.AssemblyInfoLookUp.VersionFull;
+      var copyright = AssemblyInfo.AssemblyInfoLookUp.Copyright;
 
-      string formattedTitle = string.Format("{0} - {1} - {2}", title, version, copyright);
+      var formattedTitle = string.Format("{0} - {1} - {2}", title, version, copyright);
       return formattedTitle;
     }
+
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
     {
       SaveSettings(false);
-      scanAtmowin = false;
+      ScanAtmowin = false;
       trayIconHue.Dispose();
       Application.ExitThread();
       Environment.Exit(0);
     }
+
     public static void ControlInvike(Control control, Action function)
     {
       if (control.IsDisposed || control.Disposing)
@@ -875,45 +837,46 @@ namespace AtmoHue
       }
       function();
     }
-    public void startAPIserver()
+
+    public void StartApIserver()
     {
-      swRemoteApi.Start();
-      if (Form1.remoteAPIip == "Any")
+      _swRemoteApi.Start();
+      if (RemoteApIip == "Any")
       {
-        tcpListener = new TcpListener(IPAddress.Any, int.Parse(remoteAPIport));
+        _tcpListener = new TcpListener(IPAddress.Any, int.Parse(RemoteApIport));
       }
       else
       {
-        IPAddress IP = IPAddress.Parse(Form1.remoteAPIip);
-        tcpListener = new TcpListener(IP, int.Parse(remoteAPIport));
+        var ip = IPAddress.Parse(RemoteApIip);
+        _tcpListener = new TcpListener(ip, int.Parse(RemoteApIport));
       }
 
-      listenThread = new Thread(new ThreadStart(ListenForClients));
-      listenThread.Start();
+      _listenThread = new Thread(ListenForClients);
+      _listenThread.Start();
       Logger("Started service for remote API calls");
     }
+
     private void ListenForClients()
     {
-      tcpListener.Start();
+      _tcpListener.Start();
       while (true)
       {
         //blocks until a client has connected to the server
-        TcpClient client = tcpListener.AcceptTcpClient();
+        var client = _tcpListener.AcceptTcpClient();
 
         //create a thread to handle communication 
         //with connected client
-        Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
+        var clientThread = new Thread(HandleClientComm);
         clientThread.Start(client);
       }
     }
 
     private void HandleClientComm(object client)
     {
+      var tcpClient = (TcpClient) client;
+      var clientStream = tcpClient.GetStream();
 
-      TcpClient tcpClient = (TcpClient)client;
-      NetworkStream clientStream = tcpClient.GetStream();
-
-      byte[] message = new byte[4096];
+      var message = new byte[4096];
       int bytesRead;
 
       while (true)
@@ -938,32 +901,33 @@ namespace AtmoHue
         }
 
         //message has successfully been received
-        ASCIIEncoding encoder = new ASCIIEncoding();
-        string apiCommandMessage = encoder.GetString(message, 0, bytesRead);
+        var encoder = new ASCIIEncoding();
+        var apiCommandMessage = encoder.GetString(message, 0, bytesRead);
         try
         {
           //Get command type
-          string[] apiMessageSplit = apiCommandMessage.Split(',');
-          string commandSender = apiMessageSplit[0];
-          string commandType = apiMessageSplit[1];
+          var apiMessageSplit = apiCommandMessage.Split(',');
+          var commandSender = apiMessageSplit[0];
+          var commandType = apiMessageSplit[1];
 
 
           //Command type COLOR
-          if (commandType == APIcommandType.Color.ToString())
+          if (commandType == ApIcommandType.Color.ToString())
           {
-            int red = int.Parse(apiMessageSplit[2]);
-            int green = int.Parse(apiMessageSplit[3]);
-            int blue = int.Parse(apiMessageSplit[4]);
-            int priority = int.Parse(apiMessageSplit[5]);
+            var red = int.Parse(apiMessageSplit[2]);
+            var green = int.Parse(apiMessageSplit[3]);
+            var blue = int.Parse(apiMessageSplit[4]);
+            var priority = int.Parse(apiMessageSplit[5]);
 
-            Color inputColor = Color.FromArgb(red, green, blue);
+            var inputColor = Color.FromArgb(red, green, blue);
 
             //Only send if delay has expired or if we get a high priority color
-            if (swRemoteApi.ElapsedMilliseconds >= int.Parse(remoteAPISendDelay) || priority < 50)
+            if (_swRemoteApi.ElapsedMilliseconds >= int.Parse(RemoteApiSendDelay) || priority < 50)
             {
-              if (Form1.LogRemoteApiCalls)
+              if (LogRemoteApiCalls)
               {
-                Logger(string.Format("[ {0} ] [ PRIO {1} ] - {2}", commandSender, priority.ToString(), "Got color command from Atmolight"));
+                Logger(string.Format("[ {0} ] [ PRIO {1} ] - {2}", commandSender, priority,
+                  "Got color command from Atmolight"));
               }
               if (red == 0 && green == 0 && blue == 0)
               {
@@ -973,16 +937,16 @@ namespace AtmoHue
               //If we receive a high priority messsage drop subsequent messages for x amount of time
               if (priority < 50)
               {
-                swRemoteApi.Reset();
-                swRemoteApi.Stop();
+                _swRemoteApi.Reset();
+                _swRemoteApi.Stop();
                 Thread.Sleep(1000);
                 if (commandSender.ToLower() == "atmolight")
                 {
-                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, false);
+                  HueSetColor(inputColor, Sources.Atmolight, 0, false);
                 }
                 if (commandSender.ToLower() == "huehelper")
                 {
-                  hueSetColor(inputColor, Form1.sources.HUEHELPER, 0, false);
+                  HueSetColor(inputColor, Sources.Huehelper, 0, false);
                 }
 
 
@@ -994,63 +958,63 @@ namespace AtmoHue
               {
                 if (commandSender.ToLower() == "atmolight")
                 {
-                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, false);
+                  HueSetColor(inputColor, Sources.Atmolight, 0, false);
                 }
                 if (commandSender.ToLower() == "huehelper")
                 {
-                  hueSetColor(inputColor, Form1.sources.HUEHELPER, 0, false);
+                  HueSetColor(inputColor, Sources.Huehelper, 0, false);
                 }
               }
 
               //Restart stop watch
-              swRemoteApi.Restart();
+              _swRemoteApi.Restart();
             }
           }
 
           //Command type POWER
-          if (commandType == APIcommandType.Power.ToString())
+          if (commandType == ApIcommandType.Power.ToString())
           {
-            string powerCommand = apiMessageSplit[2];
+            var powerCommand = apiMessageSplit[2];
             Logger(string.Format("[ {0} ], Powering {1} Hue Bridge", commandSender, powerCommand));
             if (powerCommand == "ON")
             {
-              TurnLightsON();
+              TurnLightsOn();
             }
             else if (powerCommand == "OFF")
             {
-              TurnLightsOFF();
+              TurnLightsOff();
             }
           }
-          
+
           //Command type THEATER
-          if (commandType == APIcommandType.Theater.ToString())
+          if (commandType == ApIcommandType.Theater.ToString())
           {
-            string theaterCommand = apiMessageSplit[2];
+            var theaterCommand = apiMessageSplit[2];
             Logger(string.Format("[ {0} ] COMMAND: {1}", commandSender, theaterCommand));
 
             if (theaterCommand == "DISABLE")
             {
-                Logger("[ THEATER MODE ] - restoring leds as playback stopped or leds disabled");
-                TurnLightsONTheater();
+              Logger("[ THEATER MODE ] - restoring leds as playback stopped or leds disabled");
+              TurnLightsOnTheater();
             }
             else if (theaterCommand == "ENABLE")
             {
               Logger("[ THEATER MODE ] - disabling leds during movie playback");
-              TurnLightsOFFTheater();
+              TurnLightsOffTheater();
             }
           }
 
           //Command type GROUP
-          if (commandType == APIcommandType.Group.ToString())
+          if (commandType == ApIcommandType.Group.ToString())
           {
-            string groupCommand = apiMessageSplit[2];
-            Color inputColor = Color.Black;
+            var groupCommand = apiMessageSplit[2];
+            var inputColor = Color.Black;
 
             if (groupCommand == "SetStaticColor")
             {
-              string groupName =  apiMessageSplit[3];
-              string colorName = apiMessageSplit[4];
- 
+              var groupName = apiMessageSplit[3];
+              var colorName = apiMessageSplit[4];
+
               if (string.IsNullOrEmpty(colorName) == false)
               {
                 if (colorName == "Off" || colorName == "Uitschakelen")
@@ -1059,15 +1023,15 @@ namespace AtmoHue
                 }
                 else
                 {
-                  foreach (LEDPredefinedStaticColors staticColor in ledPredefinedStaticColors)
+                  foreach (var staticColor in LedPredefinedStaticColors)
                   {
                     if (staticColor.ColorName == colorName)
                     {
-                      string[] RGBcolor = staticColor.RGBvalue.Split(',');
-                      int ColorRed = int.Parse(RGBcolor[0]);
-                      int ColorGreen = int.Parse(RGBcolor[1]);
-                      int colorBlue = int.Parse(RGBcolor[2]);
-                      inputColor = Color.FromArgb(ColorRed, ColorGreen, colorBlue);
+                      var rgBcolor = staticColor.RgBvalue.Split(',');
+                      var colorRed = int.Parse(rgBcolor[0]);
+                      var colorGreen = int.Parse(rgBcolor[1]);
+                      var colorBlue = int.Parse(rgBcolor[2]);
+                      inputColor = Color.FromArgb(colorRed, colorGreen, colorBlue);
                     }
                   }
                 }
@@ -1075,97 +1039,100 @@ namespace AtmoHue
 
               if (groupName == "All" || groupName == "Alle")
               {
-                ledDevicesGroupStaticColors.Clear();
+                LedDevicesGroupStaticColors.Clear();
 
-                foreach (LEDDevice ledDevice in ledDevices)
+                foreach (var ledDevice in LedDevices)
                 {
-                  LEDDevice ld = new LEDDevice();
-                  ld.ID = ledDevice.ID;
+                  var ld = new LedDevice();
+                  ld.Id = ledDevice.Id;
                   ld.location = ledDevice.location;
-                  ld.sendDelay = ledDevice.sendDelay;
-                  ld.brightness = ledDevice.brightness;
-                  ld.saturation = ledDevice.saturation;
-                  ld.colorTemperature = ledDevice.colorTemperature;
-                  ld.hue = ledDevice.hue;
-                  ld.staticColor = ledDevice.staticColor;
-                  ledDevicesGroupStaticColors.Add(ld);
+                  ld.SendDelay = ledDevice.SendDelay;
+                  ld.Brightness = ledDevice.Brightness;
+                  ld.Saturation = ledDevice.Saturation;
+                  ld.ColorTemperature = ledDevice.ColorTemperature;
+                  ld.Hue = ledDevice.Hue;
+                  ld.StaticColor = ledDevice.StaticColor;
+                  LedDevicesGroupStaticColors.Add(ld);
                 }
 
-                Logger(string.Format("[ {0} ], Group command {1}, Setting Color {2} to {3}", commandSender, groupCommand, inputColor.ToString(),"ALL GROUPS"));
+                Logger(string.Format("[ {0} ], Group command {1}, Setting Color {2} to {3}", commandSender, groupCommand,
+                  inputColor, "ALL GROUPS"));
 
-                hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, true);
+                HueSetColor(inputColor, Sources.Atmolight, 0, true);
               }
               else
               {
-                ledDevicesGroupStaticColors.Clear();
+                LedDevicesGroupStaticColors.Clear();
                 if (string.IsNullOrEmpty(groupName) == false)
                 {
-                  foreach (LEDDevice ledDevice in ledDevices)
+                  foreach (var ledDevice in LedDevices)
                   {
                     if (ledDevice.location == groupName)
                     {
-                      LEDDevice ld = new LEDDevice();
-                      ld.ID = ledDevice.ID;
+                      var ld = new LedDevice();
+                      ld.Id = ledDevice.Id;
                       ld.location = ledDevice.location;
-                      ld.sendDelay = ledDevice.sendDelay;
-                      ld.brightness = ledDevice.brightness;
-                      ld.saturation = ledDevice.saturation;
-                      ld.colorTemperature = ledDevice.colorTemperature;
-                      ld.hue = ledDevice.hue;
-                      ld.staticColor = ledDevice.staticColor;
-                      ledDevicesGroupStaticColors.Add(ld);
+                      ld.SendDelay = ledDevice.SendDelay;
+                      ld.Brightness = ledDevice.Brightness;
+                      ld.Saturation = ledDevice.Saturation;
+                      ld.ColorTemperature = ledDevice.ColorTemperature;
+                      ld.Hue = ledDevice.Hue;
+                      ld.StaticColor = ledDevice.StaticColor;
+                      LedDevicesGroupStaticColors.Add(ld);
                     }
                   }
-                  Logger(string.Format("[ {0} ], Group command {1}, Setting Color {2} to {3}", commandSender, groupCommand, inputColor.ToString(), groupName));
-                  hueSetColor(inputColor, Form1.sources.ATMOLIGHT, 0, true);
+                  Logger(string.Format("[ {0} ], Group command {1}, Setting Color {2} to {3}", commandSender,
+                    groupCommand, inputColor, groupName));
+                  HueSetColor(inputColor, Sources.Atmolight, 0, true);
                 }
               }
             }
             if (groupCommand == "OnlyActivate")
             {
-              ledDevicesGroupFilter.Clear();
-              
+              LedDevicesGroupFilter.Clear();
+
               //Clear all led states
-              groupFilterActive = true;
-              string groupName = apiMessageSplit[3];
+              _groupFilterActive = true;
+              var groupName = apiMessageSplit[3];
 
               if (string.IsNullOrEmpty(groupName) == false)
               {
                 if (groupName == "All" || groupName == "Alle")
                 {
-                  Logger(string.Format("[ {0} ], Group command {1}, Setting active group to {2}", commandSender, groupCommand, groupName));
-                  groupFilterActive = false;
+                  Logger(string.Format("[ {0} ], Group command {1}, Setting active group to {2}", commandSender,
+                    groupCommand, groupName));
+                  _groupFilterActive = false;
                 }
                 else
                 {
-                  foreach (LEDDevice ledDevice in ledDevices)
+                  foreach (var ledDevice in LedDevices)
                   {
                     if (ledDevice.location == groupName)
                     {
-                      LEDDevice ld = new LEDDevice();
-                      ld.ID = ledDevice.ID;
+                      var ld = new LedDevice();
+                      ld.Id = ledDevice.Id;
                       ld.location = ledDevice.location;
-                      ld.sendDelay = ledDevice.sendDelay;
-                      ld.brightness = ledDevice.brightness;
-                      ld.saturation = ledDevice.saturation;
-                      ld.colorTemperature = ledDevice.colorTemperature;
-                      ld.hue = ledDevice.hue;
-                      ld.staticColor = ledDevice.staticColor;
-                      ledDevicesGroupFilter.Add(ld);
+                      ld.SendDelay = ledDevice.SendDelay;
+                      ld.Brightness = ledDevice.Brightness;
+                      ld.Saturation = ledDevice.Saturation;
+                      ld.ColorTemperature = ledDevice.ColorTemperature;
+                      ld.Hue = ledDevice.Hue;
+                      ld.StaticColor = ledDevice.StaticColor;
+                      LedDevicesGroupFilter.Add(ld);
                     }
                   }
-                  Logger(string.Format("[ {0} ], Group command {1}, Setting active group to {2}", commandSender, groupCommand, groupName));
-                  groupFilterActive = true;
+                  Logger(string.Format("[ {0} ], Group command {1}, Setting active group to {2}", commandSender,
+                    groupCommand, groupName));
+                  _groupFilterActive = true;
                 }
               }
             }
           }
-
         }
         catch (Exception e)
         {
           Logger(string.Format("[ {0} ] {1}", "UNKNOWN", e.Message));
-          Logger(string.Format("[ {0} ] {1}", "UNKNOWN", e.ToString()));
+          Logger(string.Format("[ {0} ] {1}", "UNKNOWN", e));
         }
       }
 
@@ -1174,7 +1141,7 @@ namespace AtmoHue
 
     private void btnLocateHueBridge_Click(object sender, EventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
       MessageBox.Show("Click on the button of your Hue Bridge and press OK to continue.");
       if (cbRunningWindows8.Checked == false)
       {
@@ -1182,23 +1149,23 @@ namespace AtmoHue
       }
       else
       {
-        SSDPBridgeLocator();
+        SsdpBridgeLocator();
       }
     }
 
     public async Task BridgeLocator()
     {
       IBridgeLocator locator = new HttpBridgeLocator();
-      int bridgesFound = 0;
+      var bridgesFound = 0;
 
       //For Windows 8 and .NET45 projects you can use the SSDPBridgeLocator which actually scans your network. 
       //See the included BridgeDiscoveryTests and the specific .NET and .WinRT projects
 
-      IEnumerable<string> bridgeIPs = await locator.LocateBridgesAsync(TimeSpan.FromSeconds(10));
-      foreach (string bridgeIP in bridgeIPs)
+      var bridgeIPs = await locator.LocateBridgesAsync(TimeSpan.FromSeconds(10));
+      foreach (var bridgeIp in bridgeIPs)
       {
-        tbHueBridgeIP.Text = bridgeIP;
-        Logger("Bridges found using standard discovery method: " + bridgeIP);
+        tbHueBridgeIP.Text = bridgeIp.Replace(":80", "").Trim();
+        Logger("Bridges found using standard discovery method: " + bridgeIp);
         bridgesFound++;
       }
 
@@ -1208,17 +1175,18 @@ namespace AtmoHue
       }
 
       //Connect to bridge if found and option is enabled
-      if (hueAutoconnectBridge)
+      if (HueAutoconnectBridge)
       {
-        client = new LocalHueClient(hueBridgeIP);
-        await client.RegisterAsync(hueAppName, hueAppKey);
+        _client = new LocalHueClient(HueBridgeIp.Replace(":80", "").Trim());
+        await _client.RegisterAsync(HueAppName, HueAppKey);
         try
         {
-          client.Initialize(hueAppKey);
+          _client.Initialize(HueAppKey);
+          IsConnectedToBridge = true;
         }
         catch (Exception et)
         {
-          if (cbEnableDebuglog.Checked == true)
+          if (cbEnableDebuglog.Checked)
           {
             Logger(et.ToString());
           }
@@ -1226,18 +1194,19 @@ namespace AtmoHue
       }
 
       //Check connection
-      isInitialized(true);
+      IsInitialized(true);
     }
-    public async Task SSDPBridgeLocator()
+
+    public async Task SsdpBridgeLocator()
     {
       IBridgeLocator locator = new SSDPBridgeLocator();
-      int bridgesFound = 0;
+      var bridgesFound = 0;
 
       var bridgeIPs = await locator.LocateBridgesAsync(TimeSpan.FromSeconds(10));
-      foreach (string bridgeIP in bridgeIPs)
+      foreach (var bridgeIp in bridgeIPs)
       {
-        tbHueBridgeIP.Text = bridgeIP;
-        Logger("Bridges found using SSDP discovery method: " + bridgeIP.ToString());
+        tbHueBridgeIP.Text = bridgeIp.Replace(":80", "").Trim();
+        Logger("Bridges found using SSDP discovery method: " + bridgeIp);
         bridgesFound++;
       }
 
@@ -1247,17 +1216,18 @@ namespace AtmoHue
       }
 
       //Connect to bridge if found and option is enabled
-      if (hueAutoconnectBridge)
+      if (HueAutoconnectBridge)
       {
-        client = new LocalHueClient(hueBridgeIP);
-        await client.RegisterAsync(hueAppName, hueAppKey);
+        _client = new LocalHueClient(HueBridgeIp);
+        await _client.RegisterAsync(HueAppName, HueAppKey);
         try
         {
-          client.Initialize(hueAppKey);
+          _client.Initialize(HueAppKey);
+          IsConnectedToBridge = true;
         }
         catch (Exception et)
         {
-          if (cbEnableDebuglog.Checked == true)
+          if (cbEnableDebuglog.Checked)
           {
             Logger(et.ToString());
           }
@@ -1265,57 +1235,57 @@ namespace AtmoHue
       }
 
       //Check connection
-      isInitialized(true);
+      IsInitialized(true);
     }
-    public double[] getRGBtoXY(Color c, DeviceType device)
-    {
 
-      double[] normalizedToOne = new double[3];
+    public double[] GetRgBtoXy(Color c, DeviceType device)
+    {
+      var normalizedToOne = new double[3];
       float cred, cgreen, cblue;
       cred = c.R;
       cgreen = c.G;
       cblue = c.B;
-      normalizedToOne[0] = (cred / 255);
-      normalizedToOne[1] = (cgreen / 255);
-      normalizedToOne[2] = (cblue / 255);
+      normalizedToOne[0] = cred/255;
+      normalizedToOne[1] = cgreen/255;
+      normalizedToOne[2] = cblue/255;
       float red, green, blue;
 
       // Make red more vivid
       if (normalizedToOne[0] > 0.04045)
       {
-        red = (float)Math.Pow(
-                (normalizedToOne[0] + 0.055) / (1.0 + 0.055), 2.4);
+        red = (float) Math.Pow(
+          (normalizedToOne[0] + 0.055)/(1.0 + 0.055), 2.4);
       }
       else
       {
-        red = (float)(normalizedToOne[0] / 12.92);
+        red = (float) (normalizedToOne[0]/12.92);
       }
 
       // Make green more vivid
       if (normalizedToOne[1] > 0.04045)
       {
-        green = (float)Math.Pow((normalizedToOne[1] + 0.055)
-                / (1.0 + 0.055), 2.4);
+        green = (float) Math.Pow((normalizedToOne[1] + 0.055)
+                                 /(1.0 + 0.055), 2.4);
       }
       else
       {
-        green = (float)(normalizedToOne[1] / 12.92);
+        green = (float) (normalizedToOne[1]/12.92);
       }
 
       // Make blue more vivid
       if (normalizedToOne[2] > 0.04045)
       {
-        blue = (float)Math.Pow((normalizedToOne[2] + 0.055)
-                / (1.0 + 0.055), 2.4);
+        blue = (float) Math.Pow((normalizedToOne[2] + 0.055)
+                                /(1.0 + 0.055), 2.4);
       }
       else
       {
-        blue = (float)(normalizedToOne[2] / 12.92);
+        blue = (float) (normalizedToOne[2]/12.92);
       }
 
-      float X = (float)0;
-      float Y = (float)0;
-      float Z = (float)0;
+      float X = 0;
+      float Y = 0;
+      float z = 0;
 
 
       // For the hue bulb the corners of the triangle are:
@@ -1355,19 +1325,32 @@ namespace AtmoHue
         Z = (float)(red * 0.0000000 + green * 0.053077 + blue * 1.035763);
       }*/
 
-      X = (float)(red * double.Parse(calibrateXred, CultureInfo.InvariantCulture) + green * double.Parse(calibrateXgreen, CultureInfo.InvariantCulture) + blue * double.Parse(calibrateXblue, CultureInfo.InvariantCulture));
-      Y = (float)(red * double.Parse(calibrateYred, CultureInfo.InvariantCulture) + green * double.Parse(calibrateYgreen, CultureInfo.InvariantCulture) + blue * double.Parse(calibrateYblue, CultureInfo.InvariantCulture));
-      Z = (float)(red * double.Parse(calibrateZred, CultureInfo.InvariantCulture) + green * double.Parse(calibrateZgreen, CultureInfo.InvariantCulture) + blue * double.Parse(calibrateZblue, CultureInfo.InvariantCulture));
+      X =
+        (float)
+          (red*double.Parse(CalibrateXred, CultureInfo.InvariantCulture) +
+           green*double.Parse(CalibrateXgreen, CultureInfo.InvariantCulture) +
+           blue*double.Parse(CalibrateXblue, CultureInfo.InvariantCulture));
+      Y =
+        (float)
+          (red*double.Parse(CalibrateYred, CultureInfo.InvariantCulture) +
+           green*double.Parse(CalibrateYgreen, CultureInfo.InvariantCulture) +
+           blue*double.Parse(CalibrateYblue, CultureInfo.InvariantCulture));
+      z =
+        (float)
+          (red*double.Parse(CalibrateZred, CultureInfo.InvariantCulture) +
+           green*double.Parse(CalibrateZgreen, CultureInfo.InvariantCulture) +
+           blue*double.Parse(CalibrateZblue, CultureInfo.InvariantCulture));
 
-      float x = X / (X + Y + Z);
-      float y = Y / (X + Y + Z);
+      var x = X/(X + Y + z);
+      var y = Y/(X + Y + z);
 
-      double[] xy = new double[2];
+      var xy = new double[2];
       xy[0] = x;
       xy[1] = y;
-      List<double> xyAsList = new List<double>(xy);
+      var xyAsList = new List<double>(xy);
       return xy;
     }
+
     /*
     public HueXYColor ConvertRGBToXY(Color RGB)
     {
@@ -1478,95 +1461,96 @@ namespace AtmoHue
     public async Task HueSetBrightness(byte brightness)
     {
       //If client isn't connected we try to reconnect, for example when network disconnects or on power events(suspend/resume).
-      isInitialized(false);
+      IsInitialized(false);
 
-      if (isConnectedToBridge == false && string.IsNullOrEmpty(hueBridgeIP) == false)
+      if (IsConnectedToBridge == false && string.IsNullOrEmpty(HueBridgeIp) == false)
       {
         try
         {
-          reInitialize("HUE has been intialized on SET BRIGHTNESS");
+          ReInitialize("HUE has been intialized on SET BRIGHTNESS");
         }
         catch (Exception et)
         {
-          if (cbEnableDebuglog.Checked == true)
+          if (cbEnableDebuglog.Checked)
           {
             Logger(et.ToString());
           }
         }
       }
 
-      LightCommand command = new LightCommand();
+      var command = new LightCommand();
       command.On = true;
       command.Brightness = brightness;
 
-      List<string> lights = new List<string>();
-      foreach (LEDDevice ld in ledDevices)
+      var lights = new List<string>();
+      foreach (var ld in LedDevices)
       {
-        lights.Add(ld.ID);
+        lights.Add(ld.Id);
       }
 
       if (lights.Count() > 0)
       {
-        client.SendCommandAsync(command, lights);
-        Logger(string.Format("[ {0} ] {1}", sources.LOCAL, "Completed sending brightness " + brightness.ToString() + " to Hue Bridge"));
+        _client.SendCommandAsync(command, lights);
+        Logger(string.Format("[ {0} ] {1}", Sources.Local,
+          "Completed sending brightness " + brightness + " to Hue Bridge"));
       }
     }
 
-    public async Task hueSetColor(Color ColorInput, sources source, int delay, Boolean UsingManualGroupFilter)
+    public async Task HueSetColor(Color colorInput, Sources source, int delay, bool usingManualGroupFilter)
     {
       try
       {
         //Reset wait flag
-        waitTimer = false;
-        if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
+        WaitTimer = false;
+        if (cbLogRemoteApiCalls.Checked && source == Sources.Atmolight)
         {
-          Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + ColorInput.ToString() + " to Hue Bridge"));
+          Logger(string.Format("[ {0} ] {1}", source, "Setting color #" + colorInput + " to Hue Bridge"));
         }
         else
         {
-          Logger(string.Format("[ {0} ] {1}", source.ToString(), "Setting color #" + ColorInput.ToString() + " to Hue Bridge"));
+          Logger(string.Format("[ {0} ] {1}", source, "Setting color #" + colorInput + " to Hue Bridge"));
         }
 
         //If client isn't connected we try to reconnect, for example when network disconnects or on power events(suspend/resume).
-        isInitialized(false);
+        IsInitialized(false);
 
-        if (isConnectedToBridge == false && string.IsNullOrEmpty(hueBridgeIP) == false)
+        if (IsConnectedToBridge == false && string.IsNullOrEmpty(HueBridgeIp) == false)
         {
-          reInitialize("HUE has been intialized on COLOR CHANGE");
+          ReInitialize("HUE has been intialized on COLOR CHANGE");
         }
 
         //Send command to Hue and split up commands for every light
-        if (ledDevices.Count > 0)
+        if (LedDevices.Count > 0)
         {
-           List<LEDDevice> ledDevicesIndividualWithGroupFilter = new List<LEDDevice>();
-          if (groupFilterActive && UsingManualGroupFilter == false)
+          var ledDevicesIndividualWithGroupFilter = new List<LedDevice>();
+          if (_groupFilterActive && usingManualGroupFilter == false)
           {
-            ledDevicesIndividualWithGroupFilter = ledDevicesGroupFilter;
+            ledDevicesIndividualWithGroupFilter = LedDevicesGroupFilter;
           }
-          else if (UsingManualGroupFilter)
+          else if (usingManualGroupFilter)
           {
-            ledDevicesIndividualWithGroupFilter = ledDevicesGroupStaticColors;
+            ledDevicesIndividualWithGroupFilter = LedDevicesGroupStaticColors;
           }
-          else if (UsingManualGroupFilter == false && groupFilterActive == false)
+          else if (usingManualGroupFilter == false && _groupFilterActive == false)
           {
-            ledDevicesIndividualWithGroupFilter = ledDevices;
+            ledDevicesIndividualWithGroupFilter = LedDevices;
           }
 
           if (EnableIndividualLightSettings)
           {
-            List<string> lights = new List<string>();
-            foreach (LEDDevice ld in ledDevicesIndividualWithGroupFilter)
+            var lights = new List<string>();
+            foreach (var ld in ledDevicesIndividualWithGroupFilter)
             {
-              waitTimer = true;
-              lights.Add(ld.ID);
+              WaitTimer = true;
+              lights.Add(ld.Id);
               IEnumerable<string> lightList = lights;
 
 
-              LightCommand command = new LightCommand();
+              var command = new LightCommand();
               command.On = true;
 
-              double[] colorCoordinates = getRGBtoXY(ColorInput, DeviceType.bloom);
-              if (colorisON)
+              var colorCoordinates = GetRgBtoXy(colorInput, DeviceType.Bloom);
+              if (ColorisOn)
               {
                 command.ColorCoordinates = colorCoordinates;
               }
@@ -1575,13 +1559,13 @@ namespace AtmoHue
                 command.TurnOn();
                 command.ColorCoordinates = colorCoordinates;
 
-                colorisON = true;
+                ColorisOn = true;
               }
 
               //Turn leds off if we receive black
-              if (ColorInput == Color.Black)
+              if (colorInput == Color.Black)
               {
-                colorisON = false;
+                ColorisOn = false;
                 command.TurnOff();
               }
 
@@ -1590,95 +1574,96 @@ namespace AtmoHue
 
               //Color transition
               //0-~
-              if (ld.sendDelay != hueTransitiontime && string.IsNullOrEmpty(ld.sendDelay) == false)
+              if (ld.SendDelay != HueTransitiontime && string.IsNullOrEmpty(ld.SendDelay) == false)
               {
-                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(ld.sendDelay));
+                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(ld.SendDelay));
               }
               else
               {
-                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
+                command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(HueTransitiontime));
               }
 
               //Brightness
               //0-254
-              if (ld.brightness != hueBrightness && string.IsNullOrEmpty(ld.brightness) == false)
+              if (ld.Brightness != HueBrightness && string.IsNullOrEmpty(ld.Brightness) == false)
               {
-                command.Brightness = byte.Parse(ld.brightness);
+                command.Brightness = byte.Parse(ld.Brightness);
               }
               else
               {
-                if (HueSetBrightnessStartup == false || userEditedSettings)
+                if (HueSetBrightnessStartup == false || UserEditedSettings)
                 {
-                  command.Brightness = byte.Parse(hueBrightness);
+                  command.Brightness = byte.Parse(HueBrightness);
                 }
               }
 
               //Saturation
               //0-254
-              if (ld.saturation != hueSaturation && string.IsNullOrEmpty(ld.saturation) == false)
+              if (ld.Saturation != HueSaturation && string.IsNullOrEmpty(ld.Saturation) == false)
               {
-                command.Saturation = int.Parse(ld.saturation);
+                command.Saturation = int.Parse(ld.Saturation);
               }
               else
               {
-                if (userEditedSettings)
+                if (UserEditedSettings)
                 {
-                  command.Saturation = int.Parse(hueSaturation);
+                  command.Saturation = int.Parse(HueSaturation);
                 }
               }
 
               //Color temperature
               //154-500
-              if (ld.colorTemperature != hueColorTemperature && string.IsNullOrEmpty(ld.colorTemperature) == false)
+              if (ld.ColorTemperature != HueColorTemperature && string.IsNullOrEmpty(ld.ColorTemperature) == false)
               {
-                command.ColorTemperature = int.Parse(ld.colorTemperature);
+                command.ColorTemperature = int.Parse(ld.ColorTemperature);
               }
               else
               {
-                if (string.IsNullOrEmpty(hueColorTemperature) == false)
+                if (string.IsNullOrEmpty(HueColorTemperature) == false)
                 {
-                  if (userEditedSettings)
+                  if (UserEditedSettings)
                   {
-                    command.ColorTemperature = int.Parse(hueColorTemperature);
+                    command.ColorTemperature = int.Parse(HueColorTemperature);
                   }
                 }
               }
 
               //Hue
-              if (ld.hue != hueHue && string.IsNullOrEmpty(ld.hue) == false)
+              if (ld.Hue != HueHue && string.IsNullOrEmpty(ld.Hue) == false)
               {
-                command.Hue = int.Parse(ld.hue);
+                command.Hue = int.Parse(ld.Hue);
               }
               else
               {
-                if (string.IsNullOrEmpty(hueHue) == false)
+                if (string.IsNullOrEmpty(HueHue) == false)
                 {
-                  if (userEditedSettings)
+                  if (UserEditedSettings)
                   {
-                    command.Hue = int.Parse(hueHue);
+                    command.Hue = int.Parse(HueHue);
                   }
                 }
               }
 
-              userEditedSettings = false;
+              UserEditedSettings = false;
 
-              Logger(string.Format("[ {0} ] {1}", source.ToString(), "Sending color " + ColorInput.ToString() + " to Hue Bridge for LIGHT " + ld.ID.ToString()));
+              Logger(string.Format("[ {0} ] {1}", source,
+                "Sending color " + colorInput + " to Hue Bridge for LIGHT " + ld.Id));
 
               //Logger(ld.ID + "  ->> transition time" + command.TransitionTime.ToString() + "- >> brightness" + command.Brightness.ToString() + " ->> saturation" + command.Saturation.ToString() + " ->> list #" + lightList.Count().ToString());
 
-              client.SendCommandAsync(command, lightList);
+              _client.SendCommandAsync(command, lightList);
               command.On = false;
               lights.Clear();
             }
-            waitTimer = false;
+            WaitTimer = false;
           }
           else
           {
-            LightCommand command = new LightCommand();
+            var command = new LightCommand();
             command.On = true;
 
-            double[] colorCoordinates = getRGBtoXY(ColorInput, DeviceType.bloom);
-            if (colorisON)
+            var colorCoordinates = GetRgBtoXy(colorInput, DeviceType.Bloom);
+            if (ColorisOn)
             {
               command.ColorCoordinates = colorCoordinates;
             }
@@ -1687,107 +1672,107 @@ namespace AtmoHue
               command.TurnOn();
               command.ColorCoordinates = colorCoordinates;
 
-              colorisON = true;
+              ColorisOn = true;
             }
 
             //Turn leds off if we receive black
-            if (ColorInput == Color.Black)
+            if (colorInput == Color.Black)
             {
-              colorisON = false;
+              ColorisOn = false;
               command.TurnOff();
             }
 
             //Color transition
             //0-~
-            command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(hueTransitiontime));
+            command.TransitionTime = TimeSpan.FromMilliseconds(int.Parse(HueTransitiontime));
 
             //Brightness
             //0-254
-            if (HueSetBrightnessStartup == false || userEditedSettings)
+            if (HueSetBrightnessStartup == false || UserEditedSettings)
             {
-              command.Brightness = byte.Parse(hueBrightness);
+              command.Brightness = byte.Parse(HueBrightness);
             }
 
             //Saturation
             //0-254
-            if (userEditedSettings)
+            if (UserEditedSettings)
             {
-              command.Saturation = int.Parse(hueSaturation);
+              command.Saturation = int.Parse(HueSaturation);
             }
 
             //Color temperature
             //154-500
-            if (string.IsNullOrEmpty(hueColorTemperature) == false)
+            if (string.IsNullOrEmpty(HueColorTemperature) == false)
             {
-              if (userEditedSettings)
+              if (UserEditedSettings)
               {
-                command.ColorTemperature = int.Parse(hueColorTemperature);
+                command.ColorTemperature = int.Parse(HueColorTemperature);
               }
             }
 
             //Hue
-            if (string.IsNullOrEmpty(hueHue) == false)
+            if (string.IsNullOrEmpty(HueHue) == false)
             {
-              if (userEditedSettings)
+              if (UserEditedSettings)
               {
-                command.Hue = int.Parse(hueHue);
+                command.Hue = int.Parse(HueHue);
               }
             }
 
-            userEditedSettings = false;
+            UserEditedSettings = false;
 
-            List<string> lights = new List<string>();
+            var lights = new List<string>();
 
-            if (groupFilterActive && UsingManualGroupFilter == false)
+            if (_groupFilterActive && usingManualGroupFilter == false)
             {
-              foreach (LEDDevice ld in ledDevicesGroupFilter)
+              foreach (var ld in LedDevicesGroupFilter)
               {
-                lights.Add(ld.ID);
+                lights.Add(ld.Id);
               }
             }
-            else if (UsingManualGroupFilter)
+            else if (usingManualGroupFilter)
             {
-              foreach (LEDDevice ld in ledDevicesGroupStaticColors)
+              foreach (var ld in LedDevicesGroupStaticColors)
               {
-                lights.Add(ld.ID);
+                lights.Add(ld.Id);
               }
             }
-            else if (UsingManualGroupFilter == false && groupFilterActive == false)
+            else if (usingManualGroupFilter == false && _groupFilterActive == false)
             {
-              foreach (LEDDevice ld in ledDevices)
+              foreach (var ld in LedDevices)
               {
-                lights.Add(ld.ID);
+                lights.Add(ld.Id);
               }
             }
 
             IEnumerable<string> lightList = lights;
             if (lightList.Count() > 0)
             {
-              client.SendCommandAsync(command, lightList);
+              _client.SendCommandAsync(command, lightList);
             }
             command.On = false;
           }
-          if (cbLogRemoteApiCalls.Checked && source == sources.ATMOLIGHT)
+          if (cbLogRemoteApiCalls.Checked && source == Sources.Atmolight)
           {
-
-            Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color " + ColorInput.ToString() + " to Hue Bridge"));
+            Logger(string.Format("[ {0} ] {1}", source, "Completed sending color " + colorInput + " to Hue Bridge"));
           }
           else
           {
-            Logger(string.Format("[ {0} ] {1}", source.ToString(), "Completed sending color " + ColorInput.ToString() + " to Hue Bridge"));
+            Logger(string.Format("[ {0} ] {1}", source, "Completed sending color " + colorInput + " to Hue Bridge"));
           }
         }
       }
       catch (Exception et)
       {
         //MessageBox.Show(et.ToString());
-        if (cbEnableDebuglog.Checked == true)
+        if (cbEnableDebuglog.Checked)
         {
           Logger(et.ToString());
         }
       }
     }
-    private void sendLightCommand(LightCommand command,IEnumerable<string> lightList)
+
+    private void SendLightCommand(LightCommand command, IEnumerable<string> lightList)
     {
       /*
       while(waitTimer)
@@ -1795,12 +1780,12 @@ namespace AtmoHue
         //Wait
         Thread.Sleep(1);
       }*/
-      client.SendCommandAsync(command, lightList);
+      _client.SendCommandAsync(command, lightList);
     }
+
     private void btnStartAtmowinHue_Click(object sender, EventArgs e)
     {
-
-      if (string.IsNullOrEmpty(hueBridgeIP) == true)
+      if (string.IsNullOrEmpty(HueBridgeIp))
       {
         if (cbRunningWindows8.Checked == false)
         {
@@ -1808,123 +1793,131 @@ namespace AtmoHue
         }
         else
         {
-          SSDPBridgeLocator();
+          SsdpBridgeLocator();
         }
       }
-      scanAtmowin = true;
+      ScanAtmowin = true;
       Logger("Start monitoring Atmowin");
-      Thread t = new Thread(startMonitoringAtmowin);
+      var t = new Thread(StartMonitoringAtmowin);
       t.IsBackground = true;
       t.Start();
-
     }
+
     private void btnStopAtmowinHue_Click(object sender, EventArgs e)
     {
-      scanAtmowin = false;
+      ScanAtmowin = false;
       Logger("Stop monitoring Atmowin");
 
-      if (string.IsNullOrEmpty(atmowinStaticColor) == false)
+      if (string.IsNullOrEmpty(AtmowinStaticColor) == false)
       {
-        hueSetColor(Color.Black, sources.LOCAL, 0, false);
+        HueSetColor(Color.Black, Sources.Local, 0, false);
       }
       else
       {
-        hueSetColor(Color.Black, sources.LOCAL, 0, false);
+        HueSetColor(Color.Black, Sources.Local, 0, false);
       }
     }
 
-    private void startMonitoringAtmowin()
+    private void StartMonitoringAtmowin()
     {
-      string atmowinColorInformation = "";
-      string colorRed = "";
-      string colorGreen = "";
-      string colorBlue = "";
-      string numberOfChannels = "";
-      Color previousColor = Color.Black;
+      var atmowinColorInformation = "";
+      var colorRed = "";
+      var colorGreen = "";
+      var colorBlue = "";
+      var numberOfChannels = "";
+      var previousColor = Color.Black;
       try
       {
-        while (scanAtmowin == true)
+        while (ScanAtmowin)
         {
           try
           {
-            using (FileStream fileStream = new FileStream(atmowinLocation + "hue_output.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (
+              var fileStream = new FileStream(AtmowinLocation + "hue_output.txt", FileMode.Open, FileAccess.Read,
+                FileShare.ReadWrite))
             {
-              using (StreamReader streamReader = new StreamReader(fileStream))
+              using (var streamReader = new StreamReader(fileStream))
               {
                 atmowinColorInformation = streamReader.ReadToEnd().Trim();
               }
             }
-            string[] atmowinColorSplit = atmowinColorInformation.Split(',');
+            var atmowinColorSplit = atmowinColorInformation.Split(',');
             colorRed = atmowinColorSplit[0];
             colorGreen = atmowinColorSplit[1];
             colorBlue = atmowinColorSplit[2];
             numberOfChannels = atmowinColorSplit[3];
             Logger("------------------------------");
-            Logger("Atmowin information -> R = " + colorRed + " / G = " + colorGreen + " / B = " + colorBlue + " / CHANNELS = " + numberOfChannels);
+            Logger("Atmowin information -> R = " + colorRed + " / G = " + colorGreen + " / B = " + colorBlue +
+                   " / CHANNELS = " + numberOfChannels);
 
             //Needs changing as Atmowin might report 0,0,0 normally
-            if (colorRed == "0" && colorGreen == "0" && colorBlue == "0" && string.IsNullOrEmpty(atmowinStaticColor) == false)
+            if (colorRed == "0" && colorGreen == "0" && colorBlue == "0" &&
+                string.IsNullOrEmpty(AtmowinStaticColor) == false)
             {
               Logger("Atmowin disconnected, sending preset static color");
-              hueSetColor(Color.Black, sources.LOCAL, 0, false);
+              HueSetColor(Color.Black, Sources.Local, 0, false);
             }
             else
             {
               //Convert RGB to HEX
-              Color myColor = Color.FromArgb(int.Parse(colorRed), int.Parse(colorGreen), int.Parse(colorBlue));
+              var myColor = Color.FromArgb(int.Parse(colorRed), int.Parse(colorGreen), int.Parse(colorBlue));
 
               //Send color
               if (myColor != previousColor)
               {
-                hueSetColor(myColor, sources.LOCAL, 0, false);
+                HueSetColor(myColor, Sources.Local, 0, false);
               }
               previousColor = myColor;
 
-              Logger("Completed sending color #" + myColor.ToString() + " to Hue Bridge.");
+              Logger("Completed sending color #" + myColor + " to Hue Bridge.");
               Logger("------------------------------");
             }
 
-            int sleeptime = int.Parse(atmowinScanInterval);
+            var sleeptime = int.Parse(AtmowinScanInterval);
             Thread.Sleep(sleeptime);
           }
           catch (Exception et)
           {
             Logger(et.ToString());
-            int sleeptime = int.Parse(atmowinScanInterval);
+            var sleeptime = int.Parse(AtmowinScanInterval);
             Thread.Sleep(sleeptime);
-
           }
         }
       }
       catch (Exception et)
       {
         Logger(et.ToString());
-        int sleeptime = int.Parse(atmowinScanInterval);
+        var sleeptime = int.Parse(AtmowinScanInterval);
         Thread.Sleep(sleeptime);
       }
     }
-    public static string addTrailingSlash(string atmowinFolder)
+
+    public static string AddTrailingSlash(string atmowinFolder)
     {
       try
       {
-        string checkForTrailingSlash = atmowinFolder.Substring(atmowinFolder.Length - 1, 1);
+        var checkForTrailingSlash = atmowinFolder.Substring(atmowinFolder.Length - 1, 1);
         if (checkForTrailingSlash != "\\")
         {
           atmowinFolder = atmowinFolder + "\\";
         }
       }
-      catch { };
+      catch
+      {
+      }
+      ;
       return atmowinFolder;
     }
+
     public void Logger(string text)
     {
-      string timestamp = DateTime.Now.ToString("HH:mm:ss.ffffff");
-      string message = string.Format("[ {0} ] - {1}", timestamp, text);
+      var timestamp = DateTime.Now.ToString("HH:mm:ss.ffffff");
+      var message = string.Format("[ {0} ] - {1}", timestamp, text);
       ControlInvike(lbOutputlog, () => lbOutputlog.Items.Add(message));
 
-      if (cbEnableDebuglog.Checked == true)
+      if (cbEnableDebuglog.Checked)
       {
-        StreamWriter sw = new StreamWriter("debug.log", true);
+        var sw = new StreamWriter("debug.log", true);
         sw.WriteLine(message);
         sw.Close();
       }
@@ -1944,30 +1937,30 @@ namespace AtmoHue
       }
     }
 
-    private void rotateColors()
+    private void RotateColors()
     {
       try
       {
-        isInitialized(false);
+        IsInitialized(false);
 
-        if (!isConnectedToBridge)
+        if (!IsConnectedToBridge)
         {
-          reInitialize("HUE has been intialized on COLOR CHANGE");
+          ReInitialize("HUE has been intialized on COLOR CHANGE");
         }
 
-        while (hueRotatingColors)
+        while (HueRotatingColors)
         {
-          hueSetColor(Color.Red, sources.LOCAL, 0, false);
-          Thread.Sleep(hueRotateDelay);
-          hueSetColor(Color.Green, sources.LOCAL, 0, false);
-          Thread.Sleep(hueRotateDelay);
-          hueSetColor(Color.Blue, sources.LOCAL, 0, false);
-          Thread.Sleep(hueRotateDelay);
+          HueSetColor(Color.Red, Sources.Local, 0, false);
+          Thread.Sleep(HueRotateDelay);
+          HueSetColor(Color.Green, Sources.Local, 0, false);
+          Thread.Sleep(HueRotateDelay);
+          HueSetColor(Color.Blue, Sources.Local, 0, false);
+          Thread.Sleep(HueRotateDelay);
         }
       }
       catch (Exception et)
       {
-        if (cbEnableDebuglog.Checked == true)
+        if (cbEnableDebuglog.Checked)
         {
           Logger(et.ToString());
         }
@@ -1976,36 +1969,36 @@ namespace AtmoHue
 
     private void btnTestRed_Click(object sender, EventArgs e)
     {
-      TurnLightsON();
-      hueSetColor(Color.Red, sources.LOCAL, 0, false);
+      TurnLightsOn();
+      HueSetColor(Color.Red, Sources.Local, 0, false);
     }
 
     private void btnTestGreen_Click(object sender, EventArgs e)
     {
-      TurnLightsON();
-      hueSetColor(Color.Green, sources.LOCAL, 0, false);
+      TurnLightsOn();
+      HueSetColor(Color.Green, Sources.Local, 0, false);
     }
 
     private void btnTestBlue_Click(object sender, EventArgs e)
     {
-      TurnLightsON();
-      hueSetColor(Color.Blue, sources.LOCAL, 0, false);
+      TurnLightsOn();
+      HueSetColor(Color.Blue, Sources.Local, 0, false);
     }
 
     private void btnHueColorClear_Click(object sender, EventArgs e)
     {
-      TurnLightsON();
-      hueSetColor(Color.Black, sources.LOCAL, 0, false);
+      TurnLightsOn();
+      HueSetColor(Color.Black, Sources.Local, 0, false);
     }
 
     private void btnHueSendCustomColor_Click(object sender, EventArgs e)
     {
-      Color customColor = new Color();
+      var customColor = new Color();
       try
       {
-        int red = int.Parse(cbTestCustomColorR.Text);
-        int green = int.Parse(cbTestCustomColorG.Text);
-        int blue = int.Parse(cbTestCustomColorB.Text);
+        var red = int.Parse(cbTestCustomColorR.Text);
+        var green = int.Parse(cbTestCustomColorG.Text);
+        var blue = int.Parse(cbTestCustomColorB.Text);
         customColor = Color.FromArgb(red, green, blue);
       }
       catch
@@ -2014,22 +2007,22 @@ namespace AtmoHue
         MessageBox.Show("Incorrect color values for test custom colors used, R/G/B must be between 0 and 255");
         return;
       }
-      hueSetColor(customColor, sources.LOCAL, 0, false);
+      HueSetColor(customColor, Sources.Local, 0, false);
     }
 
     private void btnHueColorRotateTestStart_Click(object sender, EventArgs e)
     {
-
-      hueRotatingColors = true;
-      Thread t = new Thread(rotateColors);
+      HueRotatingColors = true;
+      var t = new Thread(RotateColors);
       t.IsBackground = true;
       t.Start();
     }
+
     private void btnHueColorRotateTestStop_Click(object sender, EventArgs e)
     {
-      hueRotatingColors = false;
-      hueSetColor(Color.Black, sources.LOCAL, 0, false);
-      colorisON = false;
+      HueRotatingColors = false;
+      HueSetColor(Color.Black, Sources.Local, 0, false);
+      ColorisOn = false;
     }
 
     private void llQ42_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -2046,14 +2039,19 @@ namespace AtmoHue
       }
       else
       {
-        string id = tbLedID.Text;
-        string staticColors = "";
-        if (string.IsNullOrEmpty(tbLedR.Text) == false && string.IsNullOrEmpty(tbLedG.Text) == false && string.IsNullOrEmpty(tbLedB.Text) == false)
+        var id = tbLedID.Text;
+        var staticColors = "";
+        if (string.IsNullOrEmpty(tbLedR.Text) == false && string.IsNullOrEmpty(tbLedG.Text) == false &&
+            string.IsNullOrEmpty(tbLedB.Text) == false)
         {
           staticColors = string.Format("{0},{1},{2}", tbLedR.Text, tbLedG.Text, tbLedB.Text);
         }
 
-        string[] subItems = { cbLedType.Text, cbLedLocation.Text, tbLedSendDelay.Text, tbLedBrightness.Text, tbLedSaturation.Text, tbLedColorTemperature.Text, tbLedHue.Text, staticColors };
+        string[] subItems =
+        {
+          cbLedType.Text, cbLedLocation.Text, tbLedSendDelay.Text, tbLedBrightness.Text,
+          tbLedSaturation.Text, tbLedColorTemperature.Text, tbLedHue.Text, staticColors
+        };
 
         lvLedDevices.Items.Add(id).SubItems.AddRange(subItems);
 
@@ -2065,27 +2063,27 @@ namespace AtmoHue
         tbLedID.Focus();
       }
     }
-    private enum MoveDirection { Up = -1, Down = 1 };
 
     private static void MoveListViewItems(ListView sender, MoveDirection direction)
     {
-      int dir = (int)direction;
-      int opp = dir * -1;
+      var dir = (int) direction;
+      var opp = dir*-1;
 
-      bool valid = sender.SelectedItems.Count > 0 &&
-                      ((direction == MoveDirection.Down && (sender.SelectedItems[sender.SelectedItems.Count - 1].Index < sender.Items.Count - 1))
-                  || (direction == MoveDirection.Up && (sender.SelectedItems[0].Index > 0)));
+      var valid = sender.SelectedItems.Count > 0 &&
+                  ((direction == MoveDirection.Down &&
+                    (sender.SelectedItems[sender.SelectedItems.Count - 1].Index < sender.Items.Count - 1))
+                   || (direction == MoveDirection.Up && (sender.SelectedItems[0].Index > 0)));
 
       if (valid)
       {
         foreach (ListViewItem item in sender.SelectedItems)
         {
-          int index = item.Index + dir;
+          var index = item.Index + dir;
           sender.Items.RemoveAt(item.Index);
           sender.Items.Insert(index, item);
 
           sender.Items[index + opp].SubItems[1].Text = (index + opp).ToString();
-          item.SubItems[1].Text = (index).ToString();
+          item.SubItems[1].Text = index.ToString();
         }
       }
     }
@@ -2093,32 +2091,32 @@ namespace AtmoHue
     private void btnLedItemUp_Click(object sender, EventArgs e)
     {
       MoveListViewItems(lvLedDevices, MoveDirection.Up);
-
     }
 
     private void btnLedItemDown_Click(object sender, EventArgs e)
     {
       MoveListViewItems(lvLedDevices, MoveDirection.Down);
-
     }
 
     private void btnRemoveLeds_Click(object sender, EventArgs e)
     {
       lvLedDevices.Items.Cast<ListViewItem>().Where(T => T.Selected)
-          .Select(T => T.Index).ToList().ForEach(T => lvLedDevices.Items.RemoveAt(T));
+        .Select(T => T.Index).ToList().ForEach(T => lvLedDevices.Items.RemoveAt(T));
 
       SetInUseLedDevices();
     }
+
     private void SetInUseLedDevices()
     {
-      ledDevices.Clear();
+      LedDevices.Clear();
       foreach (ListViewItem item in lvLedDevices.Items)
       {
-        LEDDevice ld = new LEDDevice();
-        ld.ID = item.Text;
-        ledDevices.Add(ld);
+        var ld = new LedDevice();
+        ld.Id = item.Text;
+        LedDevices.Add(ld);
       }
     }
+
     private void btnHueSetScene_Click(object sender, EventArgs e)
     {
       //client.CreateOrUpdateSceneAsync(tbHueSceneID.Text, tbHueSceneName.Text, ledDevices);
@@ -2126,120 +2124,122 @@ namespace AtmoHue
 
     private void btnHueLocateScenes_Click(object sender, EventArgs e)
     {
-      getScenes();
+      GetScenes();
     }
-    private async Task getScenes()
+
+    private async Task GetScenes()
     {
-      IEnumerable<Q42.HueApi.Models.Scene> scenes = await client.GetScenesAsync();
-      foreach (Q42.HueApi.Models.Scene scene in scenes)
+      IEnumerable<Scene> scenes = await _client.GetScenesAsync();
+      foreach (var scene in scenes)
       {
         //Logger(string.Format("Active:{0} - ID:{1} - Name:{2} - Lights:{3}", scene.Active, scene.Id, scene.Name, scene.Lights));
       }
     }
+
     private void btnRefreshSettings_Click(object sender, EventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void tbHueBridgeIP_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void tbHueAppName_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void tbHueAppKey_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbHueBrightness_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbHueSaturation_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbHueColorTemperature_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbHueHue_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbHueTransitionTime_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbHueSetBrightnessStartup_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbRunningWindows8_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbAutoConnectBridge_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbRemoteAPIEnabled_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
-    private Boolean validatorInt(string input, int minValue, int maxValue, Boolean validateMaxValue)
+    private bool ValidatorInt(string input, int minValue, int maxValue, bool validateMaxValue)
     {
-      Boolean IsValid = false;
-      Int32 value;
-      bool IsInteger = Int32.TryParse(input, out value);
+      var isValid = false;
+      int value;
+      var isInteger = int.TryParse(input, out value);
 
-      if (IsInteger)
+      if (isInteger)
       {
         //Only check minValue
         if (validateMaxValue == false && value >= minValue)
         {
-          IsValid = true;
+          isValid = true;
         }
         //Check both min/max values
         else
         {
           if (value >= minValue && value <= maxValue)
           {
-            IsValid = true;
+            isValid = true;
           }
         }
       }
-      return IsValid;
+      return isValid;
     }
 
     private void Form1_Resize(object sender, EventArgs e)
     {
       if (MinimizeToTray)
       {
-        if (FormWindowState.Minimized == this.WindowState)
+        if (FormWindowState.Minimized == WindowState)
         {
-          this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+          FormBorderStyle = FormBorderStyle.SizableToolWindow;
           trayIconHue.Visible = true;
-          this.Hide();
+          Hide();
         }
 
-        else if (FormWindowState.Normal == this.WindowState)
+        else if (FormWindowState.Normal == WindowState)
         {
-          this.FormBorderStyle = FormBorderStyle.FixedSingle;
+          FormBorderStyle = FormBorderStyle.FixedSingle;
           trayIconHue.Visible = false;
         }
       }
@@ -2247,8 +2247,8 @@ namespace AtmoHue
 
     private void notifyIcon1_DoubleClick(object sender, EventArgs e)
     {
-      this.Show();
-      this.WindowState = FormWindowState.Normal;
+      Show();
+      WindowState = FormWindowState.Normal;
     }
 
     private void cbMinimizeOnStartup_CheckedChanged(object sender, EventArgs e)
@@ -2271,6 +2271,7 @@ namespace AtmoHue
         MinimizeToTray = false;
       }
     }
+
     private void cbLogRemoteApiCalls_CheckedChanged(object sender, EventArgs e)
     {
       if (cbLogRemoteApiCalls.Checked)
@@ -2285,9 +2286,9 @@ namespace AtmoHue
 
     private void cbTestCustomColorR_Validating(object sender, CancelEventArgs e)
     {
-      int min = 0;
-      int max = 255;
-      if (validatorInt(cbTestCustomColorR.Text, min, max,true) == false)
+      var min = 0;
+      var max = 255;
+      if (ValidatorInt(cbTestCustomColorR.Text, min, max, true) == false)
       {
         MessageBox.Show("RGB color value must be between 0 and 255");
       }
@@ -2295,9 +2296,9 @@ namespace AtmoHue
 
     private void cbTestCustomColorG_Validating(object sender, CancelEventArgs e)
     {
-      int min = 0;
-      int max = 255;
-      if (validatorInt(cbTestCustomColorG.Text, min, max, true) == false)
+      var min = 0;
+      var max = 255;
+      if (ValidatorInt(cbTestCustomColorG.Text, min, max, true) == false)
       {
         MessageBox.Show("RGB color value must be between 0 and 255");
       }
@@ -2305,307 +2306,146 @@ namespace AtmoHue
 
     private void cbTestCustomColorB_Validating(object sender, CancelEventArgs e)
     {
-      int min = 0;
-      int max = 255;
-      if (validatorInt(cbTestCustomColorB.Text, min, max, true) == false)
+      var min = 0;
+      var max = 255;
+      if (ValidatorInt(cbTestCustomColorB.Text, min, max, true) == false)
       {
         MessageBox.Show("RGB color value must be between 0 and 255");
       }
     }
+
     private void toolStripMenuItemOpen_Click(object sender, EventArgs e)
     {
-      this.Show();
-      this.WindowState = FormWindowState.Normal;
+      Show();
+      WindowState = FormWindowState.Normal;
     }
+
     private void toolStripMenuItemClose_Click(object sender, EventArgs e)
     {
-      this.Close();
+      Close();
     }
+
     private void cbHuePowerHandling_SelectedIndexChanged(object sender, EventArgs e)
     {
       HuePowerHandling = cbHuePowerHandling.SelectedIndex;
     }
 
-    #region powerstate monitoring
-    private void monitorPowerState()
-    {
-      SystemEvents.PowerModeChanged += OnPowerModeChanged;
-    }
-    private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
-    {
-      switch (e.Mode)
-      {
-        case PowerModes.Resume:
-          int selectedPowerModeResume = HuePowerHandling;
-          if (selectedPowerModeResume == 0 || selectedPowerModeResume == 2)
-          {
-            Logger("[ STANDBY ] - resuming AtmoHue connection and setting initial command");
-            Thread tResume = new Thread(TurnLightsON);
-            tResume.IsBackground = true;
-            tResume.Start();
-          }
-          break;
-        case PowerModes.Suspend:
-          int selectedPowerModeSuspend = HuePowerHandling;
-          if (selectedPowerModeSuspend == 1 || selectedPowerModeSuspend == 2)
-          {
-            Logger("[ STANDBY ] - Suspending AtmoHue and turning off leds");
-            Thread tSuspend = new Thread(TurnLightsOFF);
-            tSuspend.IsBackground = true;
-            tSuspend.Start();
-          }
-          break;
-      }
-    }
-    public void TurnLightsOFF()
-    {
-      try
-      {
-        colorisON = false;
-        LightCommand command = new LightCommand();
-        command.On = true;
-        command.TurnOff();
-
-        List<string> lights = new List<string>();
-        foreach (LEDDevice ld in ledDevices)
-        {
-          lights.Add(ld.ID);
-        }
-
-        IEnumerable<string> lightList = lights;
-
-        client.SendCommandAsync(command, lightList);
-        command.On = false;
-        Logger("[ STANDBY ] - Suspended AtmoHue and set color to black");
-
-      }
-      catch (Exception e)
-      {
-        Logger("[ STANDBY ] - Error while sending color black on suspend");
-        Logger(e.Message);
-      }
-    }
-
-    public void TurnLightsON()
-    {
-      try
-      {
-        isInitialized(false);
-
-        if (!isConnectedToBridge)
-        {
-          reInitialize("HUE has been intialized on LIGHTS ON");
-        }
-
-        colorisON = true;
-        LightCommand command = new LightCommand();
-        command.On = true;
-        command.Brightness = byte.Parse(hueBrightness);
-
-        double[] colorCoordinates = getRGBtoXY(Color.Black, DeviceType.bloom);
-
-        command.ColorCoordinates = colorCoordinates;
-        command.TurnOn();
-
-        List<string> lights = new List<string>();
-        foreach (LEDDevice ld in ledDevices)
-        {
-          lights.Add(ld.ID);
-        }
-
-        IEnumerable<string> lightList = lights;
-
-        client.SendCommandAsync(command, lightList);
-        command.On = false;
-        Logger("[ STANDBY ] - Resumed AtmoHue and set initial color command (TurnOn) with brightness " + hueBrightness);
-      }
-      catch (Exception e)
-      {
-        Logger("[ STANDBY ] - Error while turning on Hue on resume");
-        Logger(e.Message);
-      }
-    }
-    public void TurnLightsONTheater()
-    {
-      try
-      {
-        isInitialized(false);
-
-        if (!isConnectedToBridge)
-        {
-          reInitialize("HUE has been intialized on LIGHTS ON THEATER");
-        }
-
-        colorisON = true;
-        LightCommand command = new LightCommand();
-        command.On = true;
-
-        command.TurnOn();
-
-        List<string> lights = new List<string>();
-        foreach (LEDDevice ld in ledDevices)
-        {
-          lights.Add(ld.ID);
-        }
-
-        IEnumerable<string> lightList = lights;
-
-        client.SendCommandAsync(command, lightList);
-        command.On = false;
-        Logger("[ THEATER MODE ] - Turned back on lights.");
-      }
-      catch (Exception e)
-      {
-        Logger("[ THEATER MODE ] - Error while turning on Hue on after Theater mode");
-        Logger(e.Message);
-      }
-    }
-    public void TurnLightsOFFTheater()
-    {
-      try
-      {
-        colorisON = false;
-        LightCommand command = new LightCommand();
-        command.On = true;
-        command.TurnOff();
-
-        List<string> lights = new List<string>();
-        foreach (LEDDevice ld in ledDevices)
-        {
-          lights.Add(ld.ID);
-        }
-
-        IEnumerable<string> lightList = lights;
-
-        client.SendCommandAsync(command, lightList);
-        command.On = false;
-        Logger("[ THEATER MODE ] - Turning off lights during movie playback.");
-
-      }
-      catch (Exception e)
-      {
-        Logger("[ THEATER MODE ] - Error while turning off Hue lights during Theater mode");
-        Logger(e.Message);
-      }
-    }
-
-    #endregion
-
     private void btnGetLedIDs_Click(object sender, EventArgs e)
     {
-      isInitialized(false);
+      IsInitialized(false);
 
-      if (!isConnectedToBridge)
+      if (!IsConnectedToBridge)
       {
-        reInitialize("HUE has been intialized on getLights");
+        ReInitialize("HUE has been intialized on getLights");
       }
       else
       {
-        getLights();
+        GetLights();
       }
     }
-    private async Task getLights()
+
+    private async Task GetLights()
     {
-      IEnumerable<Light> lights = await client.GetLightsAsync();
-      foreach (Light light in lights)
+      var lights = await _client.GetLightsAsync();
+      foreach (var light in lights)
       {
-        Logger(string.Format("{0} - {1} - {2} - {3} - {4} - {5}", light.Id,light.ModelId,light.Name,light.SoftwareVersion,light.State,light.Type));
+        Logger(string.Format("{0} - {1} - {2} - {3} - {4} - {5}", light.Id, light.ModelId, light.Name,
+          light.SoftwareVersion, light.State, light.Type));
       }
     }
 
     private void tbXRed_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Red, sources.LOCAL, 0, false);
+        HueSetColor(Color.Red, Sources.Local, 0, false);
       }
     }
 
     private void tbXGreen_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Red, sources.LOCAL, 0, false);
+        HueSetColor(Color.Red, Sources.Local, 0, false);
       }
-
     }
 
     private void tbXBlue_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Red, sources.LOCAL, 0, false);
+        HueSetColor(Color.Red, Sources.Local, 0, false);
       }
-
     }
 
     private void tbYRed_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Green, sources.LOCAL, 0, false);
+        HueSetColor(Color.Green, Sources.Local, 0, false);
       }
     }
 
     private void tbYGreen_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Green, sources.LOCAL, 0, false);
+        HueSetColor(Color.Green, Sources.Local, 0, false);
       }
     }
 
     private void tbYBlue_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Green, sources.LOCAL, 0, false);
+        HueSetColor(Color.Green, Sources.Local, 0, false);
       }
     }
 
     private void tbZRed_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Blue, sources.LOCAL, 0, false);
+        HueSetColor(Color.Blue, Sources.Local, 0, false);
       }
     }
 
     private void tbZGreen_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Blue, sources.LOCAL, 0, false);
+        HueSetColor(Color.Blue, Sources.Local, 0, false);
       }
     }
 
     private void tbZBlue_KeyDown(object sender, KeyEventArgs e)
     {
-      refreshColorCalibrations();
+      RefreshColorCalibrations();
       if (e.KeyCode.ToString().ToLower() == "return")
       {
-        hueSetColor(Color.Blue, sources.LOCAL, 0, false);
+        HueSetColor(Color.Blue, Sources.Local, 0, false);
       }
     }
-    private void refreshColorCalibrations()
+
+    private void RefreshColorCalibrations()
     {
-        calibrateXred = tbXRed.Text;
-        calibrateYred = tbYRed.Text;
-        calibrateZred = tbZRed.Text;
-        calibrateXgreen = tbXGreen.Text;
-        calibrateYgreen = tbYGreen.Text;
-        calibrateZgreen = tbZGreen.Text;
-        calibrateXblue = tbXBlue.Text;
-        calibrateYblue = tbYBlue.Text;
-        calibrateZblue = tbZBlue.Text;
+      CalibrateXred = tbXRed.Text;
+      CalibrateYred = tbYRed.Text;
+      CalibrateZred = tbZRed.Text;
+      CalibrateXgreen = tbXGreen.Text;
+      CalibrateYgreen = tbYGreen.Text;
+      CalibrateZgreen = tbZGreen.Text;
+      CalibrateXblue = tbXBlue.Text;
+      CalibrateYblue = tbYBlue.Text;
+      CalibrateZblue = tbZBlue.Text;
     }
 
     private void cbEnableIndividualLightSettings_CheckedChanged(object sender, EventArgs e)
@@ -2618,7 +2458,6 @@ namespace AtmoHue
       {
         EnableIndividualLightSettings = false;
       }
-
     }
 
     private void btnAddLedLocation_Click(object sender, EventArgs e)
@@ -2630,7 +2469,7 @@ namespace AtmoHue
       }
       else
       {
-        string[] subItems = { tbLedLocationPriority.Text };
+        string[] subItems = {tbLedLocationPriority.Text};
         lvLedLocations.Items.Add(tbLedLocation.Text).SubItems.AddRange(subItems);
 
         // Refresh combo box selection options
@@ -2644,7 +2483,6 @@ namespace AtmoHue
         tbLedLocationPriority.Text = "";
         tbLedLocation.Focus();
       }
-
     }
 
     private void btnAddPredefinedStaticColor_Click(object sender, EventArgs e)
@@ -2656,8 +2494,8 @@ namespace AtmoHue
       }
       else
       {
-        string predefinedColor = tbPredefinedColorR.Text + "," + tbPredefinedColorG.Text + "," + tbPredefinedColorB.Text;
-        string[] subItems = { predefinedColor };
+        var predefinedColor = tbPredefinedColorR.Text + "," + tbPredefinedColorG.Text + "," + tbPredefinedColorB.Text;
+        string[] subItems = {predefinedColor};
         lvPredefinedStaticColors.Items.Add(tbPredefinedStaticColorName.Text).SubItems.AddRange(subItems);
         tbPredefinedStaticColorName.Text = "";
         tbPredefinedColorR.Text = "";
@@ -2670,7 +2508,7 @@ namespace AtmoHue
     private void btnRemoveLedLocation_Click(object sender, EventArgs e)
     {
       lvLedLocations.Items.Cast<ListViewItem>().Where(T => T.Selected)
-      .Select(T => T.Index).ToList().ForEach(T => lvLedLocations.Items.RemoveAt(T));
+        .Select(T => T.Index).ToList().ForEach(T => lvLedLocations.Items.RemoveAt(T));
 
       // Refresh combo box selection options
       cbLedLocation.Items.Clear();
@@ -2683,7 +2521,7 @@ namespace AtmoHue
     private void btnRemoveLedPredefinedStaticColor_Click(object sender, EventArgs e)
     {
       lvPredefinedStaticColors.Items.Cast<ListViewItem>().Where(T => T.Selected)
-      .Select(T => T.Index).ToList().ForEach(T => lvPredefinedStaticColors.Items.RemoveAt(T));
+        .Select(T => T.Index).ToList().ForEach(T => lvPredefinedStaticColors.Items.RemoveAt(T));
     }
 
     private void btnLedLocationUP_Click(object sender, EventArgs e)
@@ -2708,9 +2546,9 @@ namespace AtmoHue
 
     private void btnTestHueBrightness_Click(object sender, EventArgs e)
     {
-      int min = 0;
-      int max = 255;
-      if (validatorInt(cbTestHueBrightness.Text, min, max, true) == false)
+      var min = 0;
+      var max = 255;
+      if (ValidatorInt(cbTestHueBrightness.Text, min, max, true) == false)
       {
         MessageBox.Show("RGB color value must be between 0 and 500");
       }
@@ -2718,9 +2556,8 @@ namespace AtmoHue
       {
         try
         {
-          byte brightness = byte.Parse(cbTestHueBrightness.Text);
+          var brightness = byte.Parse(cbTestHueBrightness.Text);
           HueSetBrightness(brightness);
-
         }
         catch (Exception et)
         {
@@ -2728,16 +2565,233 @@ namespace AtmoHue
           MessageBox.Show(et.Message);
         }
       }
-
     }
+
     private void cbHueEnableTheaterMode_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
 
     private void cbHueTheaterModeRestoreColor_Validating(object sender, CancelEventArgs e)
     {
-      refreshSettings();
+      RefreshSettings();
     }
+
+    private delegate void UniversalVoidDelegate();
+
+    public class LedDevice
+    {
+      public string Id { get; set; }
+      public string Type { get; set; }
+      public string location { get; set; }
+      public string SendDelay { get; set; }
+      public string Brightness { get; set; }
+      public string Saturation { get; set; }
+      public string ColorTemperature { get; set; }
+      public string Hue { get; set; }
+      public string StaticColor { get; set; }
+    }
+
+    public class LedLocation
+    {
+      public string Location { get; set; }
+      public string Priority { get; set; }
+    }
+
+    public class LEDPredefinedStaticColors
+    {
+      public string ColorName { get; set; }
+      public string RgBvalue { get; set; }
+    }
+
+    private enum ApIcommandType
+    {
+      Color,
+      Group,
+      Power,
+      Room,
+      Theater
+    }
+
+    public class HueXyColor
+    {
+      public float Brightness;
+      public float X;
+      public float Y;
+    }
+
+    private enum MoveDirection
+    {
+      Up = -1,
+      Down = 1
+    }
+
+    #region powerstate monitoring
+
+    private void MonitorPowerState()
+    {
+      SystemEvents.PowerModeChanged += OnPowerModeChanged;
+    }
+
+    private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+    {
+      switch (e.Mode)
+      {
+        case PowerModes.Resume:
+          var selectedPowerModeResume = HuePowerHandling;
+          if (selectedPowerModeResume == 0 || selectedPowerModeResume == 2)
+          {
+            Logger("[ STANDBY ] - resuming AtmoHue connection and setting initial command");
+            var tResume = new Thread(TurnLightsOn);
+            tResume.IsBackground = true;
+            tResume.Start();
+          }
+          break;
+        case PowerModes.Suspend:
+          var selectedPowerModeSuspend = HuePowerHandling;
+          if (selectedPowerModeSuspend == 1 || selectedPowerModeSuspend == 2)
+          {
+            Logger("[ STANDBY ] - Suspending AtmoHue and turning off leds");
+            var tSuspend = new Thread(TurnLightsOff);
+            tSuspend.IsBackground = true;
+            tSuspend.Start();
+          }
+          break;
+      }
+    }
+
+    public void TurnLightsOff()
+    {
+      try
+      {
+        ColorisOn = false;
+        var command = new LightCommand();
+        command.On = true;
+        command.TurnOff();
+
+        var lights = new List<string>();
+        foreach (var ld in LedDevices)
+        {
+          lights.Add(ld.Id);
+        }
+
+        IEnumerable<string> lightList = lights;
+
+        _client.SendCommandAsync(command, lightList);
+        command.On = false;
+        Logger("[ STANDBY ] - Suspended AtmoHue and set color to black");
+      }
+      catch (Exception e)
+      {
+        Logger("[ STANDBY ] - Error while sending color black on suspend");
+        Logger(e.Message);
+      }
+    }
+
+    public void TurnLightsOn()
+    {
+      try
+      {
+        IsInitialized(false);
+
+        if (!IsConnectedToBridge)
+        {
+          ReInitialize("HUE has been intialized on LIGHTS ON");
+        }
+
+        ColorisOn = true;
+        var command = new LightCommand();
+        command.On = true;
+        command.Brightness = byte.Parse(HueBrightness);
+
+        var colorCoordinates = GetRgBtoXy(Color.Black, DeviceType.Bloom);
+
+        command.ColorCoordinates = colorCoordinates;
+        command.TurnOn();
+
+        var lights = new List<string>();
+        foreach (var ld in LedDevices)
+        {
+          lights.Add(ld.Id);
+        }
+
+        IEnumerable<string> lightList = lights;
+
+        _client.SendCommandAsync(command, lightList);
+        command.On = false;
+        Logger("[ STANDBY ] - Resumed AtmoHue and set initial color command (TurnOn) with brightness " + HueBrightness);
+      }
+      catch (Exception e)
+      {
+        Logger("[ STANDBY ] - Error while turning on Hue on resume");
+        Logger(e.Message);
+      }
+    }
+
+    public void TurnLightsOnTheater()
+    {
+      try
+      {
+        IsInitialized(false);
+
+        if (!IsConnectedToBridge)
+        {
+          ReInitialize("HUE has been intialized on LIGHTS ON THEATER");
+        }
+
+        ColorisOn = true;
+        var command = new LightCommand();
+        command.On = true;
+
+        command.TurnOn();
+
+        var lights = new List<string>();
+        foreach (var ld in LedDevices)
+        {
+          lights.Add(ld.Id);
+        }
+
+        IEnumerable<string> lightList = lights;
+
+        _client.SendCommandAsync(command, lightList);
+        command.On = false;
+        Logger("[ THEATER MODE ] - Turned back on lights.");
+      }
+      catch (Exception e)
+      {
+        Logger("[ THEATER MODE ] - Error while turning on Hue on after Theater mode");
+        Logger(e.Message);
+      }
+    }
+
+    public void TurnLightsOffTheater()
+    {
+      try
+      {
+        ColorisOn = false;
+        var command = new LightCommand();
+        command.On = true;
+        command.TurnOff();
+
+        var lights = new List<string>();
+        foreach (var ld in LedDevices)
+        {
+          lights.Add(ld.Id);
+        }
+
+        IEnumerable<string> lightList = lights;
+
+        _client.SendCommandAsync(command, lightList);
+        command.On = false;
+        Logger("[ THEATER MODE ] - Turning off lights during movie playback.");
+      }
+      catch (Exception e)
+      {
+        Logger("[ THEATER MODE ] - Error while turning off Hue lights during Theater mode");
+        Logger(e.Message);
+      }
+    }
+
+    #endregion
   }
 }
